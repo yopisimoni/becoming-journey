@@ -19,6 +19,38 @@ export const it: TranslationDictionary = {
     storageSession: 'Solo Sessione (Effimera)',
     storageLocal: 'Solo su questo Dispositivo',
     reducedMotion: 'Movimento Ridotto',
+    themeToggle: 'Santuario Crepuscolo',
+    aiSettingsBtn: 'Ponte IA',
+  },
+  sanctuary: {
+    headline: 'Siamo qui per te. Solo per aiutarti a respirare, districare i tuoi pensieri e ritrovare la tua voce.',
+    subtext: 'Un santuario digitale calmo e senza fretta. Tutto rimane protetto sul tuo dispositivo.',
+    beginWithSound: 'Inizia con calma (con suono)',
+    beginSilence: 'Inizia in silenzio',
+    cardProgressStep: 'Passo',
+    cardBack: 'Indietro',
+    writeOwnWordsPrompt: 'Oppure scrivi con le tue parole...',
+    orSelectBelow: 'Seleziona l’opzione più vicina a ciò che senti, o scrivi liberamente:',
+    pickInsightHeading: 'Seleziona la riflessione che esprime la tua verità:',
+    pickStepHeading: 'Scegli un piccolo micro-passo gentile (o salta senza colpa):',
+    customStepPlaceholder: 'Oppure annota il tuo micro-passo personale...',
+  },
+  audio: {
+    pillLabel: 'Paesaggio sonoro',
+    sanctuary: 'Santuario Caldo (432Hz)',
+    rain: 'Pioggia Leggera',
+    bowl: 'Campana Tibetana',
+    mute: 'Disattiva suono',
+  },
+  aiBridge: {
+    modalTitle: 'Ponte IA Opzionale',
+    description: 'BECOMING funziona interamente in locale senza chiamate esterne di default. Puoi facoltativamente collegare una tua chiave API per generare opzioni di riflessione personalizzate.',
+    enableToggle: 'Abilita endpoint IA personalizzato',
+    endpointLabel: 'URL dell’endpoint',
+    apiKeyLabel: 'Chiave API (salvata solo in memoria)',
+    modelLabel: 'Modello (es. gpt-4o-mini)',
+    saveBtn: 'Salva preferenze',
+    privacyNotice: 'Garanzia di privacy: nessuna chiave né testo attraversa server esterni di BECOMING.',
   },
   disclaimer: {
     bannerText: 'Spazio personale di riflessione — non è psicoterapia, consiglio medico né soccorso d’urgenza. I tuoi dati restano esclusivamente sul tuo dispositivo.',
@@ -97,6 +129,31 @@ export const it: TranslationDictionary = {
       draftInsight: 'Non sono in ritardo sulla vita; ho semplicemente bisogno di ridurre gli stimoli e muovermi al mio ritmo.',
       optionalMicroStep: 'Chiudere tutte le schede aperte del browser e fare 5 respiri profondi in un luogo tranquillo.',
       listenGrounding: 'Non c’è alcuna fretta in questo istante. Non devi avere tutte le risposte oggi. Lascia questo spazio libero da aspettative.',
+      diagnostic: {
+        diagnosticQuestion: 'Dove senti che la nebbia mentale si concentra maggiormente in questo momento?',
+        diagnosticOptions: [
+          { id: 'decisions', label: 'Troppe decisioni in sospeso', detail: 'Trovarsi davanti a più bivi e sentirsi bloccati nella scelta.' },
+          { id: 'overload', label: 'Sovraccarico mentale e sensoriale', detail: 'Troppi stimoli, informazioni e richieste esterne di risposte.' },
+          { id: 'behind', label: 'Sensazione di essere in ritardo', detail: 'Confrontare il mio percorso con quello altrui e temere di aver perso tempo.' },
+          { id: 'disconnected', label: 'Disconnessione da me stesso/a', detail: 'Vivere con il pilota automatico fino a dimenticare i miei desideri autentici.' },
+        ],
+        deepeningQuestion: 'Se potessi concederti un unico permesso ora, quale sarebbe?',
+        deepeningOptions: [
+          { id: 'p1', label: 'Il permesso di non avere la risposta oggi' },
+          { id: 'p2', label: 'Il permesso di lasciare andare qualcosa senza colpa' },
+          { id: 'p3', label: 'Il permesso di avanzare al mio passo sereno' },
+        ],
+        threeInsights: [
+          'Non sono in ritardo sulla vita; ho semplicemente bisogno di ridurre gli stimoli e muovermi al mio ritmo.',
+          'La chiarezza non si ottiene forzando; emerge quando permettiamo alla polvere di posarsi in pace.',
+          'Non ho bisogno di un piano per i prossimi 5 anni oggi; mi basta un respiro calmo per la prossima ora.',
+        ],
+        threeSteps: [
+          'Chiudere tutte le schede aperte del browser e fare 5 respiri profondi in un luogo tranquillo.',
+          'Annotare un’unica cosa da fare oggi e rimandare serenamente il resto a domani.',
+          'Uscire a camminare per 7 minuti all’aperto senza telefono né cuffie.',
+        ],
+      },
     },
     goal: {
       tone: 'Focalizzato, distensivo, concreto',
@@ -111,6 +168,31 @@ export const it: TranslationDictionary = {
       draftInsight: 'Non ho bisogno di vedere tutta la scala; mi basta vedere il singolo gradino davanti a me oggi.',
       optionalMicroStep: 'Dedicare domani solo 10 minuti alla parte più elementare di questo compito, senza l’ansia di concluderlo.',
       listenGrounding: 'L’ambizione è preziosa, ma la calma lo è altrettanto. Il tuo valore non si misura solo dai risultati.',
+      diagnostic: {
+        diagnosticQuestion: 'Qual è il freno maggiore attorno a questo obiettivo?',
+        diagnosticOptions: [
+          { id: 'scale', label: 'La portata sembra disarmante', detail: 'Pensare a tutti i passaggi esaurisce le mie energie prima di iniziare.' },
+          { id: 'perfectionism', label: 'Paura di non farlo in modo impeccabile', detail: 'Ansia di impegnarmi in qualcosa che potrebbe non riuscire come sperato.' },
+          { id: 'time', label: 'Mancanza di tempo e concentrazione', detail: 'Le incombenze quotidiane assorbono tutto lo spazio per il lavoro profondo.' },
+          { id: 'doubt', label: 'Dubbio sul desiderarlo veramente', detail: 'Non sapere con certezza se è un desiderio autentico o un’aspettativa altrui.' },
+        ],
+        deepeningQuestion: 'Cosa renderebbe il prossimo passo leggero anziché pesante?',
+        deepeningOptions: [
+          { id: 'g1', label: 'Abbassare l’asticella così tanto da rendere impossibile fallire' },
+          { id: 'g2', label: 'Lavorarci solo 10 minuti senza obbligo di completamento' },
+          { id: 'g3', label: 'Ricollegarmi alla gioia semplice che mi ha fatto iniziare' },
+        ],
+        threeInsights: [
+          'Non ho bisogno di vedere tutta la scala; mi basta vedere il singolo gradino davanti a me oggi.',
+          'L’azione precede la chiarezza; iniziare imperfettamente è sempre più autentico che aspettare.',
+          'Il mio valore è intrinseco; questo progetto è un’esplorazione gioiosa, non un giudizio su di me.',
+        ],
+        threeSteps: [
+          'Dedicare domani solo 10 minuti alla parte più elementare di questo compito, senza l’ansia di concluderlo.',
+          'Scrivere una prima bozza imperfetta in 3 semplici punti.',
+          'Fissare uno spazio di 20 minuti nel calendario dedicato unicamente alla concentrazione.',
+        ],
+      },
     },
     struggle: {
       tone: 'Empatico, protetto, non direttivo, accogliente',
@@ -125,6 +207,31 @@ export const it: TranslationDictionary = {
       draftInsight: 'Mi do il permesso di provare ciò che sento senza colpevolizzarmi né pretendere una ripresa immediata.',
       optionalMicroStep: 'Bere un bicchiere d’acqua tiepida o riposare 15 minuti ad occhi chiusi lontano da ogni schermo.',
       listenGrounding: 'Ciò che provi ora è reale e comprensibile. Non c’è alcun bisogno di dimostrarti forte qui.',
+      diagnostic: {
+        diagnosticQuestion: 'Che tipo di peso avverte con più forza il tuo cuore in questo momento?',
+        diagnosticOptions: [
+          { id: 'exhaustion', label: 'Esaurimento emotivo profondo', detail: 'Aver mostrato forza per gli altri mentre le mie energie personali sono finite.' },
+          { id: 'grief', label: 'Dolore o transizione improvvisa', detail: 'Qualcosa a cui tenevo è cambiato e sto ancora metabolizzando la perdita.' },
+          { id: 'lonely', label: 'Sensazione di solitudine e incomprensione', detail: 'Sembra che nessuno colga fino in fondo la fatica reale di questa situazione.' },
+          { id: 'frustration', label: 'Tensione o amarezza trattenuta', detail: 'Limiti superati o circostanze ingiuste che mi lasciano una contrattura interiore.' },
+        ],
+        deepeningQuestion: 'Qual è il modo più amorevole per trattarti in questo esatto minuto?',
+        deepeningOptions: [
+          { id: 's1', label: 'Smettere di fingere forza e autorizzarmi a sentirmi stanco/a' },
+          { id: 's2', label: 'Lasciare andare la colpa per cose fuori dal mio controllo' },
+          { id: 's3', label: 'Allontanarmi da qualsiasi impegno non strettamente indispensabile' },
+        ],
+        threeInsights: [
+          'Mi do il permesso di provare ciò che sento senza colpevolizzarmi né pretendere una ripresa immediata.',
+          'Questa stagione difficile non definisce il mio avvenire; è un inverno che chiede solo calore e riposo.',
+          'Ho il diritto di riposare prima di spezzarmi. Proteggersi è un atto di saggezza, non di debolezza.',
+        ],
+        threeSteps: [
+          'Bere un bicchiere d’acqua tiepida o riposare 15 minuti ad occhi chiusi lontano da ogni schermo.',
+          'Avvolgerti in una coperta confortevole e regalarti 10 minuti di quiete senza fare nulla.',
+          'Dire un gentile "no" a una richiesta secondaria oggi per preservare le tue riserve.',
+        ],
+      },
     },
     grow: {
       tone: 'Curioso, ampio, sostenibile',
@@ -139,6 +246,31 @@ export const it: TranslationDictionary = {
       draftInsight: 'La vera crescita non è una gara; è una lenta raccolta di scelte consapevoli su misura per la mia vita.',
       optionalMicroStep: 'Leggere o ascoltare un’idea stimolante per 5 minuti, poi annotare una sola frase che riassuma ciò che ti ha colpito.',
       listenGrounding: 'Le crescite più solide avvengono in stagioni silenziose e nascoste. Abbi fiducia nella tua maturazione interiore.',
+      diagnostic: {
+        diagnosticQuestion: 'Verso quale aspetto della tua vita senti il desiderio di invitare nuova energia?',
+        diagnosticOptions: [
+          { id: 'rhythm', label: 'Un ritmo quotidiano sereno', detail: 'Costruire mattine o sere che portino centratura anziché dispersione.' },
+          { id: 'curiosity', label: 'Una curiosità creativa', detail: 'Imparare qualcosa di nuovo unicamente per la gioia della scoperta.' },
+          { id: 'presence', label: 'Maggiore presenza e consapevolezza', detail: 'Rallentare per assaporare i momenti ordinari senza fretta.' },
+          { id: 'boundaries', label: 'Confini personali più sani', detail: 'Custodire la mia serenità dalle distrazioni e dal logorio sociale.' },
+        ],
+        deepeningQuestion: 'Quale andatura risulta più sostenibile per il tuo spirito?',
+        deepeningOptions: [
+          { id: 'gr1', label: 'Micro-abitudini di meno di 3 minuti al giorno' },
+          { id: 'gr2', label: 'Un rito settimanale di silenzio e introspezione' },
+          { id: 'gr3', label: 'Seguire la curiosità senza rigide liste di controllo' },
+        ],
+        threeInsights: [
+          'La vera crescita non è una gara; è una lenta raccolta di scelte consapevoli su misura per la mia vita.',
+          'Non ho bisogno di stravolgere la mia esistenza; piccoli ritocchi al ritmo mattutino trasformano tutto.',
+          'La crescita affonda le radici nel silenzio prima di sbocciare. Rispetto i miei tempi interiori.',
+        ],
+        threeSteps: [
+          'Leggere o ascoltare un’idea stimolante per 5 minuti, poi annotare una sola frase che riassuma ciò che ti ha colpito.',
+          'Scegliere un piccolo rituale mattutino di 5 minuti (tè, respirazione, stretching) per domani.',
+          'Camminare per 10 minuti con passo disteso, notando con cura tre cose belle intorno a te.',
+        ],
+      },
     },
   },
   fallback: {

@@ -19,6 +19,38 @@ export const en: TranslationDictionary = {
     storageSession: 'Session-Only (Ephemeral)',
     storageLocal: 'Local Device Only',
     reducedMotion: 'Reduced Motion',
+    themeToggle: 'Twilight Sanctuary',
+    aiSettingsBtn: 'AI Bridge',
+  },
+  sanctuary: {
+    headline: 'We are here for you. Just to help you breathe, untangle your thoughts, and know who you are right now.',
+    subtext: 'A calm, unhurried digital sanctuary. Everything stays securely on your device.',
+    beginWithSound: 'Begin Quietly (With Sound)',
+    beginSilence: 'Begin in Silence',
+    cardProgressStep: 'Step',
+    cardBack: 'Back',
+    writeOwnWordsPrompt: 'Or write in your own words...',
+    orSelectBelow: 'Select the option that resonates closest, or write freely below:',
+    pickInsightHeading: 'Select the insight that speaks your truth:',
+    pickStepHeading: 'Select a gentle micro-step (or skip without guilt):',
+    customStepPlaceholder: 'Or write your own self-chosen micro-step...',
+  },
+  audio: {
+    pillLabel: 'Ambient Sound',
+    sanctuary: 'Warm Sanctuary (432Hz)',
+    rain: 'Soft Rain',
+    bowl: 'Singing Bowl',
+    mute: 'Mute Sound',
+  },
+  aiBridge: {
+    modalTitle: 'Optional AI Companion Bridge',
+    description: 'By default, BECOMING operates 100% locally with zero external network calls. You may optionally connect an OpenAI/Gemini-compatible endpoint to synthesize dynamic reflection options.',
+    enableToggle: 'Enable Custom AI Endpoint',
+    endpointLabel: 'Endpoint URL (e.g., https://api.openai.com/v1/chat/completions)',
+    apiKeyLabel: 'API Key (stored only in browser memory)',
+    modelLabel: 'Model (e.g., gpt-4o-mini)',
+    saveBtn: 'Save Preferences',
+    privacyNotice: 'Privacy Guarantee: No keys or prompts are ever stored on any external BECOMING server. Requests travel directly from your browser to your specified endpoint.',
   },
   disclaimer: {
     bannerText: 'Prototype reflection space — not therapy, medical advice, or crisis care. All data stays strictly on your device.',
@@ -97,6 +129,31 @@ export const en: TranslationDictionary = {
       draftInsight: 'I am not behind in life; I simply need to reduce inputs and move at my own pace.',
       optionalMicroStep: 'Close all pending browser tabs and take 5 deep breaths in a quiet spot.',
       listenGrounding: 'There is no rush right now. You do not have to have everything figured out today. Let this space be completely free of expectation.',
+      diagnostic: {
+        diagnosticQuestion: 'Where does the fog feel most concentrated right now?',
+        diagnosticOptions: [
+          { id: 'decisions', label: 'Too many open decisions', detail: 'Facing multiple choices and feeling paralyzed to pick one.' },
+          { id: 'overload', label: 'Sensory / mental overload', detail: 'Too much noise, information, and people demanding answers.' },
+          { id: 'behind', label: 'Feeling behind in life', detail: 'Comparing my timeline with others and feeling I missed a window.' },
+          { id: 'disconnected', label: 'Disconnected from myself', detail: 'Running on autopilot for so long I forgot what I actually want.' },
+        ],
+        deepeningQuestion: 'If you could grant yourself one permission right now, what would it be?',
+        deepeningOptions: [
+          { id: 'p1', label: 'Permission to not know the answer today' },
+          { id: 'p2', label: 'Permission to let something drop without guilt' },
+          { id: 'p3', label: 'Permission to move at my own unhurried pace' },
+        ],
+        threeInsights: [
+          'I am not behind in life; I simply need to reduce inputs and move at my own pace.',
+          'Clarity does not arrive by forcing; it emerges when the dust has space to settle.',
+          'I do not need a 5-year master plan today; I only need a quiet breath for the next hour.',
+        ],
+        threeSteps: [
+          'Close all pending browser tabs and take 5 deep breaths in a quiet spot.',
+          'Write down only one single thing to do today and dismiss the rest until tomorrow.',
+          'Step outside for 7 minutes without your phone or any audio in your ears.',
+        ],
+      },
     },
     goal: {
       tone: 'Focused, de-pressurizing, practical',
@@ -111,6 +168,31 @@ export const en: TranslationDictionary = {
       draftInsight: 'I do not need to see the entire staircase; I only need to see the single step right in front of me today.',
       optionalMicroStep: 'Spend just 10 minutes tomorrow on the simplest part of this task, with zero expectation of completion.',
       listenGrounding: 'Ambition is meaningful, but so is stillness. Your value is not defined by how quickly you accomplish your goals.',
+      diagnostic: {
+        diagnosticQuestion: 'What feels like the heaviest friction around this goal?',
+        diagnosticOptions: [
+          { id: 'scale', label: 'The sheer scale feels daunting', detail: 'Thinking about everything required drains my energy before starting.' },
+          { id: 'perfectionism', label: 'Fear of doing it imperfectly', detail: 'Worrying about putting effort into something that might not succeed.' },
+          { id: 'time', label: 'Lack of structured time / focus', detail: 'Days get eaten up by reactive fires, leaving no space for deep work.' },
+          { id: 'doubt', label: 'Doubting if I truly want it', detail: 'Unsure if this is my authentic desire or an adopted expectation.' },
+        ],
+        deepeningQuestion: 'What would make taking the very next step feel light rather than heavy?',
+        deepeningOptions: [
+          { id: 'g1', label: 'Lowering the bar so low it feels impossible to fail' },
+          { id: 'g2', label: 'Doing it just for 10 minutes with zero expectation of finishing' },
+          { id: 'g3', label: 'Reconnecting to the simple joy behind why I started' },
+        ],
+        threeInsights: [
+          'I do not need to see the entire staircase; I only need to see the single step right in front of me today.',
+          'Action precedes clarity; starting messy is always more honest than waiting for perfect conditions.',
+          'My worth is inherent; this project is an exploration of joy, not a test of my value.',
+        ],
+        threeSteps: [
+          'Spend just 10 minutes tomorrow on the simplest part of this task, with zero expectation of completion.',
+          'Write down a messy, imperfect first draft in 3 simple bullet points.',
+          'Schedule a protected 20-minute calendar block dedicated purely to uninterrupted focus.',
+        ],
+      },
     },
     struggle: {
       tone: 'Compassionate, safe, non-instructive, validating',
@@ -125,6 +207,31 @@ export const en: TranslationDictionary = {
       draftInsight: 'I give myself permission to feel what I feel right now without self-blame or forcing an immediate recovery.',
       optionalMicroStep: 'Drink a glass of warm water or lie down to rest for 15 minutes away from all screens.',
       listenGrounding: 'Whatever you are feeling right now is valid. You do not need to perform strength here.',
+      diagnostic: {
+        diagnosticQuestion: 'What kind of weight does your heart feel most right now?',
+        diagnosticOptions: [
+          { id: 'exhaustion', label: 'Emotional exhaustion', detail: 'Carrying strength for others while my own emotional tank is empty.' },
+          { id: 'grief', label: 'Grief or unexpected change', detail: 'Something shifted, and I am still reeling from the pain of transition.' },
+          { id: 'lonely', label: 'Feeling unseen or alone', detail: 'It feels like no one truly understands how heavy this reality is.' },
+          { id: 'frustration', label: 'Quiet frustration or tension', detail: 'Boundaries were crossed or circumstances feel unfair, leaving me tight.' },
+        ],
+        deepeningQuestion: 'What is the gentlest way to treat yourself in this exact moment?',
+        deepeningOptions: [
+          { id: 's1', label: 'Stop pretending to be strong and allow myself to just feel tired' },
+          { id: 's2', label: 'Release self-blame for things that were outside my control' },
+          { id: 's3', label: 'Step away from obligations that are not an absolute emergency' },
+        ],
+        threeInsights: [
+          'I give myself permission to feel what I feel right now without self-blame or forcing an immediate recovery.',
+          'This heavy season does not define my future; it is simply a winter asking for warmth and rest.',
+          'I am allowed to rest before I break. Self-protection is an act of wisdom, not weakness.',
+        ],
+        threeSteps: [
+          'Drink a glass of warm water or lie down to rest for 15 minutes away from all screens.',
+          'Wrap yourself in a comfortable blanket and allow yourself 10 minutes of quiet doing nothing.',
+          'Say a gentle "no" to one low-priority request today to preserve your emotional reserves.',
+        ],
+      },
     },
     grow: {
       tone: 'Curious, expansive, sustainable',
@@ -139,6 +246,31 @@ export const en: TranslationDictionary = {
       draftInsight: 'True growth is not a race; it is a gentle accumulation of conscious choices that fit my unique life.',
       optionalMicroStep: 'Read or listen to an inspiring idea for 5 minutes, then write down one single sentence summarizing what stayed with you.',
       listenGrounding: 'Growth frequently happens during unseen, quiet seasons. Trust the quiet unfolding of your life.',
+      diagnostic: {
+        diagnosticQuestion: 'Where are you feeling drawn to invite fresh energy?',
+        diagnosticOptions: [
+          { id: 'rhythm', label: 'A peaceful daily rhythm', detail: 'Creating mornings or evenings that feel grounding rather than chaotic.' },
+          { id: 'curiosity', label: 'A creative curiosity', detail: 'Learning something new purely for the joy and wonder of it.' },
+          { id: 'presence', label: 'Deeper presence & mindfulness', detail: 'Slowing down enough to savor ordinary moments without rushing.' },
+          { id: 'boundaries', label: 'Healthier boundaries', detail: 'Protecting my peace from unnecessary distractions and social fatigue.' },
+        ],
+        deepeningQuestion: 'What kind of pace feels most sustainable for your spirit?',
+        deepeningOptions: [
+          { id: 'gr1', label: 'Micro-habits that take less than 3 minutes a day' },
+          { id: 'gr2', label: 'A weekly sacred ritual of quiet reflection' },
+          { id: 'gr3', label: 'Allowing curiosity to lead without rigid checklists' },
+        ],
+        threeInsights: [
+          'True growth is not a race; it is a gentle accumulation of conscious choices that fit my unique life.',
+          'I do not need a complete life redesign; small shifts in morning rhythm transform everything.',
+          'Growth happens in quiet, unseen roots before blossoming. I honor my own quiet season.',
+        ],
+        threeSteps: [
+          'Read or listen to an inspiring idea for 5 minutes, then write down one single sentence summarizing what stayed with you.',
+          'Choose one 5-minute morning ritual (tea, breathing, stretching) and protect it for tomorrow.',
+          'Take an unhurried 10-minute walk with open eyes, simply noticing three beautiful things.',
+        ],
+      },
     },
   },
   fallback: {

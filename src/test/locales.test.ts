@@ -22,14 +22,21 @@ describe('BCM-004: Multilingual Framework & Five Locales', () => {
     describe(`Locale: ${code}`, () => {
       const dict = getDictionary(code);
 
-      it('has non-empty navigation and disclaimer strings', () => {
+      it('has non-empty navigation, sanctuary entrance, and audio strings', () => {
         expect(dict.nav.title).toBeTruthy();
         expect(dict.nav.prototypeBadge).toBeTruthy();
         expect(dict.disclaimer.bannerText).toBeTruthy();
         expect(dict.disclaimer.crisisHotlines.length).toBeGreaterThan(0);
+        expect(dict.sanctuary.headline).toBeTruthy();
+        expect(dict.sanctuary.subtext).toBeTruthy();
+        expect(dict.sanctuary.beginWithSound).toBeTruthy();
+        expect(dict.sanctuary.beginSilence).toBeTruthy();
+        expect(dict.audio.sanctuary).toBeTruthy();
+        expect(dict.audio.rain).toBeTruthy();
+        expect(dict.audio.bowl).toBeTruthy();
       });
 
-      it('defines all 4 entry intents with title, tagline, description, and script', () => {
+      it('defines all 4 entry intents with diagnostic question tree and 3 options', () => {
         expectedIntents.forEach((intent) => {
           const intentMeta = dict.welcome.intents[intent];
           expect(intentMeta.title).toBeTruthy();
@@ -44,6 +51,15 @@ describe('BCM-004: Multilingual Framework & Five Locales', () => {
           expect(script.optionalMicroStep).toBeTruthy();
           expect(script.listenGrounding).toBeTruthy();
           expect(script.supportSelectors.length).toBeGreaterThanOrEqual(2);
+
+          // Sanctuary Upgrade Multi-Option Self-Discovery Tree
+          expect(script.diagnostic).toBeDefined();
+          expect(script.diagnostic.diagnosticQuestion).toBeTruthy();
+          expect(script.diagnostic.diagnosticOptions.length).toBeGreaterThanOrEqual(4);
+          expect(script.diagnostic.deepeningQuestion).toBeTruthy();
+          expect(script.diagnostic.deepeningOptions.length).toBeGreaterThanOrEqual(3);
+          expect(script.diagnostic.threeInsights.length).toBeGreaterThanOrEqual(3);
+          expect(script.diagnostic.threeSteps.length).toBeGreaterThanOrEqual(3);
         });
       });
 

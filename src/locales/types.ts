@@ -1,5 +1,20 @@
 import { EntryIntent, InteractionMode, GuidedStage } from '@/types';
 
+export interface DiagnosticOption {
+  id: string;
+  label: string;
+  detail: string;
+}
+
+export interface IntentDiagnostic {
+  diagnosticQuestion: string;
+  diagnosticOptions: DiagnosticOption[];
+  deepeningQuestion: string;
+  deepeningOptions: { id: string; label: string }[];
+  threeInsights: [string, string, string];
+  threeSteps: [string, string, string];
+}
+
 export interface TranslationDictionary {
   localeName: string;
   isRtl: boolean;
@@ -19,6 +34,38 @@ export interface TranslationDictionary {
     storageSession: string;
     storageLocal: string;
     reducedMotion: string;
+    themeToggle: string;
+    aiSettingsBtn: string;
+  };
+  sanctuary: {
+    headline: string;
+    subtext: string;
+    beginWithSound: string;
+    beginSilence: string;
+    cardProgressStep: string;
+    cardBack: string;
+    writeOwnWordsPrompt: string;
+    orSelectBelow: string;
+    pickInsightHeading: string;
+    pickStepHeading: string;
+    customStepPlaceholder: string;
+  };
+  audio: {
+    pillLabel: string;
+    sanctuary: string;
+    rain: string;
+    bowl: string;
+    mute: string;
+  };
+  aiBridge: {
+    modalTitle: string;
+    description: string;
+    enableToggle: string;
+    endpointLabel: string;
+    apiKeyLabel: string;
+    modelLabel: string;
+    saveBtn: string;
+    privacyNotice: string;
   };
   disclaimer: {
     bannerText: string;
@@ -71,6 +118,7 @@ export interface TranslationDictionary {
       draftInsight: string;
       optionalMicroStep: string;
       listenGrounding: string;
+      diagnostic: IntentDiagnostic;
     }
   >;
   fallback: {

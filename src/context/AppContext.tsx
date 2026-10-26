@@ -10,12 +10,35 @@ import {
   MomentOfLight,
 } from '@/types';
 import { getDictionary, defaultLocale, TranslationDictionary } from '@/locales';
+import { soundEngine, SoundscapePreset } from '@/lib/audio/soundEngine';
+import { AISettings, DEFAULT_AI_SETTINGS } from '@/lib/engine/aiAdapter';
+
+export type ThemeMode = 'light' | 'twilight';
 
 interface AppContextValue {
   locale: Locale;
   setLocale: (locale: Locale) => void;
   dict: TranslationDictionary;
   isRtl: boolean;
+
+  // Theme (Light vs Twilight Sanctuary)
+  themeMode: ThemeMode;
+  setThemeMode: (mode: ThemeMode) => void;
+
+  // Soundscape
+  soundPreset: SoundscapePreset;
+  setSoundPreset: (preset: SoundscapePreset) => void;
+  playSingingBowl: () => void;
+
+  // AI Bridge Settings (Optional)
+  aiSettings: AISettings;
+  setAiSettings: (settings: AISettings) => void;
+  isAiModalOpen: boolean;
+  setAiModalOpen: (open: boolean) => void;
+
+  // Sanctuary Entrance Step (0 = Entrance, 1 = Card Deck)
+  sanctuaryStep: number;
+  setSanctuaryStep: (step: number) => void;
 
   // Navigation / View State
   activeMode: InteractionMode;
@@ -64,11 +87,19 @@ const STORAGE_KEY_MOMENTS = 'becoming_moments_v1';
 const STORAGE_KEY_MODE = 'becoming_storage_mode_v1';
 const STORAGE_KEY_LOCALE = 'becoming_locale_v1';
 const STORAGE_KEY_MOTION = 'becoming_reduced_motion_v1';
+const STORAGE_KEY_THEME = 'becoming_theme_mode_v1';
+const STORAGE_KEY_AI = 'becoming_ai_settings_v1';
 
 const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(defaultLocale);
+  const [themeMode, setThemeModeState] = useState<ThemeMode>('light');
+  const [soundPreset, setSoundPresetState] = useState<SoundscapePreset>('none');
+  const [aiSettings, setAiSettingsState] = useState<AISettings>(DEFAULT_AI_SETTINGS);
+  const [isAiModalOpen, setAiModalOpen] = useState(false);
+
+  const [sanctuaryStep, setSanctuaryStep] = useState<number>(0);
   const [activeMode, setActiveMode] = useState<InteractionMode>('guided');
   const [currentIntent, setCurrentIntent] = useState<EntryIntent | null>(null);
   const [activeTab, setActiveTab] = useState<'home' | 'map' | 'progress'>('home');
@@ -79,12 +110,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [cards, setCards] = useState<JourneyMapCard[]>([]);
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
   const [moments, setMoments] = useState<MomentOfLight[]>([]);
-  const [isHydrated, setIsHydrated] = useState(false);
 
   // Initialize from storage on client mount
   useEffect(() => {
     try {
-      // Check system reduced motion
       if (typeof window !== 'undefined' && window.matchMedia) {
         const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
         if (mq.matches) {
@@ -104,6 +133,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setLocaleState(savedLocale);
       }
 
+      const savedTheme = store.getItem(STORAGE_KEY_THEME) as ThemeMode | null;
+      if (savedTheme === 'twilight' || savedTheme === 'light') {
+        setThemeModeState(savedTheme);
+      }
+
+      const savedAi = store.getItem(STORAGE_KEY_AI);
+      if (savedAi) {
+        setAiSettingsState(JSON.parse(savedAi));
+      }
+
       const savedMotion = store.getItem(STORAGE_KEY_MOTION);
       if (savedMotion !== null) {
         setReducedMotionState(savedMotion === 'true');
@@ -118,9 +157,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const savedMoments = store.getItem(STORAGE_KEY_MOMENTS);
       if (savedMoments) setMoments(JSON.parse(savedMoments));
     } catch {
-      // Storage might be disabled in private mode; fallback gracefully
-    } finally {
-      setIsHydrated(true);
+      // Storage might be disabled in private mode
     }
   }, []);
 
@@ -133,6 +170,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   }, [locale]);
 
+  // Update theme class on HTML element
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      if (themeMode === 'twilight') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+  }, [themeMode]);
+
   const dict = useMemo(() => getDictionary(locale), [locale]);
   const isRtl = locale === 'ar';
 
@@ -141,6 +189,35 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
       store.setItem(STORAGE_KEY_LOCALE, newLocale);
+    } catch {
+      // ignore
+    }
+  };
+
+  const setThemeMode = (mode: ThemeMode) => {
+    setThemeModeState(mode);
+    try {
+      const store = storageMode === 'local' ? localStorage : sessionStorage;
+      store.setItem(STORAGE_KEY_THEME, mode);
+    } catch {
+      // ignore
+    }
+  };
+
+  const setSoundPreset = (preset: SoundscapePreset) => {
+    setSoundPresetState(preset);
+    soundEngine.setPreset(preset);
+  };
+
+  const playSingingBowl = () => {
+    soundEngine.playSingingBowlChime();
+  };
+
+  const setAiSettings = (settings: AISettings) => {
+    setAiSettingsState(settings);
+    try {
+      const store = storageMode === 'local' ? localStorage : sessionStorage;
+      store.setItem(STORAGE_KEY_AI, JSON.stringify(settings));
     } catch {
       // ignore
     }
@@ -160,21 +237,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setStorageModeState(newMode);
     try {
       if (newMode === 'local') {
-        // Migrate session to local
         localStorage.setItem(STORAGE_KEY_MODE, 'local');
         localStorage.setItem(STORAGE_KEY_CARDS, JSON.stringify(cards));
         localStorage.setItem(STORAGE_KEY_JOURNAL, JSON.stringify(journalEntries));
         localStorage.setItem(STORAGE_KEY_MOMENTS, JSON.stringify(moments));
         localStorage.setItem(STORAGE_KEY_LOCALE, locale);
+        localStorage.setItem(STORAGE_KEY_THEME, themeMode);
+        localStorage.setItem(STORAGE_KEY_AI, JSON.stringify(aiSettings));
         localStorage.setItem(STORAGE_KEY_MOTION, String(reducedMotion));
         sessionStorage.clear();
       } else {
-        // Migrate local to session
         sessionStorage.setItem(STORAGE_KEY_MODE, 'session');
         sessionStorage.setItem(STORAGE_KEY_CARDS, JSON.stringify(cards));
         sessionStorage.setItem(STORAGE_KEY_JOURNAL, JSON.stringify(journalEntries));
         sessionStorage.setItem(STORAGE_KEY_MOMENTS, JSON.stringify(moments));
         sessionStorage.setItem(STORAGE_KEY_LOCALE, locale);
+        sessionStorage.setItem(STORAGE_KEY_THEME, themeMode);
+        sessionStorage.setItem(STORAGE_KEY_AI, JSON.stringify(aiSettings));
         sessionStorage.setItem(STORAGE_KEY_MOTION, String(reducedMotion));
         localStorage.clear();
       }
@@ -274,6 +353,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setJournalEntries([]);
     setMoments([]);
     setCurrentIntent(null);
+    setSanctuaryStep(0);
     try {
       localStorage.clear();
       sessionStorage.clear();
@@ -285,7 +365,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const exportDataJson = () => {
     const exportPayload = {
       app: 'BECOMING',
-      version: '0.1.0',
+      version: '0.2.0',
+      themeMode,
       exportedAt: new Date().toISOString(),
       storageMode,
       locale,
@@ -306,8 +387,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const exportDataTxt = () => {
     let txt = `=================================================\n`;
-    txt += `BECOMING — Private Personal Reflection Export\n`;
+    txt += `BECOMING — Private Personal Reflection Export (v0.2)\n`;
     txt += `Exported: ${new Date().toLocaleString()}\n`;
+    txt += `Theme: ${themeMode}\n`;
     txt += `Note: All reflections were generated & kept locally.\n`;
     txt += `=================================================\n\n`;
 
@@ -347,6 +429,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setLocale,
     dict,
     isRtl,
+    themeMode,
+    setThemeMode,
+    soundPreset,
+    setSoundPreset,
+    playSingingBowl,
+    aiSettings,
+    setAiSettings,
+    isAiModalOpen,
+    setAiModalOpen,
+    sanctuaryStep,
+    setSanctuaryStep,
     activeMode,
     setActiveMode,
     currentIntent,
