@@ -1,8 +1,29 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useApp } from '@/context/AppContext';
-import { QuizLength, QuizQuestion, ArchetypeId, QuizResult } from '@/types';
+import {
+  QuizLength,
+  QuizQuestion,
+  ArchetypeId,
+  QuizResult,
+  FrameworkId,
+  GenericQuizQuestion,
+  GenericQuizResult,
+} from '@/types';
+import {
+  SCIENTIFIC_FRAMEWORKS,
+  BIG5_QUESTIONS,
+  scoreBig5,
+  LOCUS_QUESTIONS,
+  scoreLocus,
+  EQ_SQ_QUESTIONS,
+  scoreEqSq,
+  MBTI_QUESTIONS,
+  scoreMbti,
+  TRUE_COLOURS_QUESTIONS,
+  scoreTrueColours,
+} from '@/lib/frameworks/scientificQuizzes';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Compass,
@@ -18,6 +39,10 @@ import {
   Flame,
   BatteryCharging,
   BatteryWarning,
+  Download,
+  BookOpen,
+  Layers,
+  Award,
 } from 'lucide-react';
 
 // Comprehensive 40-Question Bank across Work, Life, and Soul
@@ -562,27 +587,76 @@ export const ARCHETYPE_PORTRAITS: Record<
 };
 
 export function SelfDiscoveryQuizView() {
-  const { dict, saveCard, playSingingBowl, setActiveTab, isRtl } = useApp();
+  const { dict, saveCard, playSingingBowl, setActiveTab, isRtl, addEvolutionXp, activeFramework, setActiveFramework } = useApp();
 
+  const [selectedFramework, setSelectedFramework] = useState<FrameworkId>(activeFramework || 'compass');
   const [step, setStep] = useState<'intro' | 'quiz' | 'result'>('intro');
   const [selectedLength, setSelectedLength] = useState<QuizLength>(20);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Compass answers
   const [answers, setAnswers] = useState<Record<string, ArchetypeId>>({});
   const [result, setResult] = useState<QuizResult | null>(null);
-  const [savedToJourneyMap, setSavedToJourneyMap] = useState(false);
 
-  // Filter question subset based on chosen length
+  // Scientific Framework answers
+  const [scientificAnswers, setScientificAnswers] = useState<Record<string, number>>({});
+  const [genericResult, setGenericResult] = useState<GenericQuizResult | null>(null);
+
+  const [savedToJourneyMap, setSavedToJourneyMap] = useState(false);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
+
+  // Synchronize framework selection
+  const handleSelectFramework = (fid: FrameworkId) => {
+    setSelectedFramework(fid);
+    setActiveFramework(fid);
+    setStep('intro');
+    setCurrentIndex(0);
+    setAnswers({});
+    setScientificAnswers({});
+    setResult(null);
+    setGenericResult(null);
+    setSavedToJourneyMap(false);
+  };
+
+  // Filter question subset based on chosen length for Compass
   const activeQuestions = React.useMemo(() => {
     return QUIZ_QUESTION_BANK.slice(0, selectedLength);
   }, [selectedLength]);
 
+  // Scientific question bank for current framework
+  const activeScientificQuestions = React.useMemo(() => {
+    switch (selectedFramework) {
+      case 'big5':
+        return BIG5_QUESTIONS;
+      case 'locus_of_control':
+        return LOCUS_QUESTIONS;
+      case 'empathizing_systemizing':
+        return EQ_SQ_QUESTIONS;
+      case 'mbti16':
+        return MBTI_QUESTIONS;
+      case 'true_colours':
+        return TRUE_COLOURS_QUESTIONS;
+      default:
+        return [];
+    }
+  }, [selectedFramework]);
+
   const currentQuestion = activeQuestions[currentIndex];
+  const currentScientificQuestion = activeScientificQuestions[currentIndex];
 
   const handleStart = (len: QuizLength) => {
     setSelectedLength(len);
     setCurrentIndex(0);
     setAnswers({});
     setResult(null);
+    setSavedToJourneyMap(false);
+    setStep('quiz');
+  };
+
+  const handleStartScientific = () => {
+    setCurrentIndex(0);
+    setScientificAnswers({});
+    setGenericResult(null);
     setSavedToJourneyMap(false);
     setStep('quiz');
   };
@@ -594,9 +668,48 @@ export function SelfDiscoveryQuizView() {
     if (currentIndex + 1 < activeQuestions.length) {
       setCurrentIndex((prev) => prev + 1);
     } else {
-      // Calculate results
       calculateResult(updated);
     }
+  };
+
+  const handleSelectScientificAnswer = (scoreValue: number) => {
+    if (!currentScientificQuestion) return;
+    const updated = { ...scientificAnswers, [currentScientificQuestion.id]: scoreValue };
+    setScientificAnswers(updated);
+
+    if (currentIndex + 1 < activeScientificQuestions.length) {
+      setCurrentIndex((prev) => prev + 1);
+    } else {
+      calculateScientificResult(updated);
+    }
+  };
+
+  const calculateScientificResult = (finalAnswers: Record<string, number>) => {
+    let res: GenericQuizResult;
+    switch (selectedFramework) {
+      case 'big5':
+        res = scoreBig5(finalAnswers);
+        break;
+      case 'locus_of_control':
+        res = scoreLocus(finalAnswers);
+        break;
+      case 'empathizing_systemizing':
+        res = scoreEqSq(finalAnswers);
+        break;
+      case 'mbti16':
+        res = scoreMbti(finalAnswers);
+        break;
+      case 'true_colours':
+        res = scoreTrueColours(finalAnswers);
+        break;
+      default:
+        res = scoreBig5(finalAnswers);
+    }
+
+    setGenericResult(res);
+    setStep('result');
+    playSingingBowl();
+    addEvolutionXp(30, `Completed ${res.frameworkName}`);
   };
 
   const calculateResult = (finalAnswers: Record<string, ArchetypeId>) => {
@@ -611,7 +724,6 @@ export function SelfDiscoveryQuizView() {
       counts[arch] = (counts[arch] || 0) + 1;
     });
 
-    // Primary Archetype is the one with highest count
     const sorted = (Object.keys(counts) as ArchetypeId[]).sort((a, b) => counts[b] - counts[a]);
     const topArch = sorted[0];
     const portrait = ARCHETYPE_PORTRAITS[topArch];
@@ -643,24 +755,151 @@ export function SelfDiscoveryQuizView() {
     setResult(calculated);
     setStep('result');
     playSingingBowl();
+    addEvolutionXp(30, 'Completed Inner Compass Portrait');
   };
 
   const handleSaveToMap = () => {
-    if (!result) return;
-    saveCard({
-      intent: 'grow',
-      draftInsight: `Inner Compass Portrait: ${result.archetypeName}`,
-      confirmedInsight: `I am ${result.archetypeName} (${result.tagline}). My strength is ${result.summary.split('.')[0]}.`,
-      microStep: `Honor what fuels me: ${result.fuels[0]}`,
-      isConfirmed: true,
-      status: 'confirmed',
-    });
-    setSavedToJourneyMap(true);
-    playSingingBowl();
+    if (selectedFramework === 'compass' && result) {
+      saveCard({
+        intent: 'grow',
+        draftInsight: `Inner Compass Portrait: ${result.archetypeName}`,
+        confirmedInsight: `I am ${result.archetypeName} (${result.tagline}). My strength is ${result.summary.split('.')[0]}.`,
+        microStep: `Honor what fuels me: ${result.fuels[0]}`,
+        isConfirmed: true,
+        status: 'confirmed',
+      });
+      setSavedToJourneyMap(true);
+      playSingingBowl();
+      addEvolutionXp(20, 'Saved Inner Compass to Journey Map');
+    } else if (genericResult) {
+      saveCard({
+        intent: 'grow',
+        draftInsight: `${genericResult.frameworkName}: ${genericResult.primaryResult}`,
+        confirmedInsight: `${genericResult.primaryResult} — ${genericResult.subtitle}. ${genericResult.summary}`,
+        microStep: `Embody this truth: ${genericResult.empoweringMantra}`,
+        isConfirmed: true,
+        status: 'confirmed',
+      });
+      setSavedToJourneyMap(true);
+      playSingingBowl();
+      addEvolutionXp(20, `Saved ${genericResult.frameworkName} to Journey Map`);
+    }
   };
+
+  const handleDownloadCard = () => {
+    let content = '';
+    const dateStr = new Date().toLocaleDateString();
+
+    if (selectedFramework === 'compass' && result) {
+      content = `=====================================================
+BECOMING • INNER COMPASS DISCOVERY CARD
+Archetype: ${result.archetypeName}
+Tagline: ${result.tagline}
+Date: ${dateStr}
+=====================================================
+
+ESSENCE & SUMMARY:
+${result.summary}
+
+FOUR PILLAR HARMONY SCORES:
+- Work Rhythm & Craft: ${result.dimensionScores.work}%
+- Life & Emotional Resonance: ${result.dimensionScores.life}%
+- Soul & Meaning Alignment: ${result.dimensionScores.soul}%
+- Inner Clarity & Stillness: ${result.dimensionScores.clarity}%
+
+WHAT NATURALLY FUELS YOU:
+${result.fuels.map((f) => `• ${f}`).join('\n')}
+
+WHAT SILENTLY DRAINS YOU:
+${result.drains.map((d) => `• ${d}`).join('\n')}
+
+=====================================================
+BECOMING • Local Sovereignty • Zero External Tracking
+=====================================================`;
+    } else if (genericResult) {
+      content = `=====================================================
+BECOMING • SCIENTIFIC SELF-DISCOVERY CARD
+Framework: ${genericResult.frameworkName}
+Signature: ${genericResult.primaryResult}
+Subtitle: ${genericResult.subtitle}
+Date: ${dateStr}
+=====================================================
+
+ESSENCE & SUMMARY:
+${genericResult.summary}
+
+TRAIT & DIMENSION SCORES:
+${Object.entries(genericResult.scores)
+  .map(([k, v]) => `- ${k.toUpperCase()}: ${v}%`)
+  .join('\n')}
+
+AUTHENTIC STRENGTHS:
+${genericResult.strengths.map((s) => `• ${s}`).join('\n')}
+
+GROWTH EDGES & BOUNDARIES:
+${genericResult.growthEdges.map((g) => `• ${g}`).join('\n')}
+
+EMPOWERING DAILY MANTRA:
+${genericResult.empoweringMantra}
+
+=====================================================
+BECOMING • Local Sovereignty • Zero External Tracking
+=====================================================`;
+    }
+
+    if (!content) return;
+
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Becoming_Inner_Compass_${Date.now()}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    setDownloadSuccess(true);
+    addEvolutionXp(15, 'Downloaded Inner Compass Keepsake Card');
+    setTimeout(() => setDownloadSuccess(false), 3000);
+  };
+
+  const activeMeta = SCIENTIFIC_FRAMEWORKS.find((f) => f.id === selectedFramework);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12 space-y-8">
+      {/* Framework Selector Tabs */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none border-b border-slate-200 dark:border-slate-800">
+        <button
+          type="button"
+          onClick={() => handleSelectFramework('compass')}
+          className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+            selectedFramework === 'compass'
+              ? 'bg-indigo-600 text-white shadow-sm'
+              : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
+          }`}
+        >
+          <Compass className="w-3.5 h-3.5" />
+          <span>Inner Compass</span>
+        </button>
+
+        {SCIENTIFIC_FRAMEWORKS.map((meta) => (
+          <button
+            key={meta.id}
+            type="button"
+            onClick={() => handleSelectFramework(meta.id)}
+            className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+              selectedFramework === meta.id
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
+            }`}
+          >
+            <Layers className="w-3.5 h-3.5" />
+            <span>{meta.name.split('(')[0].trim()}</span>
+          </button>
+        ))}
+      </div>
+
       {/* Step 0: INTRO / LENGTH PICKER */}
       {step === 'intro' && (
         <motion.div
@@ -668,113 +907,159 @@ export function SelfDiscoveryQuizView() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-8 text-center"
         >
-          {/* Header */}
-          <div className="space-y-3">
-            <div className="inline-flex p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 shadow-xs">
-              <Compass className="w-6 h-6 animate-pulse" />
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-serif font-bold text-slate-900 dark:text-white">
-              {dict.quiz?.title || 'The Inner Compass Discovery Studio'}
-            </h1>
-            <p className="text-sm text-slate-600 dark:text-slate-300 max-w-xl mx-auto leading-relaxed">
-              {dict.quiz?.subtitle ||
-                'A deeply peaceful self-reflection inquiry across Work & Purpose, Life & Relationships, and Soul & Inner Peace. Non-clinical, nonjudgmental, and 100% private to your device.'}
-            </p>
-          </div>
-
-          {/* 3 Dimensions Preview */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-start">
-            <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
-              <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-xs">
-                <Briefcase className="w-4 h-4" />
-                <span>1. Work & Purpose</span>
+          {selectedFramework === 'compass' ? (
+            <>
+              {/* Header */}
+              <div className="space-y-3">
+                <div className="inline-flex p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 shadow-xs">
+                  <Compass className="w-6 h-6 animate-pulse" />
+                </div>
+                <h1 className="text-3xl sm:text-4xl font-serif font-bold text-slate-900 dark:text-white">
+                  {dict.quiz?.title || 'The Inner Compass Discovery Studio'}
+                </h1>
+                <p className="text-sm text-slate-600 dark:text-slate-300 max-w-xl mx-auto leading-relaxed">
+                  {dict.quiz?.subtitle ||
+                    'A deeply peaceful self-reflection inquiry across Work & Purpose, Life & Relationships, and Soul & Inner Peace. Non-clinical, nonjudgmental, and 100% private to your device.'}
+                </p>
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                Focus rhythm, leadership boundaries, burnout prevention, and core creative ambition.
-              </p>
-            </div>
 
-            <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
-              <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-bold text-xs">
-                <Heart className="w-4 h-4" />
-                <span>2. Life & Relationships</span>
+              {/* 3 Dimensions Preview */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-start">
+                <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
+                  <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-xs">
+                    <Briefcase className="w-4 h-4" />
+                    <span>1. Work & Purpose</span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                    Focus rhythm, leadership boundaries, burnout prevention, and core creative ambition.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
+                  <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-bold text-xs">
+                    <Heart className="w-4 h-4" />
+                    <span>2. Life & Relationships</span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                    Social battery, communication during conflict, intimacy, decisions, and renewal.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
+                  <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-xs">
+                    <Sparkles className="w-4 h-4" />
+                    <span>3. Soul & Inner Peace</span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                    Stillness, forgiveness, life philosophies, facing mortality, and uncurbed authenticity.
+                  </p>
+                </div>
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                Social battery, communication during conflict, intimacy, decisions, and renewal.
-              </p>
-            </div>
 
-            <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
-              <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-xs">
-                <Sparkles className="w-4 h-4" />
-                <span>3. Soul & Inner Peace</span>
+              {/* Select Length Cards */}
+              <div className="space-y-3 pt-2">
+                <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                  {dict.quiz?.chooseLength || 'Choose Inquiry Depth'}
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl mx-auto">
+                  <button
+                    type="button"
+                    onClick={() => handleStart(10)}
+                    className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 text-start transition-all hover:scale-[1.01] shadow-md flex items-center justify-between"
+                  >
+                    <div>
+                      <div className="font-bold text-slate-900 dark:text-white text-sm">10 Questions</div>
+                      <div className="text-xs text-slate-500">Quick Mirror (~3 mins)</div>
+                    </div>
+                    <ArrowRight className={`w-4 h-4 text-indigo-500 ${isRtl ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleStart(20)}
+                    className="p-4 rounded-2xl bg-indigo-50/90 dark:bg-indigo-950/60 border border-indigo-300 dark:border-indigo-700 hover:border-indigo-500 text-start transition-all hover:scale-[1.01] shadow-md flex items-center justify-between"
+                  >
+                    <div>
+                      <div className="font-bold text-indigo-950 dark:text-indigo-200 text-sm">20 Questions (Recommended)</div>
+                      <div className="text-xs text-indigo-600 dark:text-indigo-400">Deep Dive Balance (~6 mins)</div>
+                    </div>
+                    <ArrowRight className={`w-4 h-4 text-indigo-600 ${isRtl ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleStart(30)}
+                    className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 text-start transition-all hover:scale-[1.01] shadow-md flex items-center justify-between"
+                  >
+                    <div>
+                      <div className="font-bold text-slate-900 dark:text-white text-sm">30 Questions</div>
+                      <div className="text-xs text-slate-500">Three-Pillar Harmony (~9 mins)</div>
+                    </div>
+                    <ArrowRight className={`w-4 h-4 text-indigo-500 ${isRtl ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleStart(40)}
+                    className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 text-start transition-all hover:scale-[1.01] shadow-md flex items-center justify-between"
+                  >
+                    <div>
+                      <div className="font-bold text-slate-900 dark:text-white text-sm">40 Questions</div>
+                      <div className="text-xs text-slate-500">Complete 360° Odyssey (~12 mins)</div>
+                    </div>
+                    <ArrowRight className={`w-4 h-4 text-indigo-500 ${isRtl ? 'rotate-180' : ''}`} />
+                  </button>
+                </div>
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                Stillness, forgiveness, life philosophies, facing mortality, and uncurbed authenticity.
-              </p>
-            </div>
-          </div>
-
-          {/* Select Length Cards */}
-          <div className="space-y-3 pt-2">
-            <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              {dict.quiz?.chooseLength || 'Choose Inquiry Depth'}
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl mx-auto">
-              <button
-                type="button"
-                onClick={() => handleStart(10)}
-                className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 text-start transition-all hover:scale-[1.01] shadow-md flex items-center justify-between"
-              >
-                <div>
-                  <div className="font-bold text-slate-900 dark:text-white text-sm">10 Questions</div>
-                  <div className="text-xs text-slate-500">Quick Mirror (~3 mins)</div>
+            </>
+          ) : (
+            /* Scientific Framework Intro Card */
+            activeMeta && (
+              <div className="p-8 sm:p-10 rounded-3xl bg-white/95 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xl space-y-6 text-center max-w-2xl mx-auto">
+                <div className="inline-flex p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 shadow-xs">
+                  <Award className="w-6 h-6 animate-pulse" />
                 </div>
-                <ArrowRight className={`w-4 h-4 text-indigo-500 ${isRtl ? 'rotate-180' : ''}`} />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleStart(20)}
-                className="p-4 rounded-2xl bg-indigo-50/90 dark:bg-indigo-950/60 border border-indigo-300 dark:border-indigo-700 hover:border-indigo-500 text-start transition-all hover:scale-[1.01] shadow-md flex items-center justify-between"
-              >
-                <div>
-                  <div className="font-bold text-indigo-950 dark:text-indigo-200 text-sm">20 Questions (Recommended)</div>
-                  <div className="text-xs text-indigo-600 dark:text-indigo-400">Deep Dive Balance (~6 mins)</div>
+                <div className="space-y-2">
+                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                    Scientific Grounding: {activeMeta.scientificOrigin}
+                  </span>
+                  <h1 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 dark:text-white">
+                    {activeMeta.name}
+                  </h1>
+                  <p className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400">
+                    {activeMeta.tagline}
+                  </p>
                 </div>
-                <ArrowRight className={`w-4 h-4 text-indigo-600 ${isRtl ? 'rotate-180' : ''}`} />
-              </button>
 
-              <button
-                type="button"
-                onClick={() => handleStart(30)}
-                className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 text-start transition-all hover:scale-[1.01] shadow-md flex items-center justify-between"
-              >
-                <div>
-                  <div className="font-bold text-slate-900 dark:text-white text-sm">30 Questions</div>
-                  <div className="text-xs text-slate-500">Three-Pillar Harmony (~9 mins)</div>
-                </div>
-                <ArrowRight className={`w-4 h-4 text-indigo-500 ${isRtl ? 'rotate-180' : ''}`} />
-              </button>
+                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+                  {activeMeta.description}
+                </p>
 
-              <button
-                type="button"
-                onClick={() => handleStart(40)}
-                className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 text-start transition-all hover:scale-[1.01] shadow-md flex items-center justify-between"
-              >
-                <div>
-                  <div className="font-bold text-slate-900 dark:text-white text-sm">40 Questions</div>
-                  <div className="text-xs text-slate-500">Complete 360° Odyssey (~12 mins)</div>
+                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  <span>{activeMeta.questionCount} Questions</span>
+                  <span>•</span>
+                  <span>Approx. {activeMeta.timeEstimate}</span>
+                  <span>•</span>
+                  <span>100% Local & Private</span>
                 </div>
-                <ArrowRight className={`w-4 h-4 text-indigo-500 ${isRtl ? 'rotate-180' : ''}`} />
-              </button>
-            </div>
-          </div>
+
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={handleStartScientific}
+                    className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-lg shadow-indigo-500/25 transition-all hover:scale-105"
+                  >
+                    Begin Assessment
+                  </button>
+                </div>
+              </div>
+            )
+          )}
         </motion.div>
       )}
 
       {/* Step 1: QUESTION DECK */}
-      {step === 'quiz' && currentQuestion && (
+      {step === 'quiz' && (
         <div className="space-y-6">
           {/* Progress Header */}
           <div className="flex items-center justify-between">
@@ -794,7 +1079,10 @@ export function SelfDiscoveryQuizView() {
             </button>
 
             <span className="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">
-              {currentIndex + 1} / {activeQuestions.length}
+              {currentIndex + 1} /{' '}
+              {selectedFramework === 'compass'
+                ? activeQuestions.length
+                : activeScientificQuestions.length}
             </span>
           </div>
 
@@ -802,49 +1090,92 @@ export function SelfDiscoveryQuizView() {
           <div className="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
             <div
               className="bg-indigo-600 h-full rounded-full transition-all duration-300"
-              style={{ width: `${((currentIndex + 1) / activeQuestions.length) * 100}%` }}
+              style={{
+                width: `${
+                  ((currentIndex + 1) /
+                    (selectedFramework === 'compass'
+                      ? activeQuestions.length
+                      : activeScientificQuestions.length)) *
+                  100
+                }%`,
+              }}
             />
           </div>
 
-          {/* Question Card */}
-          <motion.div
-            key={currentQuestion.id}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="p-6 sm:p-8 rounded-3xl bg-white/95 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xl space-y-6"
-          >
-            <div className="space-y-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-                {currentQuestion.dimension === 'work'
-                  ? 'Work & Purpose'
-                  : currentQuestion.dimension === 'life'
-                  ? 'Life & Relationships'
-                  : 'Soul & Inner Peace'}
-              </span>
-              <h2 className="text-xl sm:text-2xl font-serif font-bold text-slate-900 dark:text-white leading-snug">
-                {currentQuestion.question}
-              </h2>
-            </div>
+          {/* Question Card: COMPASS */}
+          {selectedFramework === 'compass' && currentQuestion && (
+            <motion.div
+              key={currentQuestion.id}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="p-6 sm:p-8 rounded-3xl bg-white/95 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xl space-y-6"
+            >
+              <div className="space-y-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                  {currentQuestion.dimension === 'work'
+                    ? 'Work & Purpose'
+                    : currentQuestion.dimension === 'life'
+                    ? 'Life & Relationships'
+                    : 'Soul & Inner Peace'}
+                </span>
+                <h2 className="text-xl sm:text-2xl font-serif font-bold text-slate-900 dark:text-white leading-snug">
+                  {currentQuestion.question}
+                </h2>
+              </div>
 
-            <div className="space-y-2.5">
-              {currentQuestion.options.map((opt) => (
-                <button
-                  key={opt.id}
-                  type="button"
-                  onClick={() => handleSelectAnswer(opt.archetypeScore)}
-                  className="w-full text-start p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 hover:bg-indigo-50/60 dark:hover:bg-indigo-950/40 hover:border-indigo-300 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 transition-all hover:scale-[1.008]"
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-          </motion.div>
+              <div className="space-y-2.5">
+                {currentQuestion.options.map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => handleSelectAnswer(opt.archetypeScore)}
+                    className="w-full text-start p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 hover:bg-indigo-50/60 dark:hover:bg-indigo-950/40 hover:border-indigo-300 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 transition-all hover:scale-[1.008]"
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Question Card: SCIENTIFIC FRAMEWORK */}
+          {selectedFramework !== 'compass' && currentScientificQuestion && (
+            <motion.div
+              key={currentScientificQuestion.id}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="p-6 sm:p-8 rounded-3xl bg-white/95 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xl space-y-6"
+            >
+              <div className="space-y-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                  {selectedFramework.toUpperCase().replace(/_/g, ' ')} • INQUIRY #{currentIndex + 1}
+                </span>
+                <h2 className="text-xl sm:text-2xl font-serif font-bold text-slate-900 dark:text-white leading-snug">
+                  {currentScientificQuestion.prompt}
+                </h2>
+              </div>
+
+              <div className="space-y-2.5">
+                {currentScientificQuestion.options.map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => handleSelectScientificAnswer(opt.scoreValue)}
+                    className="w-full text-start p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 hover:bg-indigo-50/60 dark:hover:bg-indigo-950/40 hover:border-indigo-300 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 transition-all hover:scale-[1.008]"
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
         </div>
       )}
 
-      {/* Step 2: RESULT PORTRAIT CARD */}
-      {step === 'result' && result && (
+      {/* Step 2: RESULT CARD — COMPASS */}
+      {step === 'result' && selectedFramework === 'compass' && result && (
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -959,17 +1290,161 @@ export function SelfDiscoveryQuizView() {
               </div>
             </div>
 
-            {/* Confirm to Journey Map */}
+            {/* Actions: Download Card & Save to Journey Map */}
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-100 dark:border-slate-800">
-              <span className="text-xs text-slate-500">
-                {savedToJourneyMap ? '✓ Saved to your Journey Map' : 'Commit this portrait to your permanent journey records'}
-              </span>
+              <button
+                type="button"
+                onClick={handleDownloadCard}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-600 transition-colors"
+              >
+                <Download className="w-4 h-4" />
+                <span>{downloadSuccess ? 'Downloaded Card ✓' : 'Download My Inner Compass Card'}</span>
+              </button>
 
               <button
                 type="button"
                 onClick={handleSaveToMap}
                 disabled={savedToJourneyMap}
-                className={`px-6 py-2.5 rounded-full text-xs font-bold flex items-center gap-2 transition-all ${
+                className={`w-full sm:w-auto px-6 py-2.5 rounded-full text-xs font-bold flex items-center justify-center gap-2 transition-all ${
+                  savedToJourneyMap
+                    ? 'bg-emerald-600 text-white cursor-default'
+                    : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/25'
+                }`}
+              >
+                {savedToJourneyMap ? (
+                  <>
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>Saved to Journey Map</span>
+                  </>
+                ) : (
+                  <>
+                    <BookmarkPlus className="w-4 h-4" />
+                    <span>Save Portrait to Journey Map</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Step 2: RESULT CARD — SCIENTIFIC FRAMEWORK */}
+      {step === 'result' && selectedFramework !== 'compass' && genericResult && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="space-y-8"
+        >
+          {/* Header Action */}
+          <div className="flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => setStep('intro')}
+              className="px-4 py-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2 hover:bg-slate-100"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Retake Assessment</span>
+            </button>
+
+            <span className="text-xs text-slate-500 font-medium">
+              {activeScientificQuestions.length} questions completed
+            </span>
+          </div>
+
+          {/* Scientific Hero Card */}
+          <div className="p-8 sm:p-10 rounded-3xl bg-white/95 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-6">
+            <div className="space-y-3 text-center">
+              <span className="px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                {genericResult.frameworkName}
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-serif font-bold text-slate-900 dark:text-white">
+                {genericResult.primaryResult}
+              </h2>
+              <p className="text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-400">
+                {genericResult.subtitle}
+              </p>
+            </div>
+
+            <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed font-normal text-center max-w-2xl mx-auto">
+              {genericResult.summary}
+            </p>
+
+            {/* Scores breakdown bars */}
+            <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <div className="text-xs font-bold uppercase tracking-wider text-slate-400 text-center">
+                Trait & Dimension Profile
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {Object.entries(genericResult.scores).map(([trait, score]) => (
+                  <div key={trait} className="space-y-1">
+                    <div className="flex justify-between text-xs font-semibold text-slate-700 dark:text-slate-300 capitalize">
+                      <span>{trait.replace(/_/g, ' ')}</span>
+                      <span>{score}%</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                      <div
+                        className="bg-indigo-600 h-full rounded-full transition-all"
+                        style={{ width: `${Math.min(100, Math.max(5, score))}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Strengths & Growth Edges */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <div className="p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 space-y-2">
+                <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-bold text-xs">
+                  <Sparkles className="w-4 h-4" />
+                  <span>Authentic Strengths</span>
+                </div>
+                <ul className="text-xs text-emerald-900 dark:text-emerald-200 space-y-1.5 list-disc ps-4">
+                  {genericResult.strengths.map((str, idx) => (
+                    <li key={idx}>{str}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 space-y-2">
+                <div className="flex items-center gap-2 text-amber-800 dark:text-amber-300 font-bold text-xs">
+                  <Flame className="w-4 h-4" />
+                  <span>Growth Edges & Healthy Boundaries</span>
+                </div>
+                <ul className="text-xs text-amber-900 dark:text-amber-200 space-y-1.5 list-disc ps-4">
+                  {genericResult.growthEdges.map((edge, idx) => (
+                    <li key={idx}>{edge}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Empowering Mantra Quote */}
+            <div className="p-4 rounded-2xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-center space-y-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-500">
+                Daily Living Anchor
+              </span>
+              <p className="text-xs sm:text-sm font-serif italic text-indigo-950 dark:text-indigo-200">
+                {genericResult.empoweringMantra}
+              </p>
+            </div>
+
+            {/* Actions: Download Card & Save to Journey Map */}
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-100 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={handleDownloadCard}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-600 transition-colors"
+              >
+                <Download className="w-4 h-4" />
+                <span>{downloadSuccess ? 'Downloaded Card ✓' : 'Download My Inner Compass Card'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSaveToMap}
+                disabled={savedToJourneyMap}
+                className={`w-full sm:w-auto px-6 py-2.5 rounded-full text-xs font-bold flex items-center justify-center gap-2 transition-all ${
                   savedToJourneyMap
                     ? 'bg-emerald-600 text-white cursor-default'
                     : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/25'

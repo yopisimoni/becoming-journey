@@ -14,11 +14,16 @@ import {
   LifeGoal,
   HabitItem,
   VaultSecret,
+  EvolutionProgress,
+  DailyLivingPillars,
+  CoreLifeDream,
+  FrameworkId,
 } from '@/types';
 import { getDictionary, defaultLocale, TranslationDictionary } from '@/locales';
 import { soundEngine, SoundscapePreset } from '@/lib/audio/soundEngine';
 import { AISettings, DEFAULT_AI_SETTINGS } from '@/lib/engine/aiAdapter';
 import { clearAllMedia } from '@/lib/storage/mediaDb';
+import { INITIAL_EVOLUTION_PROGRESS, calculateEvolutionLevel } from '@/lib/evolution/evolutionEngine';
 
 export type ThemeMode = 'light' | 'twilight';
 
@@ -111,6 +116,22 @@ interface AppContextValue {
   addVaultSecret: (secret: Omit<VaultSecret, 'id' | 'createdAt'>) => void;
   deleteVaultSecret: (id: string) => void;
 
+  // Evolution System (Zero to Hero)
+  evolution: EvolutionProgress;
+  addEvolutionXp: (amount: number, reason: string) => void;
+
+  // The 4 Daily Pillars of Living Right
+  dailyPillars: DailyLivingPillars;
+  updateDailyPillars: (pillars: Partial<DailyLivingPillars>) => void;
+
+  // Core Life Dream
+  coreLifeDream: CoreLifeDream;
+  setCoreLifeDream: (dream: CoreLifeDream) => void;
+
+  // Active Scientific Framework
+  activeFramework: FrameworkId;
+  setActiveFramework: (framework: FrameworkId) => void;
+
   // Data Sovereignty
   wipeAllData: () => void;
   exportDataJson: () => void;
@@ -127,6 +148,9 @@ const STORAGE_KEY_MOMENTS = 'becoming_moments_v1';
 const STORAGE_KEY_GOALS = 'becoming_goals_v1';
 const STORAGE_KEY_HABITS = 'becoming_habits_v1';
 const STORAGE_KEY_VAULT = 'becoming_vault_secrets_v1';
+const STORAGE_KEY_EVOLUTION = 'becoming_evolution_v1';
+const STORAGE_KEY_PILLARS = 'becoming_daily_pillars_v1';
+const STORAGE_KEY_DREAM = 'becoming_core_dream_v1';
 const STORAGE_KEY_MODE = 'becoming_storage_mode_v1';
 const STORAGE_KEY_LOCALE = 'becoming_locale_v1';
 const STORAGE_KEY_MOTION = 'becoming_reduced_motion_v1';
@@ -178,10 +202,31 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [habits, setHabits] = useState<HabitItem[]>([]);
   const [vaultSecrets, setVaultSecrets] = useState<VaultSecret[]>([]);
 
+  // v0.5 Data
+  const [evolution, setEvolution] = useState<EvolutionProgress>(INITIAL_EVOLUTION_PROGRESS);
+  const [dailyPillars, setDailyPillars] = useState<DailyLivingPillars>({
+    date: new Date().toISOString().split('T')[0],
+    beautifulMoment: '',
+    healthyNourishment: '',
+    helpingThoseWhoMoveYou: '',
+    notAnAngelAffirmation: false,
+  });
+  const [coreLifeDream, setCoreLifeDreamState] = useState<CoreLifeDream>({
+    dreamTitle: 'Live with grounded peace, self-mastery, and clear purpose',
+    whyItMatters: 'To make my highest potential real and be a steady blessing to those I love',
+    horizonAnchor: 'This Year',
+    dailyActionCommitment: 'Take small responsible steps every morning and protect my quiet evening peace',
+    updatedAt: new Date().toISOString(),
+  });
+  const [activeFramework, setActiveFramework] = useState<FrameworkId>('compass');
+
   const dict = useMemo(() => getDictionary(locale), [locale]);
   const isRtl = useMemo(() => locale === 'ar', [locale]);
 
-  const getUserScopedKey = (type: 'cards' | 'journal' | 'moments' | 'goals' | 'habits' | 'vault', userId?: string) => {
+  const getUserScopedKey = (
+    type: 'cards' | 'journal' | 'moments' | 'goals' | 'habits' | 'vault' | 'evolution' | 'pillars' | 'dream',
+    userId?: string
+  ) => {
     const activeId = userId || user?.id;
     if (activeId) {
       return `becoming_${activeId}_${type}_v1`;
@@ -199,6 +244,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         return STORAGE_KEY_HABITS;
       case 'vault':
         return STORAGE_KEY_VAULT;
+      case 'evolution':
+        return STORAGE_KEY_EVOLUTION;
+      case 'pillars':
+        return STORAGE_KEY_PILLARS;
+      case 'dream':
+        return STORAGE_KEY_DREAM;
     }
   };
 
@@ -228,6 +279,22 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       const savedVault = store.getItem(vaultKey);
       setVaultSecrets(savedVault ? JSON.parse(savedVault) : []);
+
+      const evolutionKey = getUserScopedKey('evolution', targetUser?.id);
+      const savedEvolution = store.getItem(evolutionKey);
+      setEvolution(savedEvolution ? JSON.parse(savedEvolution) : INITIAL_EVOLUTION_PROGRESS);
+
+      const pillarsKey = getUserScopedKey('pillars', targetUser?.id);
+      const savedPillars = store.getItem(pillarsKey);
+      if (savedPillars) {
+        setDailyPillars(JSON.parse(savedPillars));
+      }
+
+      const dreamKey = getUserScopedKey('dream', targetUser?.id);
+      const savedDream = store.getItem(dreamKey);
+      if (savedDream) {
+        setCoreLifeDreamState(JSON.parse(savedDream));
+      }
     } catch {
       // ignore
     }
@@ -481,6 +548,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
     const updated = [newCard, ...cards];
     setCards(updated);
+    addEvolutionXp(40, 'Confirmed a Soul Insight & Step');
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
       store.setItem(getUserScopedKey('cards'), JSON.stringify(updated));
@@ -513,6 +581,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
     const updated = [newEntry, ...journalEntries];
     setJournalEntries(updated);
+    addEvolutionXp(30, 'Deepened Free Journal Reflection');
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
       store.setItem(getUserScopedKey('journal'), JSON.stringify(updated));
@@ -548,6 +617,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
     const updated = [newMoment, ...moments];
     setMoments(updated);
+    addEvolutionXp(20, 'Anchored a Moment of Light');
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
       store.setItem(getUserScopedKey('moments'), JSON.stringify(updated));
@@ -576,6 +646,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
     const updated = [newGoal, ...goals];
     setGoals(updated);
+    addEvolutionXp(25, 'Planted a Life Horizon Milestone');
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
       store.setItem(getUserScopedKey('goals'), JSON.stringify(updated));
@@ -585,8 +656,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const toggleGoal = (id: string) => {
-    const updated = goals.map((g) => (g.id === id ? { ...g, completed: !g.completed } : g));
+    let wasCompleted = false;
+    const updated = goals.map((g) => {
+      if (g.id === id) {
+        wasCompleted = !g.completed;
+        return { ...g, completed: !g.completed };
+      }
+      return g;
+    });
     setGoals(updated);
+    if (wasCompleted) {
+      addEvolutionXp(35, 'Completed Life Milestone');
+    }
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
       store.setItem(getUserScopedKey('goals'), JSON.stringify(updated));
@@ -633,6 +714,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
     const updated = [newHabit, ...habits];
     setHabits(updated);
+    addEvolutionXp(25, 'Nurtured Healthy Habit Seed');
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
       store.setItem(getUserScopedKey('habits'), JSON.stringify(updated));
@@ -652,6 +734,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         : h
     );
     setHabits(updated);
+    addEvolutionXp(25, 'Nurtured Healthy Habit Seed');
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
       store.setItem(getUserScopedKey('habits'), JSON.stringify(updated));
@@ -663,6 +746,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const deleteHabit = (id: string) => {
     const updated = habits.filter((h) => h.id !== id);
     setHabits(updated);
+    addEvolutionXp(25, 'Nurtured Healthy Habit Seed');
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
       store.setItem(getUserScopedKey('habits'), JSON.stringify(updated));
@@ -699,6 +783,65 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // v0.5 Evolution Engine
+  const addEvolutionXp = (amount: number, reason: string) => {
+    setEvolution((prev) => {
+      const newXp = prev.totalXp + amount;
+      const newLevel = calculateEvolutionLevel(newXp);
+      const updated: EvolutionProgress = {
+        totalXp: newXp,
+        currentLevel: newLevel,
+        activitiesCompleted: prev.activitiesCompleted + 1,
+        history: [
+          {
+            activity: reason,
+            xpEarned: amount,
+            timestamp: new Date().toISOString(),
+          },
+          ...prev.history.slice(0, 24),
+        ],
+      };
+      try {
+        const store = storageMode === 'local' ? localStorage : sessionStorage;
+        store.setItem(getUserScopedKey('evolution'), JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
+      return updated;
+    });
+  };
+
+  // v0.5 4 Daily Pillars
+  const updateDailyPillars = (partial: Partial<DailyLivingPillars>) => {
+    setDailyPillars((prev) => {
+      const updated: DailyLivingPillars = {
+        ...prev,
+        ...partial,
+        date: new Date().toISOString().split('T')[0],
+      };
+      try {
+        const store = storageMode === 'local' ? localStorage : sessionStorage;
+        store.setItem(getUserScopedKey('pillars'), JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
+      return updated;
+    });
+    addEvolutionXp(20, 'Nurtured Daily Living Pillar');
+  };
+
+  // v0.5 Core Life Dream
+  const setCoreLifeDream = (dream: CoreLifeDream) => {
+    setCoreLifeDreamState(dream);
+    try {
+      const store = storageMode === 'local' ? localStorage : sessionStorage;
+      store.setItem(getUserScopedKey('dream'), JSON.stringify(dream));
+    } catch {
+      // ignore
+    }
+    addEvolutionXp(30, 'Anchored Core Life Dream to Reality');
+  };
+
   const wipeAllData = () => {
     setCards([]);
     setJournalEntries([]);
@@ -706,6 +849,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setGoals([]);
     setHabits([]);
     setVaultSecrets([]);
+    setEvolution(INITIAL_EVOLUTION_PROGRESS);
+    setDailyPillars({
+      date: new Date().toISOString().split('T')[0],
+      beautifulMoment: '',
+      healthyNourishment: '',
+      helpingThoseWhoMoveYou: '',
+      notAnAngelAffirmation: false,
+    });
     setCurrentIntent(null);
     setSanctuaryStep(0);
     clearAllMedia().catch(() => {});
@@ -717,6 +868,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       store.removeItem(getUserScopedKey('goals'));
       store.removeItem(getUserScopedKey('habits'));
       store.removeItem(getUserScopedKey('vault'));
+      store.removeItem(getUserScopedKey('evolution'));
+      store.removeItem(getUserScopedKey('pillars'));
+      store.removeItem(getUserScopedKey('dream'));
       localStorage.removeItem('becoming_vault_pin_v1');
       if (!user) {
         localStorage.clear();
@@ -872,6 +1026,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     vaultSecrets,
     addVaultSecret,
     deleteVaultSecret,
+
+    // v0.5 Evolution & Human Awakening
+    evolution,
+    addEvolutionXp,
+    dailyPillars,
+    updateDailyPillars,
+    coreLifeDream,
+    setCoreLifeDream,
+    activeFramework,
+    setActiveFramework,
 
     wipeAllData,
     exportDataJson,

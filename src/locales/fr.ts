@@ -470,4 +470,26 @@ export const fr: TranslationDictionary = {
     localModeDesc: 'Stockage local : Les données restent sur cet appareil jusqu’à effacement manuel.',
     sharedDeviceWarning: 'Attention : Sur un ordinateur partagé ou public, privilégiez le mode Session seule ou effacez vos données avant de quitter.',
   },
+  evolution: {
+    stageTitle: 'Étapes du Devenir',
+    xpLabel: 'Points d’Expérience',
+    levelLabel: 'Niveau d’Éveil',
+    nextStageLabel: 'Prochaine Étape',
+  },
+  pillars: {
+    title: 'Les 4 Piliers d’une Vie Juste',
+    subtitle: 'Ancrages quotidiens pour la beauté, la nourriture saine, l’aide discrète et le pardon envers soi-même.',
+    beautiful: 'Quelque chose de beau à faire',
+    healthy: 'Quelque chose de sain à manger',
+    helping: 'Aider ceux qui vous touchent',
+    notAnAngel: 'Pas un ange, digne d’amour malgré tout',
+  },
+  shift: {
+    impulseResetTitle: 'Réinitialisation de l’Impulsion (60s)',
+    impulseResetSubtitle: 'Se libérer des pulsions de fumer, du scroll infini et des échappatoires toxiques.',
+    triggerBtn: 'Déclencher la Réinitialisation 60s',
+    boundaryShieldTitle: 'Le Bouclier des Limites : Bon, mais jamais exploité',
+    releaseJudgmentTitle: 'Libérer le Jugement : Chacun porte ses propres batailles',
+    focusAnchorTitle: 'L’Ancre de Clarté : Une seule chose à la fois',
+  },
 };

@@ -373,3 +373,82 @@ test.describe('Sanctuary v0.4: Breathing Studio, Inner Compass & Life Horizons',
     await expect(page.getByText(/No Tracking Pixels/i)).toBeVisible();
   });
 });
+
+test.describe('BECOMING v0.5: Human Awakening, Scientific Frameworks, Zero-to-Hero & The Shift', () => {
+  test('displays Zero-to-Hero Evolution Emblem and 4 Daily Pillars on Dashboard', async ({ page }) => {
+    await page.goto('/');
+    // Open Studios drawer and navigate to Dashboard
+    await page.locator('#floating-dock-tab-studios').click();
+    await page.locator('#dock-studio-dashboard').click();
+
+    // Verify Stages of Becoming card
+    await expect(page.getByText(/Stage 1 of 5/i)).toBeVisible();
+    await expect(page.getByText(/The Spark/i)).toBeVisible();
+
+    // Verify 4 Pillars of Living Right card
+    await expect(page.getByText(/The 4 Pillars of Living Right/i)).toBeVisible();
+    await expect(page.getByText(/Not an Angel, Still Worthy/i)).toBeVisible();
+
+    // Toggle "Not an Angel, Still Worthy" affirmation
+    const notAnAngelCard = page.getByText(/Not an Angel, Still Worthy/i);
+    await notAnAngelCard.click();
+  });
+
+  test('interacts with The Shift: 60-Second Impulse Reset and Boundary Shield', async ({ page }) => {
+    await page.goto('/');
+    // Open Studios drawer and navigate to Habit Balance Ledger
+    await page.locator('#floating-dock-tab-studios').click();
+    await page.locator('#dock-studio-habits').click();
+
+    // Switch to The Shift tab
+    await page.getByRole('button', { name: /The Shift/i }).click();
+
+    // Verify 60-Second Impulse Reset section is visible
+    await expect(page.getByRole('heading', { name: /60-Second Impulse Reset/i })).toBeVisible();
+    const triggerBtn = page.getByRole('button', { name: /Trigger 60s Impulse Reset/i });
+    await expect(triggerBtn).toBeVisible();
+    await triggerBtn.click();
+
+    // Verify active reset countdown is running
+    await expect(page.getByText(/Somatic Recalibration/i)).toBeVisible();
+
+    // Verify Boundary Shield section
+    await expect(page.getByRole('heading', { name: /The Boundary Shield/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Good, But Never Used/i })).toBeVisible();
+  });
+
+  test('accesses Echoes Stories and Nature Canvas in Just Listen view', async ({ page }) => {
+    await page.goto('/');
+    // Open Studios drawer and navigate to Breathe & Just Listen
+    await page.locator('#floating-dock-tab-studios').click();
+    await page.locator('#dock-studio-breathe').click();
+
+    // Toggle Nature Canvas
+    const canvasBtn = page.getByRole('button', { name: /Nature Canvas/i });
+    await expect(canvasBtn).toBeVisible();
+    await canvasBtn.click();
+    await expect(page.getByText(/Contemplation Scene/i)).toBeVisible();
+
+    // Toggle Echoes Stories
+    const echoesBtn = page.getByRole('button', { name: /Echoes/i });
+    await expect(echoesBtn).toBeVisible();
+    await echoesBtn.click();
+    await expect(page.getByText(/Echoes of Shared Humanity/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /The Underground Bamboo/i })).toBeVisible();
+  });
+
+  test('displays Core Life Dream on Life Horizons and Mirror, Never Boss banner in Settings', async ({ page }) => {
+    await page.goto('/');
+    // Open Life Horizons
+    await page.locator('#floating-dock-tab-studios').click();
+    await page.locator('#dock-studio-calendar').click();
+
+    // Verify Core Life Dream banner
+    await expect(page.getByText(/Dreams-to-Reality Bridge/i)).toBeVisible();
+
+    // Open Settings
+    await page.locator('#navbar-settings-button').click();
+    // Verify Mirror, Never Boss banner
+    await expect(page.getByText(/Mirror, Never Boss/i)).toBeVisible();
+  });
+});

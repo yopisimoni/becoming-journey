@@ -317,4 +317,26 @@ export interface TranslationDictionary {
     localModeDesc: string;
     sharedDeviceWarning: string;
   };
+  evolution?: {
+    stageTitle: string;
+    xpLabel: string;
+    levelLabel: string;
+    nextStageLabel: string;
+  };
+  pillars?: {
+    title: string;
+    subtitle: string;
+    beautiful: string;
+    healthy: string;
+    helping: string;
+    notAnAngel: string;
+  };
+  shift?: {
+    impulseResetTitle: string;
+    impulseResetSubtitle: string;
+    triggerBtn: string;
+    boundaryShieldTitle: string;
+    releaseJudgmentTitle: string;
+    focusAnchorTitle: string;
+  };
 }

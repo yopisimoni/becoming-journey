@@ -469,4 +469,26 @@ export const it: TranslationDictionary = {
     localModeDesc: 'Memoria locale: I dati restano su questo dispositivo fino a quando non li cancelli.',
     sharedDeviceWarning: 'Avviso: Su computer pubblici o condivisi, consigliamo la modalità Solo Sessione o la cancellazione prima di uscire.',
   },
+  evolution: {
+    stageTitle: 'Fasi del Divenire',
+    xpLabel: 'Punti Esperienza',
+    levelLabel: 'Livello della Fase',
+    nextStageLabel: 'Prossima Fase di Sovranità',
+  },
+  pillars: {
+    title: 'I 4 Pilastri della Retta Vita',
+    subtitle: 'Ancore quotidiane per la bellezza, il nutrimento sano, l’aiuto discreto e il perdono di sé.',
+    beautiful: 'Qualcosa di bello da compiere oggi',
+    healthy: 'Qualcosa di sano per onorare il corpo',
+    helping: 'Aiutare chi tocca il tuo cuore',
+    notAnAngel: 'Non sono un angelo, ma sono degno di pace',
+  },
+  shift: {
+    impulseResetTitle: 'Reimposta l’Impulso in 60 Secondi',
+    impulseResetSubtitle: 'Liberarsi dal fumo, dal doomscrolling e dalle abitudini tossiche.',
+    triggerBtn: 'Attiva Reimposta Impulso 60s',
+    boundaryShieldTitle: 'Lo Scudo dei Confini: Buoni, ma mai usati',
+    releaseJudgmentTitle: 'Lasciare Andare il Giudizio: Ognuno combatte una battaglia invisibile',
+    focusAnchorTitle: 'L’Ancora di Concentrazione: Una sola cosa alla volta',
+  },
 };

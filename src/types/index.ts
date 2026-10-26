@@ -169,3 +169,98 @@ export interface DailyQuote {
   author: string;
   theme: string;
 }
+
+// --- v0.5 SCIENTIFIC FRAMEWORKS & HUMAN AWAKENING ---
+export type FrameworkId =
+  | 'compass'
+  | 'big5'
+  | 'locus_of_control'
+  | 'empathizing_systemizing'
+  | 'mbti16'
+  | 'true_colours';
+
+export interface ScientificFrameworkMeta {
+  id: FrameworkId;
+  name: string;
+  tagline: string;
+  scientificOrigin: string;
+  description: string;
+  questionCount: number;
+  timeEstimate: string;
+}
+
+export interface GenericQuizQuestion {
+  id: string;
+  prompt: string;
+  options: {
+    id: string;
+    label: string;
+    scoreKey: string;
+    scoreValue: number;
+  }[];
+}
+
+export interface GenericQuizResult {
+  frameworkId: FrameworkId;
+  frameworkName: string;
+  completedAt: string;
+  primaryResult: string;
+  subtitle: string;
+  summary: string;
+  scores: Record<string, number>;
+  strengths: string[];
+  growthEdges: string[];
+  empoweringMantra: string;
+}
+
+// --- v0.5 ZERO TO HERO EVOLUTION SYSTEM ---
+export type EvolutionStageLevel = 1 | 2 | 3 | 4 | 5;
+
+export interface EvolutionStageInfo {
+  level: EvolutionStageLevel;
+  title: string;
+  subtitle: string;
+  mantra: string;
+  description: string;
+  requiredXp: number;
+}
+
+export interface EvolutionProgress {
+  totalXp: number;
+  currentLevel: EvolutionStageLevel;
+  activitiesCompleted: number;
+  history: {
+    activity: string;
+    xpEarned: number;
+    timestamp: string;
+  }[];
+}
+
+// --- v0.5 4 PILLARS OF LIVING RIGHT ---
+export interface DailyLivingPillars {
+  date: string;
+  beautifulMoment: string;
+  healthyNourishment: string;
+  helpingThoseWhoMoveYou: string;
+  notAnAngelAffirmation: boolean;
+}
+
+// --- v0.5 LIFE DREAM ---
+export interface CoreLifeDream {
+  dreamTitle: string;
+  whyItMatters: string;
+  horizonAnchor: string;
+  dailyActionCommitment: string;
+  updatedAt: string;
+}
+
+// --- v0.5 ECHOES STORIES ---
+export interface EchoStory {
+  id: string;
+  title: string;
+  subtitle: string;
+  theme: string;
+  narrative: string[];
+  takeaway: string;
+  authorOrOrigin: string;
+}

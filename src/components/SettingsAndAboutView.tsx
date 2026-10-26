@@ -247,6 +247,17 @@ export function SettingsAndAboutView() {
               Optional AI Bridge Configuration
             </h2>
 
+            {/* Mirror, Never Boss Philosophy Banner */}
+            <div className="p-4 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 space-y-1.5">
+              <div className="flex items-center gap-2 text-indigo-700 dark:text-indigo-300 font-bold text-xs">
+                <HeartHandshake className="w-4 h-4" />
+                <span>Foundational Principle: &ldquo;Mirror, Never Boss&rdquo;</span>
+              </div>
+              <p className="text-xs text-indigo-950 dark:text-indigo-200 leading-relaxed font-serif">
+                AI must never dictate what you should do, never judge you, and never act as an authority. It exists solely as a quiet mirror to reflect your own deepest wisdom back to you. You are the ultimate sovereign author of your life.
+              </p>
+            </div>
+
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <div className="font-bold text-sm text-slate-900 dark:text-white">AI Companion API Mode</div>

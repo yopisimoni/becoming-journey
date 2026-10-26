@@ -470,4 +470,26 @@ export const es: TranslationDictionary = {
     localModeDesc: 'Almacenamiento local: Los datos permanecen en este equipo hasta que decidas borrarlos.',
     sharedDeviceWarning: 'Aviso: En computadoras compartidas o públicas, recomendamos el modo Solo Sesión o borrar los datos antes de salir.',
   },
+  evolution: {
+    stageTitle: 'Etapas del Devenir',
+    xpLabel: 'Puntos de Experiencia',
+    levelLabel: 'Nivel de la Etapa',
+    nextStageLabel: 'Siguiente Etapa hacia la Soberanía',
+  },
+  pillars: {
+    title: 'Los 4 Pilares del Vivir Bien',
+    subtitle: 'Anclas cotidianas para la belleza, el alimento saludable, la ayuda discreta y el auto-perdón.',
+    beautiful: 'Algo hermoso que hacer hoy',
+    healthy: 'Algo sano y nutritivo para comer',
+    helping: 'Ayudar a quienes te conmueven',
+    notAnAngel: 'No soy un ángel, pero sigo siendo digno',
+  },
+  shift: {
+    impulseResetTitle: 'Reinicio del Impulso en 60 Segundos',
+    impulseResetSubtitle: 'Libérate de antojos, fumar, redes sociales y hábitos nocivos.',
+    triggerBtn: 'Activar Reinicio de 60s',
+    boundaryShieldTitle: 'El Escudo de Límites: Bueno, pero nunca usado',
+    releaseJudgmentTitle: 'Soltar el Juicio: Cada persona libra su propia batalla',
+    focusAnchorTitle: 'El Ancla de Enfoque: Una sola cosa a la vez',
+  },
 };

@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '@/context/AppContext';
-import { BreathingTechniqueId } from '@/types';
+import { BreathingTechniqueId, EchoStory } from '@/types';
 import { soundEngine } from '@/lib/audio/soundEngine';
+import { ECHOES_STORIES, NATURE_CANVAS_SCENES } from '@/lib/stories/echoesData';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Wind,
@@ -19,6 +20,11 @@ import {
   Shield,
   Hand,
   Eye,
+  BookOpen,
+  Image as ImageIcon,
+  ChevronRight,
+  X,
+  Compass,
 } from 'lucide-react';
 
 interface BreathingConfig {
@@ -29,9 +35,17 @@ interface BreathingConfig {
 }
 
 export function JustListenView() {
-  const { dict, currentIntent, setActiveMode, reducedMotion, isRtl } = useApp();
+  const { dict, currentIntent, setActiveMode, reducedMotion, isRtl, addEvolutionXp, playSingingBowl } = useApp();
   const intent = currentIntent || 'lost';
   const script = dict.scripts[intent];
+
+  // Echoes Stories State
+  const [isStoriesOpen, setIsStoriesOpen] = useState(false);
+  const [selectedStory, setSelectedStory] = useState<EchoStory>(ECHOES_STORIES[0]);
+
+  // Contemplation Nature Canvas State
+  const [isCanvasActive, setIsCanvasActive] = useState(false);
+  const [canvasSceneIndex, setCanvasSceneIndex] = useState(0);
 
   // Techniques
   const techniques: BreathingConfig[] = [
@@ -80,6 +94,15 @@ export function JustListenView() {
   const [unclenched, setUnclenched] = useState<Record<string, boolean>>({});
 
   const currentStep = activeTechnique.pattern[patternIndex] || activeTechnique.pattern[0];
+
+  // Rotate nature scenes every 8 seconds when canvas is active
+  useEffect(() => {
+    if (!isCanvasActive) return;
+    const interval = setInterval(() => {
+      setCanvasSceneIndex((prev) => (prev + 1) % NATURE_CANVAS_SCENES.length);
+    }, 8000);
+    return () => clearInterval(interval);
+  }, [isCanvasActive]);
 
   // Reset pattern when switching technique
   const handleSelectTechnique = (id: BreathingTechniqueId) => {
@@ -175,6 +198,34 @@ export function JustListenView() {
         </button>
 
         <div className="flex items-center gap-2">
+          {/* Nature Canvas Toggle */}
+          <button
+            type="button"
+            onClick={() => setIsCanvasActive(!isCanvasActive)}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-colors flex items-center gap-1.5 ${
+              isCanvasActive
+                ? 'bg-emerald-600 text-white border-emerald-600'
+                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50'
+            }`}
+          >
+            <ImageIcon className="w-3.5 h-3.5" />
+            <span>{isCanvasActive ? 'Close Canvas' : 'Nature Canvas'}</span>
+          </button>
+
+          {/* Echoes Stories Toggle */}
+          <button
+            type="button"
+            onClick={() => setIsStoriesOpen(!isStoriesOpen)}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-colors flex items-center gap-1.5 ${
+              isStoriesOpen
+                ? 'bg-indigo-600 text-white border-indigo-600'
+                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-indigo-700 dark:text-indigo-300 hover:bg-slate-50'
+            }`}
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>Echoes</span>
+          </button>
+
           <button
             type="button"
             onClick={() => setChimeEnabled(!chimeEnabled)}
@@ -215,6 +266,133 @@ export function JustListenView() {
           {dict.breathing?.studioSubtitle || 'A tranquil somatic sanctuary to regulate your nervous system and return to presence.'}
         </p>
       </div>
+
+      {/* Contemplation Nature Canvas Box */}
+      {isCanvasActive && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`p-6 sm:p-8 rounded-3xl bg-gradient-to-br ${NATURE_CANVAS_SCENES[canvasSceneIndex].gradient} border border-slate-700/60 shadow-2xl space-y-4 text-center transition-all duration-1000`}
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-300">
+              Contemplation Scene {canvasSceneIndex + 1}/{NATURE_CANVAS_SCENES.length}
+            </span>
+            <div className="flex items-center gap-1.5">
+              {NATURE_CANVAS_SCENES.map((s, idx) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setCanvasSceneIndex(idx)}
+                  className={`w-2.5 h-2.5 rounded-full transition-all ${
+                    canvasSceneIndex === idx ? 'bg-white scale-125' : 'bg-white/30 hover:bg-white/60'
+                  }`}
+                  aria-label={`Switch to ${s.name}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <h3 className="text-xl sm:text-2xl font-serif font-bold text-white">
+              {NATURE_CANVAS_SCENES[canvasSceneIndex].name}
+            </h3>
+            <p className="text-xs text-slate-300 italic font-serif">
+              {NATURE_CANVAS_SCENES[canvasSceneIndex].tagline}
+            </p>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Echoes of Shared Humanity Stories Drawer */}
+      {isStoriesOpen && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="p-7 sm:p-8 rounded-3xl bg-white/95 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-6"
+        >
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                <BookOpen className="w-4 h-4" />
+                <span>Echoes of Shared Humanity • Wisdom Parables</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-serif font-bold text-slate-900 dark:text-white">
+                Stories of Patience, Grace & Overcoming
+              </h2>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsStoriesOpen(false)}
+              className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Story Selector Pills */}
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+            {ECHOES_STORIES.map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => setSelectedStory(s)}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+                  selectedStory.id === s.id
+                    ? 'bg-indigo-600 text-white shadow-sm'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200'
+                }`}
+              >
+                {s.title}
+              </button>
+            ))}
+          </div>
+
+          {/* Active Story Card */}
+          <div className="p-6 rounded-2xl bg-slate-50/70 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/80 space-y-4">
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                {selectedStory.theme} • {selectedStory.authorOrOrigin}
+              </span>
+              <h3 className="text-lg sm:text-xl font-serif font-bold text-slate-900 dark:text-white">
+                {selectedStory.title}
+              </h3>
+              <p className="text-xs text-slate-500 italic font-serif">
+                {selectedStory.subtitle}
+              </p>
+            </div>
+
+            <div className="space-y-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-serif">
+              {selectedStory.narrative.map((p: string, i: number) => (
+                <p key={i}>{p}</p>
+              ))}
+            </div>
+
+            <div className="p-4 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 space-y-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 block">
+                Sanctuary Takeaway
+              </span>
+              <p className="text-xs font-serif italic text-indigo-950 dark:text-indigo-200 font-medium">
+                &ldquo;{selectedStory.takeaway}&rdquo;
+              </p>
+            </div>
+
+            <div className="flex justify-end pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  playSingingBowl();
+                  addEvolutionXp(15, `Reflected on: ${selectedStory.title}`);
+                  setIsStoriesOpen(false);
+                }}
+                className="px-5 py-2 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-500/25 transition-all"
+              >
+                Reflect & Close (+15 XP)
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       {/* Selectable Techniques */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">

@@ -469,4 +469,26 @@ export const en: TranslationDictionary = {
     localModeDesc: 'Local Storage: Data persists on this device until you explicitly wipe it.',
     sharedDeviceWarning: 'Notice: If you are using a shared or public computer, we strongly recommend Session-Only mode or wiping data before leaving.',
   },
+  evolution: {
+    stageTitle: 'Stages of Becoming',
+    xpLabel: 'Experience Points',
+    levelLabel: 'Stage Level',
+    nextStageLabel: 'Next Awakening Stage',
+  },
+  pillars: {
+    title: 'The 4 Pillars of Living Right',
+    subtitle: 'Daily anchors for beauty, nourishment, quiet service, and self-forgiveness.',
+    beautiful: 'Something Beautiful to Do',
+    healthy: 'Something Healthy to Eat',
+    helping: 'Helping Those Who Move You',
+    notAnAngel: 'Not an Angel, Still Worthy',
+  },
+  shift: {
+    impulseResetTitle: '60-Second Impulse Reset',
+    impulseResetSubtitle: 'Break free from cravings, smoking, and doomscrolling.',
+    triggerBtn: 'Trigger 60s Impulse Reset',
+    boundaryShieldTitle: 'The Boundary Shield',
+    releaseJudgmentTitle: 'Release Judgment',
+    focusAnchorTitle: 'The Focus Anchor',
+  },
 };

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { DailyQuote } from '@/types';
+import { getStageInfo, getNextStageInfo } from '@/lib/evolution/evolutionEngine';
 import {
   Compass,
   Wind,
@@ -17,6 +18,13 @@ import {
   ShieldCheck,
   Heart,
   TrendingUp,
+  Award,
+  Zap,
+  Coffee,
+  Apple,
+  Users,
+  Smile,
+  Check,
 } from 'lucide-react';
 
 export function DashboardView() {
@@ -33,9 +41,47 @@ export function DashboardView() {
     setActiveMode,
     playSingingBowl,
     isRtl,
+    evolution,
+    addEvolutionXp,
+    dailyPillars,
+    updateDailyPillars,
   } = useApp();
 
   const [savedQuoteToMoments, setSavedQuoteToMoments] = useState(false);
+  const [editingPillars, setEditingPillars] = useState(false);
+  const [pillarInputs, setPillarInputs] = useState({
+    beautiful: dailyPillars.beautifulMoment || '',
+    healthy: dailyPillars.healthyNourishment || '',
+    helping: dailyPillars.helpingThoseWhoMoveYou || '',
+  });
+
+  const currentStage = getStageInfo(evolution.currentLevel);
+  const nextStage = getNextStageInfo(evolution.currentLevel);
+  const prevRequired = currentStage.requiredXp;
+  const nextRequired = nextStage ? nextStage.requiredXp : currentStage.requiredXp;
+  const xpInLevel = Math.max(0, evolution.totalXp - prevRequired);
+  const xpNeeded = Math.max(1, nextRequired - prevRequired);
+  const progressPercent = nextStage ? Math.min(100, Math.round((xpInLevel / xpNeeded) * 100)) : 100;
+
+  const handleToggleNotAnAngel = () => {
+    const nextVal = !dailyPillars.notAnAngelAffirmation;
+    updateDailyPillars({ notAnAngelAffirmation: nextVal });
+    if (nextVal) {
+      playSingingBowl();
+      addEvolutionXp(15, 'Affirmed Daily Self-Worth & Flaw Acceptance');
+    }
+  };
+
+  const handleSavePillars = () => {
+    updateDailyPillars({
+      beautifulMoment: pillarInputs.beautiful,
+      healthyNourishment: pillarInputs.healthy,
+      helpingThoseWhoMoveYou: pillarInputs.helping,
+    });
+    setEditingPillars(false);
+    playSingingBowl();
+    addEvolutionXp(15, 'Completed Daily Living Compass');
+  };
 
   // Curated Daily Wisdom Quotes (rotates cyclically by day of year)
   const dailyQuotes: DailyQuote[] = [
@@ -108,6 +154,188 @@ export function DashboardView() {
         <p className="text-sm text-slate-600 dark:text-slate-300">
           A calm holistic overview of your reflections, breathing rituals, milestones, and inner discoveries.
         </p>
+      </div>
+
+      {/* Zero to Hero Evolution System Card */}
+      <div className="p-7 sm:p-8 rounded-3xl bg-white/95 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xl space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25 flex-shrink-0">
+              <Award className="w-7 h-7" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                  Stage {evolution.currentLevel} of 5
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-bold">
+                  {evolution.totalXp} Total XP
+                </span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-serif font-bold text-slate-900 dark:text-white">
+                {currentStage.title}
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                {currentStage.subtitle}
+              </p>
+            </div>
+          </div>
+
+          <div className="text-end hidden sm:block">
+            <span className="text-xs font-semibold text-slate-500">
+              {nextStage ? `${nextRequired - evolution.totalXp} XP to ${nextStage.title}` : 'Sovereign Master (Max Stage)'}
+            </span>
+          </div>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="space-y-1.5">
+          <div className="flex justify-between text-xs font-bold text-slate-600 dark:text-slate-300">
+            <span>Progress to Next Stage</span>
+            <span>{progressPercent}%</span>
+          </div>
+          <div className="w-full h-2.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+            <div
+              className="bg-gradient-to-r from-indigo-500 to-violet-600 h-full rounded-full transition-all duration-500"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Stage Mantra & Philosophy */}
+        <div className="p-4 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 flex items-start gap-3">
+          <Sparkles className="w-5 h-5 text-indigo-600 dark:text-indigo-400 flex-shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <p className="text-xs sm:text-sm font-serif italic text-indigo-950 dark:text-indigo-200 font-medium">
+              {currentStage.mantra}
+            </p>
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+              {currentStage.description}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* The 4 Daily Pillars of Living Right Card */}
+      <div className="p-7 sm:p-8 rounded-3xl bg-white/95 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xl space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+              <Compass className="w-4 h-4" />
+              <span>Daily Living Compass • 4 Pillars</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-serif font-bold text-slate-900 dark:text-white">
+              The 4 Pillars of Living Right
+            </h2>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              if (editingPillars) {
+                handleSavePillars();
+              } else {
+                setEditingPillars(true);
+              }
+            }}
+            className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 transition-colors"
+          >
+            {editingPillars ? 'Save Pillars' : 'Edit Notes'}
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Pillar 1: Something Beautiful */}
+          <div className="p-4 rounded-2xl bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 space-y-2">
+            <div className="flex items-center gap-2 text-amber-800 dark:text-amber-300 font-bold text-xs">
+              <Coffee className="w-4 h-4" />
+              <span>1. Something Beautiful to Do</span>
+            </div>
+            {editingPillars ? (
+              <input
+                type="text"
+                value={pillarInputs.beautiful}
+                onChange={(e) => setPillarInputs({ ...pillarInputs, beautiful: e.target.value })}
+                placeholder="e.g., Watch sunset, brew tea slowly, listen to music"
+                className="w-full text-xs p-2 rounded-xl bg-white dark:bg-slate-900 border border-amber-300 dark:border-amber-700 text-slate-800 dark:text-slate-100"
+              />
+            ) : (
+              <p className="text-xs text-amber-900 dark:text-amber-200 leading-relaxed">
+                {dailyPillars.beautifulMoment || 'Take in a small quiet beauty: a warm cup, morning birds, or walking slowly.'}
+              </p>
+            )}
+          </div>
+
+          {/* Pillar 2: Something Healthy */}
+          <div className="p-4 rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 space-y-2">
+            <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-bold text-xs">
+              <Apple className="w-4 h-4" />
+              <span>2. Something Healthy to Eat</span>
+            </div>
+            {editingPillars ? (
+              <input
+                type="text"
+                value={pillarInputs.healthy}
+                onChange={(e) => setPillarInputs({ ...pillarInputs, healthy: e.target.value })}
+                placeholder="e.g., Fresh greens, clean water, wholesome home meal"
+                className="w-full text-xs p-2 rounded-xl bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 text-slate-800 dark:text-slate-100"
+              />
+            ) : (
+              <p className="text-xs text-emerald-900 dark:text-emerald-200 leading-relaxed">
+                {dailyPillars.healthyNourishment || 'Honor your body today with fresh, pure food and unhurried hydration.'}
+              </p>
+            )}
+          </div>
+
+          {/* Pillar 3: Helping Those Who Move You */}
+          <div className="p-4 rounded-2xl bg-sky-50/60 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/60 space-y-2">
+            <div className="flex items-center gap-2 text-sky-800 dark:text-sky-300 font-bold text-xs">
+              <Users className="w-4 h-4" />
+              <span>3. Helping Those Who Move You</span>
+            </div>
+            {editingPillars ? (
+              <input
+                type="text"
+                value={pillarInputs.helping}
+                onChange={(e) => setPillarInputs({ ...pillarInputs, helping: e.target.value })}
+                placeholder="e.g., A kind word, listening to someone, helping quietly"
+                className="w-full text-xs p-2 rounded-xl bg-white dark:bg-slate-900 border border-sky-300 dark:border-sky-700 text-slate-800 dark:text-slate-100"
+              />
+            ) : (
+              <p className="text-xs text-sky-900 dark:text-sky-200 leading-relaxed">
+                {dailyPillars.helpingThoseWhoMoveYou || 'Offer an honest kind word or quiet help to someone without expecting praise.'}
+              </p>
+            )}
+          </div>
+
+          {/* Pillar 4: Not an Angel, Still Worthy */}
+          <div
+            onClick={handleToggleNotAnAngel}
+            className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-2 ${
+              dailyPillars.notAnAngelAffirmation
+                ? 'bg-rose-50/90 dark:bg-rose-950/50 border-rose-300 dark:border-rose-700'
+                : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 hover:border-rose-300'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-rose-700 dark:text-rose-400 font-bold text-xs">
+                <Heart className="w-4 h-4" />
+                <span>4. Not an Angel, Still Worthy</span>
+              </div>
+              <div
+                className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all ${
+                  dailyPillars.notAnAngelAffirmation
+                    ? 'bg-rose-600 border-rose-600 text-white'
+                    : 'border-slate-300 dark:border-slate-600'
+                }`}
+              >
+                {dailyPillars.notAnAngelAffirmation && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+              </div>
+            </div>
+            <p className="text-xs text-slate-700 dark:text-slate-300 italic font-serif leading-relaxed">
+              &ldquo;I am human. I have flaws, I make mistakes, but I am still worthy of deep love and peace today.&rdquo;
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Quote of the Day Card */}
