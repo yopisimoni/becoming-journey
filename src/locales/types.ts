@@ -36,6 +36,35 @@ export interface TranslationDictionary {
     reducedMotion: string;
     themeToggle: string;
     aiSettingsBtn: string;
+    sanctuaryTab: string;
+    journalTab: string;
+    mapTab: string;
+    momentsTab: string;
+  };
+  auth: {
+    signIn: string;
+    signUp: string;
+    signOut: string;
+    guest: string;
+    nameLabel: string;
+    emailLabel: string;
+    passwordLabel: string;
+    avatarLabel: string;
+    createAccount: string;
+    signInPrompt: string;
+    signUpPrompt: string;
+    alreadyHaveAccount: string;
+    dontHaveAccount: string;
+    welcomeBack: string;
+    privacyNote: string;
+    invalidCredentials: string;
+    emailExists: string;
+    profile: string;
+    lotusAvatar: string;
+    mountainAvatar: string;
+    waveAvatar: string;
+    leafAvatar: string;
+    starAvatar: string;
   };
   sanctuary: {
     headline: string;

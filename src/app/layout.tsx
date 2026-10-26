@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { AppProvider } from '@/context/AppContext';
 import { Navbar } from '@/components/Navbar';
+import { FloatingDock } from '@/components/FloatingDock';
 import { DisclaimerBanner } from '@/components/DisclaimerBanner';
 import { SafetyModal } from '@/components/SafetyModal';
 import { AtmosphereBackground } from '@/components/AtmosphereBackground';
@@ -25,14 +26,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" dir="ltr">
-      <body className="min-h-screen flex flex-col font-sans transition-colors duration-500 text-stone-charcoal dark:text-ivory-100 selection:bg-violet-soft selection:text-violet-deep">
+      <body className="min-h-screen flex flex-col font-sans transition-colors duration-500 text-slate-900 dark:text-white selection:bg-indigo-100 dark:selection:bg-indigo-950 selection:text-indigo-900 dark:selection:text-indigo-200">
         <AppProvider>
           <AtmosphereBackground />
           <DisclaimerBanner />
           <Navbar />
-          <main className="flex-1 w-full max-w-7xl mx-auto">{children}</main>
-          <footer className="border-t border-ivory-300 dark:border-white/10 py-6 text-center text-xs text-stone-mist dark:text-stone-400 space-y-1 bg-ivory-50/60 dark:bg-stone-900/40 backdrop-blur-md">
-            <p>BECOMING • The Sanctuary Upgrade (v0.2)</p>
+          <main className="flex-1 w-full max-w-7xl mx-auto px-4">{children}</main>
+          <FloatingDock />
+          <footer className="border-t border-slate-200/80 dark:border-white/10 py-6 text-center text-xs text-slate-500 dark:text-slate-400 space-y-1 bg-white/40 dark:bg-slate-900/40 backdrop-blur-md">
+            <p className="font-medium text-slate-700 dark:text-slate-300">BECOMING • The Sanctuary Upgrade (v0.3)</p>
             <p className="text-[11px]">
               Non-clinical • Local-First Sanctuary • Zero Tracking • All Data Resides on Your Device
             </p>

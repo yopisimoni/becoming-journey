@@ -56,3 +56,13 @@ export interface UserSessionData {
   journalEntries: JournalEntry[];
   moments: MomentOfLight[];
 }
+
+export type AvatarId = 'lotus' | 'mountain' | 'wave' | 'leaf' | 'star';
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  avatar: AvatarId;
+  createdAt: string;
+}

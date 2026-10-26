@@ -198,3 +198,79 @@ test.describe('BCM-003: Responsive Layouts & Accessibility', () => {
     expect(hasHorizontalScroll).toBe(false);
   });
 });
+
+test.describe('Sanctuary Overhaul v0.3: Floating Dock & Local-First Auth', () => {
+  test('navigates seamlessly via the Floating Bottom Glass Dock', async ({ page }) => {
+    await page.goto('/');
+
+    // Dock should be visible with 4 tabs
+    const journalTab = page.locator('#floating-dock-tab-journal');
+    await expect(journalTab).toBeVisible();
+    await journalTab.click();
+
+    // Journal view is rendered
+    await expect(page.getByRole('heading', { name: /Free Journal/i })).toBeVisible();
+
+    // Click Journey Map tab
+    const mapTab = page.locator('#floating-dock-tab-map');
+    await expect(mapTab).toBeVisible();
+    await mapTab.click();
+    await expect(page.getByRole('heading', { name: /Your Journey Map/i })).toBeVisible();
+
+    // Click Moments of Light tab
+    const momentsTab = page.locator('#floating-dock-tab-moments');
+    await expect(momentsTab).toBeVisible();
+    await momentsTab.click();
+    await expect(page.getByRole('heading', { name: /Moments of Light/i })).toBeVisible();
+
+    // Click Sanctuary tab to return home
+    const sanctuaryTab = page.locator('#floating-dock-tab-sanctuary');
+    await expect(sanctuaryTab).toBeVisible();
+    await sanctuaryTab.click();
+    await expect(page.getByText(/We are here for you/i)).toBeVisible();
+  });
+
+  test('allows local-first sign up, personalization, and sign out', async ({ page }) => {
+    await page.goto('/');
+
+    // Open Auth modal from top header
+    const signInBtn = page.getByRole('button', { name: /Sign In/i });
+    await expect(signInBtn).toBeVisible();
+    await signInBtn.click();
+
+    // Switch to Sign Up tab
+    const signUpTab = page.locator('#auth-tab-signup');
+    await expect(signUpTab).toBeVisible();
+    await signUpTab.click();
+
+    // Fill form
+    await page.locator('#auth-name-input').fill('Aria Serenity');
+    await page.locator('#auth-email-input').fill('aria@sanctuary.local');
+    await page.locator('#auth-password-input').fill('peaceful456');
+
+    // Select mountain avatar
+    const mountainAvatar = page.locator('#avatar-choice-mountain');
+    if (await mountainAvatar.isVisible()) {
+      await mountainAvatar.click();
+    }
+
+    // Submit sign up
+    await page.locator('#auth-submit-button').click();
+
+    // Verify personalized greeting appears in Sanctuary
+    await expect(page.getByText(/Welcome back, Aria Serenity/i)).toBeVisible();
+
+    // Open profile menu
+    const profileBtn = page.locator('#user-profile-button');
+    await expect(profileBtn).toBeVisible();
+    await profileBtn.click();
+
+    // Click Sign Out
+    const signOutBtn = page.locator('#profile-sign-out-button');
+    await expect(signOutBtn).toBeVisible();
+    await signOutBtn.click();
+
+    // Header returns to "Sign In" button
+    await expect(page.getByRole('button', { name: /Sign In/i })).toBeVisible();
+  });
+});

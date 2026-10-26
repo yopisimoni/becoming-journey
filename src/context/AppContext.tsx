@@ -8,6 +8,8 @@ import {
   JourneyMapCard,
   JournalEntry,
   MomentOfLight,
+  UserProfile,
+  AvatarId,
 } from '@/types';
 import { getDictionary, defaultLocale, TranslationDictionary } from '@/locales';
 import { soundEngine, SoundscapePreset } from '@/lib/audio/soundEngine';
@@ -15,11 +17,23 @@ import { AISettings, DEFAULT_AI_SETTINGS } from '@/lib/engine/aiAdapter';
 
 export type ThemeMode = 'light' | 'twilight';
 
+interface StoredAccount extends UserProfile {
+  passwordHash: string;
+}
+
 interface AppContextValue {
   locale: Locale;
   setLocale: (locale: Locale) => void;
   dict: TranslationDictionary;
   isRtl: boolean;
+
+  // Local-First User Authentication & Profile
+  user: UserProfile | null;
+  isAuthModalOpen: boolean;
+  setAuthModalOpen: (open: boolean) => void;
+  signUp: (name: string, email: string, password: string, avatar?: AvatarId) => { success: boolean; error?: string };
+  signIn: (email: string, password: string) => { success: boolean; error?: string };
+  signOut: () => void;
 
   // Theme (Light vs Twilight Sanctuary)
   themeMode: ThemeMode;
@@ -89,6 +103,17 @@ const STORAGE_KEY_LOCALE = 'becoming_locale_v1';
 const STORAGE_KEY_MOTION = 'becoming_reduced_motion_v1';
 const STORAGE_KEY_THEME = 'becoming_theme_mode_v1';
 const STORAGE_KEY_AI = 'becoming_ai_settings_v1';
+const STORAGE_KEY_REGISTERED_USERS = 'becoming_registered_users_v1';
+const STORAGE_KEY_ACTIVE_USER = 'becoming_active_user_v1';
+
+const hashPassword = (pwd: string) => {
+  let hash = 0;
+  for (let i = 0; i < pwd.length; i++) {
+    hash = (hash << 5) - hash + pwd.charCodeAt(i);
+    hash |= 0;
+  }
+  return 'bcm_h_' + Math.abs(hash).toString(36);
+};
 
 const AppContext = createContext<AppContextValue | null>(null);
 
@@ -98,6 +123,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [soundPreset, setSoundPresetState] = useState<SoundscapePreset>('none');
   const [aiSettings, setAiSettingsState] = useState<AISettings>(DEFAULT_AI_SETTINGS);
   const [isAiModalOpen, setAiModalOpen] = useState(false);
+
+  // Authentication State
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [isAuthModalOpen, setAuthModalOpen] = useState(false);
 
   const [sanctuaryStep, setSanctuaryStep] = useState<number>(0);
   const [activeMode, setActiveMode] = useState<InteractionMode>('guided');
@@ -111,6 +140,38 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
   const [moments, setMoments] = useState<MomentOfLight[]>([]);
 
+  // Key helper scoped to active user
+  const getUserScopedKey = (type: 'cards' | 'journal' | 'moments', userId?: string) => {
+    const uid = userId || user?.id;
+    if (uid) {
+      return `becoming_${uid}_${type}_v1`;
+    }
+    return type === 'cards'
+      ? STORAGE_KEY_CARDS
+      : type === 'journal'
+      ? STORAGE_KEY_JOURNAL
+      : STORAGE_KEY_MOMENTS;
+  };
+
+  const loadUserData = (targetUser: UserProfile | null, store: Storage) => {
+    try {
+      const cardsKey = getUserScopedKey('cards', targetUser?.id);
+      const journalKey = getUserScopedKey('journal', targetUser?.id);
+      const momentsKey = getUserScopedKey('moments', targetUser?.id);
+
+      const savedCards = store.getItem(cardsKey);
+      setCards(savedCards ? JSON.parse(savedCards) : []);
+
+      const savedJournal = store.getItem(journalKey);
+      setJournalEntries(savedJournal ? JSON.parse(savedJournal) : []);
+
+      const savedMoments = store.getItem(momentsKey);
+      setMoments(savedMoments ? JSON.parse(savedMoments) : []);
+    } catch {
+      // ignore
+    }
+  };
+
   // Initialize from storage on client mount
   useEffect(() => {
     try {
@@ -121,9 +182,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         }
       }
 
+      // Check for active signed in user
+      const savedUserStr = localStorage.getItem(STORAGE_KEY_ACTIVE_USER);
+      let initialUser: UserProfile | null = null;
+      if (savedUserStr) {
+        try {
+          initialUser = JSON.parse(savedUserStr);
+          setUser(initialUser);
+        } catch {
+          // ignore
+        }
+      }
+
       const savedMode = (localStorage.getItem(STORAGE_KEY_MODE) ||
         sessionStorage.getItem(STORAGE_KEY_MODE)) as 'session' | 'local' | null;
-      const initialStorageMode = savedMode === 'local' ? 'local' : 'session';
+      const initialStorageMode = initialUser ? 'local' : (savedMode === 'local' ? 'local' : 'session');
       setStorageModeState(initialStorageMode);
 
       const store = initialStorageMode === 'local' ? localStorage : sessionStorage;
@@ -148,17 +221,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setReducedMotionState(savedMotion === 'true');
       }
 
-      const savedCards = store.getItem(STORAGE_KEY_CARDS);
-      if (savedCards) setCards(JSON.parse(savedCards));
-
-      const savedJournal = store.getItem(STORAGE_KEY_JOURNAL);
-      if (savedJournal) setJournalEntries(JSON.parse(savedJournal));
-
-      const savedMoments = store.getItem(STORAGE_KEY_MOMENTS);
-      if (savedMoments) setMoments(JSON.parse(savedMoments));
+      loadUserData(initialUser, store);
     } catch {
       // Storage might be disabled in private mode
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Update document direction and lang attribute whenever locale changes
@@ -262,6 +329,102 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const signUp = (name: string, email: string, password: string, avatar: AvatarId = 'lotus') => {
+    const cleanName = name.trim();
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanName) return { success: false, error: 'Please enter your name.' };
+    if (!cleanEmail || !cleanEmail.includes('@')) return { success: false, error: 'Please enter a valid email.' };
+    if (password.length < 4) return { success: false, error: 'Password must be at least 4 characters.' };
+
+    try {
+      const usersStr = localStorage.getItem(STORAGE_KEY_REGISTERED_USERS);
+      const registered: StoredAccount[] = usersStr ? JSON.parse(usersStr) : [];
+      if (registered.some((u) => u.email === cleanEmail)) {
+        return { success: false, error: dict.auth.emailExists };
+      }
+
+      const newProfile: UserProfile = {
+        id: 'usr_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6),
+        name: cleanName,
+        email: cleanEmail,
+        avatar,
+        createdAt: new Date().toISOString(),
+      };
+
+      const account: StoredAccount = {
+        ...newProfile,
+        passwordHash: hashPassword(password),
+      };
+
+      const updatedUsers = [...registered, account];
+      localStorage.setItem(STORAGE_KEY_REGISTERED_USERS, JSON.stringify(updatedUsers));
+      localStorage.setItem(STORAGE_KEY_ACTIVE_USER, JSON.stringify(newProfile));
+      setUser(newProfile);
+      setStorageModeState('local');
+      localStorage.setItem(STORAGE_KEY_MODE, 'local');
+
+      // Migrate guest cards/journal/moments if any
+      const userCardsKey = getUserScopedKey('cards', newProfile.id);
+      const userJournalKey = getUserScopedKey('journal', newProfile.id);
+      const userMomentsKey = getUserScopedKey('moments', newProfile.id);
+
+      if (cards.length > 0) {
+        localStorage.setItem(userCardsKey, JSON.stringify(cards));
+      }
+      if (journalEntries.length > 0) {
+        localStorage.setItem(userJournalKey, JSON.stringify(journalEntries));
+      }
+      if (moments.length > 0) {
+        localStorage.setItem(userMomentsKey, JSON.stringify(moments));
+      }
+
+      return { success: true };
+    } catch {
+      return { success: false, error: 'Failed to access local storage.' };
+    }
+  };
+
+  const signIn = (email: string, password: string) => {
+    const cleanEmail = email.trim().toLowerCase();
+    try {
+      const usersStr = localStorage.getItem(STORAGE_KEY_REGISTERED_USERS);
+      const registered: StoredAccount[] = usersStr ? JSON.parse(usersStr) : [];
+      const found = registered.find((u) => u.email === cleanEmail);
+      if (!found || found.passwordHash !== hashPassword(password)) {
+        return { success: false, error: dict.auth.invalidCredentials };
+      }
+
+      const profile: UserProfile = {
+        id: found.id,
+        name: found.name,
+        email: found.email,
+        avatar: found.avatar,
+        createdAt: found.createdAt,
+      };
+
+      localStorage.setItem(STORAGE_KEY_ACTIVE_USER, JSON.stringify(profile));
+      setUser(profile);
+      setStorageModeState('local');
+      localStorage.setItem(STORAGE_KEY_MODE, 'local');
+
+      loadUserData(profile, localStorage);
+      return { success: true };
+    } catch {
+      return { success: false, error: 'Failed to access local storage.' };
+    }
+  };
+
+  const signOut = () => {
+    try {
+      localStorage.removeItem(STORAGE_KEY_ACTIVE_USER);
+    } catch {
+      // ignore
+    }
+    setUser(null);
+    const store = storageMode === 'local' ? localStorage : sessionStorage;
+    loadUserData(null, store);
+  };
+
   const saveCard = (cardData: Omit<JourneyMapCard, 'id' | 'createdAt'>) => {
     const newCard: JourneyMapCard = {
       ...cardData,
@@ -272,7 +435,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setCards(updated);
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
-      store.setItem(STORAGE_KEY_CARDS, JSON.stringify(updated));
+      store.setItem(getUserScopedKey('cards'), JSON.stringify(updated));
     } catch {
       // ignore
     }
@@ -283,7 +446,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setCards(updated);
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
-      store.setItem(STORAGE_KEY_CARDS, JSON.stringify(updated));
+      store.setItem(getUserScopedKey('cards'), JSON.stringify(updated));
     } catch {
       // ignore
     }
@@ -303,7 +466,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setJournalEntries(updated);
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
-      store.setItem(STORAGE_KEY_JOURNAL, JSON.stringify(updated));
+      store.setItem(getUserScopedKey('journal'), JSON.stringify(updated));
     } catch {
       // ignore
     }
@@ -314,7 +477,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setJournalEntries(updated);
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
-      store.setItem(STORAGE_KEY_JOURNAL, JSON.stringify(updated));
+      store.setItem(getUserScopedKey('journal'), JSON.stringify(updated));
     } catch {
       // ignore
     }
@@ -331,7 +494,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setMoments(updated);
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
-      store.setItem(STORAGE_KEY_MOMENTS, JSON.stringify(updated));
+      store.setItem(getUserScopedKey('moments'), JSON.stringify(updated));
     } catch {
       // ignore
     }
@@ -342,7 +505,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setMoments(updated);
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
-      store.setItem(STORAGE_KEY_MOMENTS, JSON.stringify(updated));
+      store.setItem(getUserScopedKey('moments'), JSON.stringify(updated));
     } catch {
       // ignore
     }
@@ -355,8 +518,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setCurrentIntent(null);
     setSanctuaryStep(0);
     try {
-      localStorage.clear();
-      sessionStorage.clear();
+      const store = storageMode === 'local' ? localStorage : sessionStorage;
+      store.removeItem(getUserScopedKey('cards'));
+      store.removeItem(getUserScopedKey('journal'));
+      store.removeItem(getUserScopedKey('moments'));
+      if (!user) {
+        localStorage.clear();
+        sessionStorage.clear();
+      }
     } catch {
       // ignore
     }
@@ -429,6 +598,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setLocale,
     dict,
     isRtl,
+    user,
+    isAuthModalOpen,
+    setAuthModalOpen,
+    signUp,
+    signIn,
+    signOut,
     themeMode,
     setThemeMode,
     soundPreset,

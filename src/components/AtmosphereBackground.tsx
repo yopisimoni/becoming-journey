@@ -16,8 +16,8 @@ export function AtmosphereBackground() {
       <div
         className={`absolute inset-0 transition-colors duration-700 ${
           isTwilight
-            ? 'bg-[#0E0D14]'
-            : 'bg-ivory-100'
+            ? 'bg-[#0B0F19]'
+            : 'bg-[#FAF7F2]'
         }`}
       />
 

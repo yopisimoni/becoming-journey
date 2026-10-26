@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: 'class',
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,6 +10,8 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        alabaster: '#FAF7F2',
+        midnight: '#0B0F19',
         ivory: {
           50: '#FDFCF7',
           100: '#FAF7EE',
@@ -33,9 +36,9 @@ const config: Config = {
           deep: '#5C2D20',
         },
         stone: {
-          charcoal: '#242426',
-          mist: '#6C6C75',
-          border: '#E3E1DA',
+          charcoal: '#1E1E24',
+          mist: '#5C5C66',
+          border: '#DCDAD2',
         }
       },
       fontFamily: {
@@ -55,6 +58,11 @@ const config: Config = {
       transitionDuration: {
         'calm': '200ms',
       },
+      boxShadow: {
+        'glow-indigo': '0 0 35px -5px rgba(99, 102, 241, 0.3)',
+        'glow-peach': '0 0 35px -5px rgba(244, 63, 94, 0.25)',
+        'glow-mint': '0 0 35px -5px rgba(16, 185, 129, 0.25)',
+      }
     },
   },
   plugins: [],

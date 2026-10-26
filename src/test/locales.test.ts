@@ -25,6 +25,10 @@ describe('BCM-004: Multilingual Framework & Five Locales', () => {
       it('has non-empty navigation, sanctuary entrance, and audio strings', () => {
         expect(dict.nav.title).toBeTruthy();
         expect(dict.nav.prototypeBadge).toBeTruthy();
+        expect(dict.nav.sanctuaryTab).toBeTruthy();
+        expect(dict.nav.journalTab).toBeTruthy();
+        expect(dict.nav.mapTab).toBeTruthy();
+        expect(dict.nav.momentsTab).toBeTruthy();
         expect(dict.disclaimer.bannerText).toBeTruthy();
         expect(dict.disclaimer.crisisHotlines.length).toBeGreaterThan(0);
         expect(dict.sanctuary.headline).toBeTruthy();
@@ -34,6 +38,18 @@ describe('BCM-004: Multilingual Framework & Five Locales', () => {
         expect(dict.audio.sanctuary).toBeTruthy();
         expect(dict.audio.rain).toBeTruthy();
         expect(dict.audio.bowl).toBeTruthy();
+      });
+
+      it('defines auth dictionary strings for local-first profile management', () => {
+        expect(dict.auth.signIn).toBeTruthy();
+        expect(dict.auth.signUp).toBeTruthy();
+        expect(dict.auth.signOut).toBeTruthy();
+        expect(dict.auth.nameLabel).toBeTruthy();
+        expect(dict.auth.emailLabel).toBeTruthy();
+        expect(dict.auth.passwordLabel).toBeTruthy();
+        expect(dict.auth.avatarLabel).toBeTruthy();
+        expect(dict.auth.guest).toBeTruthy();
+        expect(dict.auth.privacyNote).toBeTruthy();
       });
 
       it('defines all 4 entry intents with diagnostic question tree and 3 options', () => {

@@ -262,10 +262,10 @@ export function GuidedReflectionView() {
             className="space-y-6"
           >
             <div className="space-y-1">
-              <h2 id="stage-express-title" className="text-xl sm:text-2xl font-semibold text-stone-charcoal dark:text-ivory-100">
+              <h2 id="stage-express-title" className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
                 {dict.guided.expressStepTitle}
               </h2>
-              <p className="text-xs sm:text-sm text-stone-mist dark:text-stone-400">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
                 {dict.guided.expressStepSubtitle}
               </p>
             </div>
@@ -273,7 +273,7 @@ export function GuidedReflectionView() {
             {/* Diagnostic Root Question & 4 Cards */}
             {diagnostic && (
               <div className="space-y-3">
-                <label className="block text-sm font-semibold text-stone-charcoal dark:text-ivory-100">
+                <label className="block text-sm font-bold text-slate-900 dark:text-white">
                   {diagnostic.diagnosticQuestion}
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -291,17 +291,17 @@ export function GuidedReflectionView() {
                         }}
                         className={`p-4 rounded-2xl text-start transition-all border ${
                           isSelected
-                            ? 'bg-violet-soft/80 dark:bg-violet-deep/30 border-violet-muted shadow-xs ring-1 ring-violet-muted'
-                            : 'bg-white/70 dark:bg-stone-900/50 backdrop-blur-md border-stone-border dark:border-white/10 hover:bg-white/90'
+                            ? 'bg-indigo-50 dark:bg-indigo-950/50 border-indigo-500 ring-2 ring-indigo-500 text-slate-900 dark:text-white shadow-xs'
+                            : 'bg-white/90 dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 hover:border-slate-300 text-slate-900 dark:text-white'
                         }`}
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-semibold text-xs sm:text-sm text-stone-charcoal dark:text-ivory-100">
+                          <span className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
                             {opt.label}
                           </span>
-                          {isSelected && <CheckCircle2 className="w-4 h-4 text-violet-deep dark:text-violet-soft shrink-0" />}
+                          {isSelected && <CheckCircle2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />}
                         </div>
-                        <p className="text-[11px] text-stone-mist dark:text-stone-400 mt-1 leading-relaxed">
+                        <p className="text-[11px] text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
                           {opt.detail}
                         </p>
                       </button>
@@ -312,8 +312,8 @@ export function GuidedReflectionView() {
             )}
 
             {/* Support Selector */}
-            <div className="p-4 rounded-2xl bg-white/60 dark:bg-stone-900/50 backdrop-blur-md border border-stone-border dark:border-white/10 space-y-3">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-stone-mist dark:text-stone-400">
+            <div className="p-4 rounded-2xl bg-white/90 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-3">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 {script.supportTitle}
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -321,10 +321,10 @@ export function GuidedReflectionView() {
                   <button
                     key={item.id}
                     onClick={() => setSelectedSupportId(item.id)}
-                    className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-colors border ${
+                    className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-colors border ${
                       selectedSupportId === item.id
-                        ? 'bg-violet-deep text-ivory-50 border-violet-deep'
-                        : 'bg-ivory-50 dark:bg-white/5 text-stone-charcoal dark:text-ivory-100 border-stone-border dark:border-white/10 hover:bg-ivory-200'
+                        ? 'bg-indigo-600 text-white border-indigo-600'
+                        : 'bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-slate-100'
                     }`}
                   >
                     {item.label}
@@ -336,13 +336,13 @@ export function GuidedReflectionView() {
             {/* Open Prompt & Textarea */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <label htmlFor="user-express-input" className="block text-sm font-medium text-stone-charcoal dark:text-ivory-100">
+                <label htmlFor="user-express-input" className="block text-sm font-bold text-slate-900 dark:text-white">
                   {script.openPrompt}
                 </label>
                 <button
                   type="button"
                   onClick={() => setIsCustomTextOpen(!isCustomTextOpen)}
-                  className="text-xs text-violet-deep dark:text-violet-soft hover:underline font-medium"
+                  className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-semibold"
                 >
                   {isCustomTextOpen ? 'Collapse' : dict.sanctuary.writeOwnWordsPrompt}
                 </button>
@@ -354,18 +354,18 @@ export function GuidedReflectionView() {
                 value={userText}
                 onChange={(e) => setUserText(e.target.value)}
                 placeholder={script.openPlaceholder}
-                className="w-full p-4 rounded-2xl bg-white/80 dark:bg-stone-900/80 backdrop-blur-md border border-stone-border dark:border-white/10 text-stone-charcoal dark:text-ivory-100 placeholder-stone-mist/60 text-sm focus:outline-none focus:ring-2 focus:ring-violet-muted resize-y shadow-xs"
+                className="w-full p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-y shadow-xs"
               />
-              <div className="flex justify-between items-center text-xs text-stone-mist dark:text-stone-400">
+              <div className="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400">
                 <span>{userText.length} {dict.guided.charCount}</span>
-                <span className="italic">100% private to this browser</span>
+                <span className="italic font-medium">100% private to this browser</span>
               </div>
             </div>
 
             {/* Fallback Notice */}
-            <div className="p-4 rounded-2xl bg-ivory-200/80 dark:bg-white/5 border border-ivory-300 dark:border-white/10 text-xs text-stone-mist dark:text-stone-400 space-y-1">
-              <div className="flex items-center gap-1.5 font-semibold text-stone-charcoal dark:text-ivory-100">
-                <Info className="w-4 h-4 text-violet-muted shrink-0" />
+            <div className="p-4 rounded-2xl bg-slate-100/90 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-xs text-slate-600 dark:text-slate-400 space-y-1">
+              <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">
+                <Info className="w-4 h-4 text-indigo-500 shrink-0" />
                 <span>{dict.fallback.heading}</span>
               </div>
               <p>{dict.fallback.notice}</p>
@@ -374,7 +374,7 @@ export function GuidedReflectionView() {
             <div className="flex justify-end pt-4">
               <button
                 onClick={handleNextStage}
-                className="px-6 py-2.5 rounded-full bg-violet-deep text-ivory-50 font-medium text-sm flex items-center gap-2 hover:bg-violet-deep/90 shadow-md focus:outline-none focus:ring-2 focus:ring-violet-muted"
+                className="px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm flex items-center gap-2 shadow-md shadow-indigo-500/25 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <span>{dict.guided.nextStepBtn}</span>
                 <ArrowRight className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} />
@@ -395,31 +395,31 @@ export function GuidedReflectionView() {
             className="space-y-6"
           >
             <div className="space-y-1">
-              <h2 id="stage-explore-title" className="text-xl sm:text-2xl font-semibold text-stone-charcoal dark:text-ivory-100">
+              <h2 id="stage-explore-title" className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
                 {dict.guided.exploreStepTitle}
               </h2>
-              <p className="text-xs sm:text-sm text-stone-mist dark:text-stone-400">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
                 {dict.guided.exploreStepSubtitle}
               </p>
             </div>
 
             {/* What was shared */}
             {userText.trim() && (
-              <div className="p-4 rounded-2xl bg-white/60 dark:bg-white/5 border border-stone-border dark:border-white/10 text-xs text-stone-mist dark:text-stone-300 space-y-1">
-                <span className="font-semibold uppercase tracking-wider text-[11px] text-stone-charcoal dark:text-white">
+              <div className="p-4 rounded-2xl bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 space-y-1">
+                <span className="font-bold uppercase tracking-wider text-[11px] text-slate-900 dark:text-white">
                   What you shared:
                 </span>
-                <p className="italic text-stone-charcoal dark:text-ivory-100">&ldquo;{userText}&rdquo;</p>
+                <p className="italic text-slate-900 dark:text-white font-medium">&ldquo;{userText}&rdquo;</p>
               </div>
             )}
 
             {/* Tentative Mirror Banner */}
-            <div className="p-6 rounded-3xl bg-violet-soft/60 dark:bg-violet-deep/20 border border-violet-muted/30 space-y-3 backdrop-blur-md">
-              <div className="flex items-center gap-2 text-violet-deep dark:text-violet-soft text-xs font-semibold uppercase tracking-wider">
-                <Sparkles className="w-4 h-4 text-violet-muted" />
+            <div className="p-6 rounded-3xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-900/50 space-y-3 backdrop-blur-md">
+              <div className="flex items-center gap-2 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase tracking-wider">
+                <Sparkles className="w-4 h-4 text-indigo-500" />
                 <span>Tentative Mirror</span>
               </div>
-              <p className="text-base sm:text-lg text-stone-charcoal dark:text-ivory-100 leading-relaxed font-serif italic">
+              <p className="text-base sm:text-lg text-slate-900 dark:text-white leading-relaxed font-serif italic font-medium">
                 &ldquo;{empatheticMirror}&rdquo;
               </p>
             </div>
@@ -427,7 +427,7 @@ export function GuidedReflectionView() {
             {/* Deepening Perspective Question with 3 Options */}
             {diagnostic && (
               <div className="space-y-3 pt-2">
-                <label className="block text-sm font-semibold text-stone-charcoal dark:text-ivory-100">
+                <label className="block text-sm font-bold text-slate-900 dark:text-white">
                   {diagnostic.deepeningQuestion}
                 </label>
                 <div className="space-y-2">
@@ -438,14 +438,14 @@ export function GuidedReflectionView() {
                         key={opt.id}
                         type="button"
                         onClick={() => setSelectedPerspectiveId(opt.id)}
-                        className={`w-full p-3.5 rounded-2xl text-start transition-all border flex items-center justify-between text-xs sm:text-sm ${
+                        className={`w-full p-4 rounded-2xl text-start transition-all border flex items-center justify-between text-xs sm:text-sm ${
                           isSelected
-                            ? 'bg-violet-soft/80 dark:bg-violet-deep/30 border-violet-muted text-violet-deep dark:text-violet-soft font-semibold shadow-xs'
-                            : 'bg-white/70 dark:bg-stone-900/50 border-stone-border dark:border-white/10 text-stone-charcoal dark:text-ivory-100 hover:bg-white/90'
+                            ? 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-500 text-slate-900 dark:text-white font-bold ring-2 ring-indigo-500 shadow-xs'
+                            : 'bg-white/90 dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:border-slate-300'
                         }`}
                       >
-                        <span>{opt.label}</span>
-                        {isSelected && <Check className="w-4 h-4 text-violet-deep dark:text-violet-soft shrink-0" />}
+                        <span className="font-medium">{opt.label}</span>
+                        {isSelected && <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />}
                       </button>
                     );
                   })}
@@ -456,14 +456,14 @@ export function GuidedReflectionView() {
             <div className="flex items-center justify-between pt-4">
               <button
                 onClick={handlePrevStage}
-                className="px-4 py-2 border border-stone-border dark:border-white/10 rounded-full text-sm font-medium text-stone-charcoal dark:text-ivory-100 hover:bg-ivory-200 flex items-center gap-1.5"
+                className="px-5 py-2.5 border border-slate-300 dark:border-slate-700 rounded-full text-sm font-semibold text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-1.5 transition-colors"
               >
                 <ArrowLeft className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} />
                 <span>{dict.guided.prevStepBtn}</span>
               </button>
               <button
                 onClick={handleNextStage}
-                className="px-6 py-2.5 rounded-full bg-violet-deep text-ivory-50 font-medium text-sm flex items-center gap-2 hover:bg-violet-deep/90 shadow-md focus:outline-none focus:ring-2 focus:ring-violet-muted"
+                className="px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm flex items-center gap-2 shadow-md shadow-indigo-500/25 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <span>{dict.guided.nextStepBtn}</span>
                 <ArrowRight className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} />
@@ -484,22 +484,22 @@ export function GuidedReflectionView() {
             className="space-y-6"
           >
             <div className="space-y-1">
-              <h2 id="stage-confirm-title" className="text-xl sm:text-2xl font-semibold text-stone-charcoal dark:text-ivory-100">
+              <h2 id="stage-confirm-title" className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
                 {dict.guided.confirmStepTitle}
               </h2>
-              <p className="text-xs sm:text-sm text-stone-mist dark:text-stone-400">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
                 {dict.guided.confirmStepSubtitle}
               </p>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-peach-soft/60 dark:bg-peach-deep/20 border border-peach-muted/30 text-xs text-stone-charcoal dark:text-ivory-100 flex items-start gap-2">
-              <Info className="w-4 h-4 text-peach-deep shrink-0 mt-0.5" />
+            <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-xs text-slate-800 dark:text-slate-200 flex items-start gap-2">
+              <Info className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
               <span>{dict.guided.confirmNotice}</span>
             </div>
 
             {/* 3 Tailored Insight Cards Selection */}
             <div className="space-y-3">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-stone-mist dark:text-stone-400">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 {dict.sanctuary.pickInsightHeading}
               </h3>
               <div className="space-y-3">
@@ -512,15 +512,15 @@ export function GuidedReflectionView() {
                       onClick={() => handleSelectInsightCard(idx)}
                       className={`w-full p-4 rounded-2xl text-start transition-all border ${
                         isSelected
-                          ? 'bg-violet-soft/70 dark:bg-violet-deep/30 border-violet-muted shadow-sm ring-1 ring-violet-muted'
-                          : 'bg-white/70 dark:bg-stone-900/50 border-stone-border dark:border-white/10 hover:bg-white/90'
+                          ? 'bg-indigo-50/90 dark:bg-indigo-950/60 border-indigo-500 shadow-md ring-2 ring-indigo-500'
+                          : 'bg-white/90 dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 hover:border-slate-300 text-slate-900 dark:text-white'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-3">
-                        <blockquote className="font-serif italic text-sm sm:text-base text-stone-charcoal dark:text-ivory-100 leading-relaxed">
+                        <blockquote className="font-serif italic text-base sm:text-lg text-slate-900 dark:text-white leading-relaxed font-semibold">
                           &ldquo;{text}&rdquo;
                         </blockquote>
-                        {isSelected && <CheckCircle2 className="w-5 h-5 text-violet-deep dark:text-violet-soft shrink-0" />}
+                        {isSelected && <CheckCircle2 className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0" />}
                       </div>
                     </button>
                   );
@@ -529,15 +529,15 @@ export function GuidedReflectionView() {
             </div>
 
             {/* Active Selected Insight Detail / Edit Box */}
-            <div className="p-6 rounded-3xl bg-white/80 dark:bg-stone-900/80 backdrop-blur-md border border-stone-border dark:border-white/10 space-y-4 shadow-sm">
+            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4 shadow-md">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold uppercase tracking-wider text-stone-mist dark:text-stone-400">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   {dict.guided.editableLabel}
                 </span>
                 <button
                   type="button"
                   onClick={() => setIsEditingInsight(!isEditingInsight)}
-                  className="text-xs text-violet-deep dark:text-violet-soft hover:underline flex items-center gap-1 font-medium"
+                  className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 font-semibold"
                 >
                   <Edit3 className="w-3.5 h-3.5" />
                   <span>{dict.guided.editInsightBtn}</span>
@@ -549,10 +549,10 @@ export function GuidedReflectionView() {
                   rows={3}
                   value={insightText}
                   onChange={(e) => setInsightText(e.target.value)}
-                  className="w-full p-3 rounded-2xl bg-ivory-50 dark:bg-stone-800 border border-violet-muted text-stone-charcoal dark:text-white text-base focus:outline-none focus:ring-2 focus:ring-violet-muted"
+                  className="w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-indigo-500 text-slate-900 dark:text-white text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               ) : (
-                <blockquote className="text-lg sm:text-xl font-medium text-stone-charcoal dark:text-ivory-100 leading-relaxed border-s-4 border-violet-muted ps-4 py-1">
+                <blockquote className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white leading-relaxed border-s-4 border-indigo-500 ps-4 py-1">
                   &ldquo;{insightText}&rdquo;
                 </blockquote>
               )}
@@ -561,10 +561,10 @@ export function GuidedReflectionView() {
               <div className="flex flex-wrap items-center gap-2 pt-2">
                 <button
                   onClick={handleConfirmInsight}
-                  className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-all shadow-xs ${
+                  className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-all shadow-xs ${
                     isInsightConfirmed
-                      ? 'bg-mint-muted text-ivory-50 border border-mint-muted ring-2 ring-mint-muted/30'
-                      : 'bg-white dark:bg-white/10 text-stone-charcoal dark:text-ivory-100 border border-stone-border dark:border-white/10 hover:bg-mint-soft'
+                      ? 'bg-emerald-600 text-white border border-emerald-600 ring-2 ring-emerald-500/30'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-300 dark:border-slate-700 hover:bg-emerald-50'
                   }`}
                 >
                   <Check className="w-4 h-4" />
@@ -575,8 +575,8 @@ export function GuidedReflectionView() {
                   onClick={handleDiscardInsight}
                   className={`px-4 py-2.5 rounded-full text-xs sm:text-sm font-medium flex items-center gap-1.5 transition-all ${
                     isInsightDiscarded
-                      ? 'bg-peach-muted text-ivory-50 border border-peach-muted'
-                      : 'bg-white dark:bg-white/10 text-stone-mist border border-stone-border dark:border-white/10 hover:bg-peach-soft'
+                      ? 'bg-rose-600 text-white border border-rose-600'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-300 dark:border-slate-700 hover:bg-rose-50 hover:text-rose-600'
                   }`}
                 >
                   <Trash2 className="w-4 h-4" />
@@ -588,14 +588,14 @@ export function GuidedReflectionView() {
             <div className="flex items-center justify-between pt-4">
               <button
                 onClick={handlePrevStage}
-                className="px-4 py-2 border border-stone-border dark:border-white/10 rounded-full text-sm font-medium text-stone-charcoal dark:text-ivory-100 hover:bg-ivory-200 flex items-center gap-1.5"
+                className="px-5 py-2.5 border border-slate-300 dark:border-slate-700 rounded-full text-sm font-semibold text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-1.5 transition-colors"
               >
                 <ArrowLeft className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} />
                 <span>{dict.guided.prevStepBtn}</span>
               </button>
               <button
                 onClick={handleNextStage}
-                className="px-6 py-2.5 rounded-full bg-violet-deep text-ivory-50 font-medium text-sm flex items-center gap-2 hover:bg-violet-deep/90 shadow-md focus:outline-none focus:ring-2 focus:ring-violet-muted"
+                className="px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm flex items-center gap-2 shadow-md shadow-indigo-500/25 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <span>{dict.guided.nextStepBtn}</span>
                 <ArrowRight className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} />
@@ -616,17 +616,17 @@ export function GuidedReflectionView() {
             className="space-y-6"
           >
             <div className="space-y-1">
-              <h2 id="stage-choose-title" className="text-xl sm:text-2xl font-semibold text-stone-charcoal dark:text-ivory-100">
+              <h2 id="stage-choose-title" className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
                 {dict.guided.chooseStepTitle}
               </h2>
-              <p className="text-xs sm:text-sm text-stone-mist dark:text-stone-400">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
                 {dict.guided.chooseStepSubtitle}
               </p>
             </div>
 
             {/* 3 Step Options Cards */}
             <div className="space-y-3">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-stone-mist dark:text-stone-400">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 {dict.sanctuary.pickStepHeading}
               </h3>
               <div className="space-y-2.5">
@@ -639,12 +639,12 @@ export function GuidedReflectionView() {
                       onClick={() => handleSelectStepCard(idx)}
                       className={`w-full p-4 rounded-2xl text-start transition-all border flex items-center justify-between text-xs sm:text-sm ${
                         isSelected
-                          ? 'bg-mint-soft/80 dark:bg-mint-deep/30 border-mint-muted text-mint-deep dark:text-mint-soft font-semibold shadow-xs ring-1 ring-mint-muted'
-                          : 'bg-white/70 dark:bg-stone-900/50 border-stone-border dark:border-white/10 text-stone-charcoal dark:text-ivory-100 hover:bg-white/90'
+                          ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-500 text-slate-900 dark:text-white font-bold shadow-xs ring-2 ring-emerald-500'
+                          : 'bg-white/90 dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:border-slate-300'
                       }`}
                     >
-                      <span>{step}</span>
-                      {isSelected && <CheckCircle2 className="w-4 h-4 text-mint-deep dark:text-mint-soft shrink-0" />}
+                      <span className="font-medium">{step}</span>
+                      {isSelected && <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />}
                     </button>
                   );
                 })}
@@ -652,8 +652,8 @@ export function GuidedReflectionView() {
             </div>
 
             {/* Micro-Step Custom Box */}
-            <div className="p-6 rounded-3xl bg-white/80 dark:bg-stone-900/80 backdrop-blur-md border border-stone-border dark:border-white/10 space-y-3 shadow-xs">
-              <span className="text-xs font-semibold uppercase tracking-wider text-stone-mist dark:text-stone-400">
+            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3 shadow-md">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 {dict.guided.stepDraftLabel}
               </span>
 
@@ -664,17 +664,17 @@ export function GuidedReflectionView() {
                   setCustomStepText(e.target.value);
                   setMicroStepChoice('accepted');
                 }}
-                className="w-full p-3 rounded-2xl bg-ivory-50 dark:bg-stone-800 border border-stone-border dark:border-white/10 text-stone-charcoal dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-violet-muted"
+                className="w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 placeholder={dict.sanctuary.customStepPlaceholder}
               />
 
               <div className="flex flex-wrap gap-2 pt-2">
                 <button
                   onClick={() => setMicroStepChoice('accepted')}
-                  className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium flex items-center gap-1.5 transition-colors ${
+                  className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-colors ${
                     microStepChoice === 'accepted'
-                      ? 'bg-mint-muted text-ivory-50 border border-mint-muted shadow-xs'
-                      : 'bg-white dark:bg-white/10 text-stone-charcoal dark:text-ivory-100 border border-stone-border dark:border-white/10 hover:bg-mint-soft'
+                      ? 'bg-emerald-600 text-white border border-emerald-600 shadow-xs'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-emerald-50'
                   }`}
                 >
                   <Check className="w-4 h-4" />
@@ -682,10 +682,10 @@ export function GuidedReflectionView() {
                 </button>
                 <button
                   onClick={() => setMicroStepChoice('skipped')}
-                  className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors ${
+                  className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-medium transition-colors ${
                     microStepChoice === 'skipped'
-                      ? 'bg-stone-charcoal text-ivory-50'
-                      : 'bg-white dark:bg-white/10 text-stone-mist border border-stone-border dark:border-white/10 hover:bg-ivory-200'
+                      ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-300 dark:border-slate-700 hover:bg-slate-200'
                   }`}
                 >
                   <span>{dict.guided.stepSkippedBtn}</span>
@@ -696,14 +696,14 @@ export function GuidedReflectionView() {
             <div className="flex items-center justify-between pt-4">
               <button
                 onClick={handlePrevStage}
-                className="px-4 py-2 border border-stone-border dark:border-white/10 rounded-full text-sm font-medium text-stone-charcoal dark:text-ivory-100 hover:bg-ivory-200 flex items-center gap-1.5"
+                className="px-5 py-2.5 border border-slate-300 dark:border-slate-700 rounded-full text-sm font-semibold text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-1.5 transition-colors"
               >
                 <ArrowLeft className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} />
                 <span>{dict.guided.prevStepBtn}</span>
               </button>
               <button
                 onClick={handleCommitToMap}
-                className="px-6 py-2.5 rounded-full bg-violet-deep text-ivory-50 font-medium text-sm flex items-center gap-2 hover:bg-violet-deep/90 shadow-md focus:outline-none focus:ring-2 focus:ring-violet-muted"
+                className="px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm flex items-center gap-2 shadow-md shadow-indigo-500/25 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <BookmarkCheck className="w-4 h-4" />
                 <span>{dict.guided.saveToMapBtn}</span>
@@ -723,15 +723,15 @@ export function GuidedReflectionView() {
             transition={springTransition}
             className="text-center py-8 space-y-6"
           >
-            <div className="w-16 h-16 rounded-full bg-mint-soft dark:bg-mint-deep/30 border border-mint-muted/40 mx-auto flex items-center justify-center text-mint-deep dark:text-mint-soft shadow-sm">
+            <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 mx-auto flex items-center justify-center text-emerald-600 dark:text-emerald-300 shadow-sm">
               <Check className="w-8 h-8" />
             </div>
 
             <div className="space-y-2">
-              <h2 id="stage-reflect-title" className="text-2xl font-semibold text-stone-charcoal dark:text-ivory-100">
+              <h2 id="stage-reflect-title" className="text-2xl font-bold text-slate-900 dark:text-white">
                 {dict.guided.reflectStepTitle}
               </h2>
-              <p className="text-xs sm:text-sm text-stone-mist dark:text-stone-400 max-w-md mx-auto">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto">
                 {isInsightConfirmed
                   ? dict.guided.savedNotice
                   : 'Reflection finished without saving unconfirmed draft.'}
@@ -739,15 +739,15 @@ export function GuidedReflectionView() {
             </div>
 
             {isInsightConfirmed && (
-              <div className="max-w-md mx-auto p-6 rounded-3xl bg-white/80 dark:bg-stone-900/80 backdrop-blur-xl border border-stone-border dark:border-white/10 text-start space-y-3 shadow-md">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-stone-mist dark:text-stone-400">
+              <div className="max-w-md mx-auto p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-start space-y-3 shadow-xl">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
                   {dict.welcome.intents[intent].title} • Confirmed
                 </span>
-                <p className="font-serif italic text-stone-charcoal dark:text-ivory-100 text-base">
+                <p className="font-serif italic text-slate-900 dark:text-white text-base font-semibold leading-relaxed">
                   &ldquo;{insightText}&rdquo;
                 </p>
                 {microStepChoice === 'accepted' && (
-                  <div className="text-xs text-mint-deep dark:text-mint-soft font-medium pt-2 border-t border-ivory-200 dark:border-white/10">
+                  <div className="text-xs text-emerald-700 dark:text-emerald-300 font-semibold pt-2 border-t border-slate-100 dark:border-slate-800">
                     Step: {customStepText}
                   </div>
                 )}
@@ -757,13 +757,13 @@ export function GuidedReflectionView() {
             <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
               <button
                 onClick={() => setActiveTab('map')}
-                className="px-6 py-2.5 rounded-full bg-violet-deep text-ivory-50 text-sm font-medium hover:bg-violet-deep/90 shadow-md focus:outline-none focus:ring-2 focus:ring-violet-muted"
+                className="px-7 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold shadow-md shadow-indigo-500/25 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
               >
                 {dict.nav.journeyMap}
               </button>
               <button
                 onClick={handleReset}
-                className="px-6 py-2.5 rounded-full border border-stone-border dark:border-white/10 bg-ivory-100 dark:bg-white/5 text-stone-charcoal dark:text-ivory-100 text-sm font-medium hover:bg-ivory-200"
+                className="px-7 py-3 rounded-full border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 text-slate-800 dark:text-white text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-700 transition-all"
               >
                 {dict.guided.startOverBtn}
               </button>

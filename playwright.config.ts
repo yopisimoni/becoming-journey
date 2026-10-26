@@ -7,7 +7,7 @@ export default defineConfig({
   workers: 1,
   reporter: 'list',
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://localhost:3001',
     trace: 'off',
   },
   projects: [
@@ -37,8 +37,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'python3 -m http.server 3000 -d out',
-    port: 3000,
+    command: 'python3 -m http.server 3001 -d out',
+    port: 3001,
     reuseExistingServer: false,
     timeout: 10000,
   },

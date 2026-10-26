@@ -36,27 +36,27 @@ export function JustListenView() {
     <div className="max-w-2xl mx-auto px-4 py-12 sm:py-16 text-center space-y-10">
       {/* Title */}
       <div className="space-y-2">
-        <div className="inline-flex p-3 rounded-full bg-peach-soft dark:bg-peach-deep/30 text-peach-deep dark:text-peach-soft mb-2">
+        <div className="inline-flex p-3.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 mb-2 border border-indigo-200 dark:border-indigo-800">
           <Volume2 className="w-6 h-6" />
         </div>
-        <h1 className="text-2xl sm:text-3xl font-serif font-semibold text-stone-charcoal dark:text-ivory-100">
+        <h1 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 dark:text-white">
           {dict.listen.title}
         </h1>
-        <p className="text-sm text-stone-mist dark:text-stone-300 max-w-md mx-auto">
+        <p className="text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto">
           {dict.listen.subtitle}
         </p>
       </div>
 
       {/* Grounding Message */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-stone-900/80 backdrop-blur-xl border border-stone-border/80 dark:border-white/10 space-y-4 shadow-sm dark:shadow-none">
-        <div className="flex items-center justify-center gap-1.5 text-xs uppercase tracking-wider text-stone-mist dark:text-stone-400 font-semibold">
-          <Sparkles className="w-3.5 h-3.5 text-peach-muted" />
+      <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4 shadow-xl">
+        <div className="flex items-center justify-center gap-1.5 text-xs uppercase tracking-wider text-indigo-600 dark:text-indigo-400 font-bold">
+          <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
           <span>Grounding Reflection</span>
         </div>
-        <blockquote className="text-lg sm:text-xl font-serif italic text-stone-charcoal dark:text-ivory-100 leading-relaxed">
+        <blockquote className="text-lg sm:text-xl font-serif italic text-slate-900 dark:text-white font-medium leading-relaxed">
           &ldquo;{script.listenGrounding}&rdquo;
         </blockquote>
-        <p className="text-xs sm:text-sm text-stone-mist dark:text-stone-300 pt-2">
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 pt-2 font-normal">
           {dict.listen.calmMessage}
         </p>
       </div>
@@ -65,24 +65,24 @@ export function JustListenView() {
       {!reducedMotion ? (
         <div className="py-6 flex flex-col items-center justify-center space-y-4">
           <div
-            className={`w-28 h-28 rounded-full border-2 border-peach-muted/40 dark:border-peach-muted/30 bg-peach-soft/60 dark:bg-peach-deep/20 flex items-center justify-center transition-all duration-[4000ms] ease-in-out ${
+            className={`w-32 h-32 rounded-full border-2 border-indigo-400/40 bg-indigo-500/10 dark:bg-indigo-500/20 flex items-center justify-center transition-all duration-[4000ms] ease-in-out ${
               breathPhase === 'in'
-                ? 'scale-125 bg-peach-soft/90 dark:bg-peach-deep/40 shadow-lg shadow-peach-soft/50'
+                ? 'scale-125 bg-indigo-500/25 shadow-2xl shadow-indigo-500/30 ring-4 ring-indigo-400/20'
                 : breathPhase === 'hold'
-                ? 'scale-125 bg-peach-soft/70 dark:bg-peach-deep/30'
-                : 'scale-90 bg-peach-soft/30 dark:bg-peach-deep/10'
+                ? 'scale-125 bg-indigo-500/20'
+                : 'scale-90 bg-indigo-500/10'
             }`}
           >
-            <span className="text-xs font-medium text-peach-deep dark:text-peach-soft">
+            <span className="text-sm font-bold text-indigo-900 dark:text-indigo-200">
               {breathText}
             </span>
           </div>
-          <span className="text-xs text-stone-mist dark:text-stone-300">
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
             {dict.listen.breathPrompt}
           </span>
         </div>
       ) : (
-        <div className="p-4 rounded-2xl bg-white/70 dark:bg-stone-900/80 border border-stone-border/80 dark:border-white/10 text-xs text-stone-mist dark:text-stone-300">
+        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 font-medium">
           <span>{dict.listen.breathPrompt} {dict.listen.calmMessage}</span>
         </div>
       )}
@@ -91,7 +91,7 @@ export function JustListenView() {
       <div className="pt-4">
         <button
           onClick={() => setActiveMode('guided')}
-          className="px-6 py-2.5 rounded-2xl bg-stone-charcoal dark:bg-ivory-100 text-ivory-50 dark:text-stone-900 text-sm font-medium hover:opacity-90 transition-opacity shadow-sm"
+          className="px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold shadow-md shadow-indigo-500/25 transition-all"
         >
           {dict.listen.finishListening}
         </button>

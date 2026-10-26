@@ -26,19 +26,20 @@ export function JourneyMapView() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <Map className="w-5 h-5 text-violet-muted" />
-            <h1 className="text-2xl sm:text-3xl font-serif font-semibold text-stone-charcoal dark:text-ivory-100">
+            <Map className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+            <h1 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 dark:text-white">
               {dict.journeyMap.title}
             </h1>
           </div>
-          <p className="text-sm text-stone-mist dark:text-stone-300">
+          <p className="text-sm text-slate-600 dark:text-slate-300">
             {dict.journeyMap.subtitle}
           </p>
         </div>
 
         <button
+          type="button"
           onClick={handleStartNew}
-          className="px-4 py-2 rounded-2xl bg-violet-deep dark:bg-violet-muted text-ivory-50 text-xs sm:text-sm font-medium hover:opacity-90 flex items-center gap-1.5 shadow-sm transition-opacity"
+          className="px-5 py-2.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold flex items-center gap-2 shadow-md shadow-indigo-500/20 transition-all"
         >
           <Plus className="w-4 h-4" />
           <span>{dict.journeyMap.startReflection}</span>
@@ -47,21 +48,22 @@ export function JourneyMapView() {
 
       {/* Cards List or Empty State */}
       {cards.length === 0 ? (
-        <div className="p-8 sm:p-12 text-center rounded-3xl bg-white/70 dark:bg-stone-900/80 backdrop-blur-xl border border-stone-border/80 dark:border-white/10 space-y-4 shadow-sm dark:shadow-none">
-          <div className="w-12 h-12 rounded-full bg-ivory-200 dark:bg-stone-800 text-stone-mist dark:text-stone-400 flex items-center justify-center mx-auto">
-            <Compass className="w-6 h-6" />
+        <div className="p-8 sm:p-12 text-center rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4 shadow-xl">
+          <div className="w-14 h-14 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 flex items-center justify-center mx-auto border border-indigo-200 dark:border-indigo-800">
+            <Compass className="w-7 h-7" />
           </div>
           <div className="space-y-1">
-            <h2 className="text-lg font-serif font-semibold text-stone-charcoal dark:text-ivory-100">
+            <h2 className="text-lg font-serif font-bold text-slate-900 dark:text-white">
               {dict.journeyMap.emptyTitle}
             </h2>
-            <p className="text-sm text-stone-mist dark:text-stone-300 max-w-md mx-auto">
+            <p className="text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto">
               {dict.journeyMap.emptyDesc}
             </p>
           </div>
           <button
+            type="button"
             onClick={handleStartNew}
-            className="px-5 py-2.5 rounded-2xl bg-violet-deep dark:bg-violet-muted text-ivory-50 text-xs sm:text-sm font-medium hover:opacity-90 transition-opacity"
+            className="px-6 py-2.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold shadow-md shadow-indigo-500/20 transition-all"
           >
             {dict.journeyMap.startReflection}
           </button>
@@ -73,40 +75,41 @@ export function JourneyMapView() {
             return (
               <div
                 key={card.id}
-                className="p-5 sm:p-6 rounded-3xl bg-white/70 dark:bg-stone-900/80 backdrop-blur-xl border border-stone-border/80 dark:border-white/10 flex flex-col justify-between gap-4 shadow-sm dark:shadow-none hover:border-violet-muted/40 dark:hover:border-violet-muted/60 transition-all"
+                className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col justify-between gap-4 shadow-md hover:border-indigo-500/40 transition-all text-slate-900 dark:text-white"
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-violet-soft dark:bg-violet-deep/30 text-violet-deep dark:text-violet-soft border border-violet-muted/20 dark:border-violet-muted/30">
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
                       {intentMeta?.title || card.intent}
                     </span>
-                    <span className="text-[11px] text-stone-mist dark:text-stone-400">
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                       {new Date(card.createdAt).toLocaleDateString()}
                     </span>
                   </div>
 
-                  <blockquote className="text-base sm:text-lg font-serif italic text-stone-charcoal dark:text-ivory-100 leading-relaxed pt-1">
+                  <blockquote className="text-base sm:text-lg font-serif italic text-slate-900 dark:text-white font-medium leading-relaxed pt-1">
                     &ldquo;{card.confirmedInsight}&rdquo;
                   </blockquote>
 
                   {card.microStep && (
-                    <div className="p-3 rounded-2xl bg-mint-soft/80 dark:bg-mint-deep/20 border border-mint-muted/30 dark:border-mint-muted/40 text-xs text-mint-deep dark:text-mint-soft space-y-0.5">
-                      <div className="font-semibold uppercase tracking-wider text-[10px]">
+                    <div className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-xs text-emerald-800 dark:text-emerald-300 space-y-0.5">
+                      <div className="font-bold uppercase tracking-wider text-[10px]">
                         {dict.journeyMap.microStepLabel}
                       </div>
-                      <p className="text-stone-charcoal dark:text-stone-200">{card.microStep}</p>
+                      <p className="text-slate-900 dark:text-white font-medium">{card.microStep}</p>
                     </div>
                   )}
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-stone-border/40 dark:border-white/10 text-xs text-stone-mist dark:text-stone-400">
-                  <span className="flex items-center gap-1 text-mint-deep dark:text-mint-soft font-medium">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
+                <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
+                  <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
+                    <CheckCircle2 className="w-4 h-4" />
                     {dict.journeyMap.statusConfirmed}
                   </span>
                   <button
+                    type="button"
                     onClick={() => deleteCard(card.id)}
-                    className="p-1.5 rounded-lg text-stone-mist dark:text-stone-400 hover:text-peach-deep dark:hover:text-peach-soft hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                     title={dict.journeyMap.deleteCard}
                     aria-label={`${dict.journeyMap.deleteCard} from ${new Date(card.createdAt).toLocaleDateString()}`}
                   >
