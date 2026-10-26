@@ -219,7 +219,7 @@ export function PersonalProgressView() {
                   </p>
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400">
+                <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-600 dark:text-slate-400 font-medium">
                   <span className="flex items-center gap-1 font-mono">
                     <Calendar className="w-3 h-3" />
                     <span>{m.date}</span>
@@ -229,7 +229,7 @@ export function PersonalProgressView() {
                     type="button"
                     onClick={() => deleteMoment(m.id)}
                     aria-label="Delete moment"
-                    className="p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                    className="p-1 rounded-md text-slate-500 dark:text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>

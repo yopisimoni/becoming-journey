@@ -20,6 +20,8 @@ import {
   CheckCircle2,
   Lock,
   HeartHandshake,
+  ShieldAlert,
+  ExternalLink,
 } from 'lucide-react';
 
 export function SettingsAndAboutView() {
@@ -56,6 +58,28 @@ export function SettingsAndAboutView() {
         <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
           Control your local preferences, audio defaults, privacy boundaries, and data export.
         </p>
+      </div>
+
+      {/* Prominent Non-Medical & Non-Coaching Disclaimer */}
+      <div className="p-4 sm:p-5 rounded-2xl bg-amber-50/90 dark:bg-amber-950/40 border border-amber-300/80 dark:border-amber-800/70 space-y-2">
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-300">
+          <ShieldAlert className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
+          <span>Non-Medical &amp; Non-Coaching Disclaimer</span>
+        </div>
+        <p className="text-xs text-amber-950 dark:text-amber-200 leading-relaxed font-serif">
+          BECOMING is a personal self-reflection sanctuary created to help you think, breathe, and find your own clarity. We are not doctors, therapists, or professional coaches. This app is for personal reflection and wellness only. If you are facing a serious medical, psychological, or life crisis, please reach out to a qualified professional, doctor, or local emergency service immediately.
+        </p>
+        <div className="pt-1">
+          <a
+            href="https://findahelpline.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-800 dark:text-amber-300 hover:text-amber-950 dark:hover:text-amber-100 underline underline-offset-2 transition-colors"
+          >
+            <span>Find A Helpline (Global Support Directory)</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -118,7 +142,7 @@ export function SettingsAndAboutView() {
         <div className="space-y-6">
           {/* Theme & Display */}
           <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-            <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider text-[11px] text-slate-400">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-600 dark:text-slate-400">
               Sanctuary Theme & Atmosphere
             </h2>
 
@@ -174,7 +198,7 @@ export function SettingsAndAboutView() {
 
           {/* Language Selection */}
           <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-400">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-600 dark:text-slate-400">
               Language & Locale (5 Supported)
             </h2>
 
@@ -191,7 +215,7 @@ export function SettingsAndAboutView() {
                   }`}
                 >
                   <div className="text-sm font-bold">{l.name}</div>
-                  <div className="text-[10px] uppercase font-mono text-slate-400">{l.code}</div>
+                  <div className="text-[10px] uppercase font-mono text-slate-600 dark:text-slate-400">{l.code}</div>
                 </button>
               ))}
             </div>
@@ -199,7 +223,7 @@ export function SettingsAndAboutView() {
 
           {/* Default Audio & Volume */}
           <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-400">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-600 dark:text-slate-400">
               Procedural Soundscape Studio
             </h2>
 
@@ -243,7 +267,7 @@ export function SettingsAndAboutView() {
 
           {/* AI Bridge & Privacy Settings */}
           <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-400">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-600 dark:text-slate-400">
               Optional AI Bridge Configuration
             </h2>
 
@@ -255,6 +279,17 @@ export function SettingsAndAboutView() {
               </div>
               <p className="text-xs text-indigo-950 dark:text-indigo-200 leading-relaxed font-serif">
                 AI must never dictate what you should do, never judge you, and never act as an authority. It exists solely as a quiet mirror to reflect your own deepest wisdom back to you. You are the ultimate sovereign author of your life.
+              </p>
+            </div>
+
+            {/* Transparent BYOK AI Privacy Notice */}
+            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-1.5">
+              <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200 font-bold text-xs">
+                <Shield className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <span>Bring Your Own Key (BYOK) Privacy Notice</span>
+              </div>
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+                Your API key is saved strictly in your browser&apos;s local storage (<code className="text-xs font-mono px-1 py-0.5 rounded bg-slate-200 dark:bg-slate-700">localStorage</code>) on this device and is never transmitted to any central server or database owned by us. When you use the AI assistant, your prompt is sent directly from your browser to your chosen provider (OpenAI, DeepSeek, Google, etc.) under their respective privacy terms.
               </p>
             </div>
 
@@ -277,7 +312,7 @@ export function SettingsAndAboutView() {
 
           {/* Storage & Data Sovereignty */}
           <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-5">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-400">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-600 dark:text-slate-400">
               Data Sovereignty, Export & Deletion
             </h2>
 
@@ -372,6 +407,27 @@ export function SettingsAndAboutView() {
               <li><strong>Zero Cost Forever:</strong> Static web technologies with procedural Web Audio synthesize peaceful soundscapes with no expensive cloud servers.</li>
               <li><strong>Unhurried Presence:</strong> No streaks, no guilt, no pressure. Move at the unhurried speed of nature.</li>
             </ul>
+
+            <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 space-y-2 mt-4">
+              <div className="font-bold text-amber-900 dark:text-amber-200 text-xs flex items-center gap-1.5">
+                <ShieldAlert className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                <span>Non-Medical &amp; Non-Coaching Notice</span>
+              </div>
+              <p className="text-xs text-amber-950 dark:text-amber-200 leading-relaxed font-serif">
+                BECOMING is a personal self-reflection sanctuary created to help you think, breathe, and find your own clarity. We are not doctors, therapists, or professional coaches. This app is for personal reflection and wellness only. If you are facing a serious medical, psychological, or life crisis, please reach out to a qualified professional, doctor, or local emergency service immediately.
+              </p>
+              <div className="pt-1">
+                <a
+                  href="https://findahelpline.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-900 dark:text-amber-200 underline underline-offset-2 hover:text-amber-700"
+                >
+                  <span>Find A Helpline (Global Support Directory)</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -427,10 +483,21 @@ export function SettingsAndAboutView() {
 
           <div className="space-y-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
             <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 space-y-2">
-              <div className="font-bold text-amber-900 dark:text-amber-200 text-xs">Non-Clinical Disclaimer:</div>
-              <p className="text-xs text-amber-800 dark:text-amber-300">
-                BECOMING is a tool for personal mindfulness, contemplation, and creative journaling. It is <strong>NOT</strong> licensed therapy, clinical psychology, medical treatment, or emergency crisis care.
+              <div className="font-bold text-amber-900 dark:text-amber-200 text-xs">Non-Medical &amp; Non-Coaching Disclaimer:</div>
+              <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed font-serif">
+                BECOMING is a personal self-reflection sanctuary created to help you think, breathe, and find your own clarity. We are not doctors, therapists, or professional coaches. This app is for personal reflection and wellness only. If you are facing a serious medical, psychological, or life crisis, please reach out to a qualified professional, doctor, or local emergency service immediately.
               </p>
+              <div className="pt-1">
+                <a
+                  href="https://findahelpline.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-900 dark:text-amber-200 underline underline-offset-2 hover:text-amber-700"
+                >
+                  <span>Find A Helpline (Global Support Directory)</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
             </div>
 
             <p>
@@ -441,7 +508,7 @@ export function SettingsAndAboutView() {
               <li><strong>United States & Canada:</strong> Call or text <strong>988</strong> (Suicide & Crisis Lifeline)</li>
               <li><strong>United Kingdom:</strong> Call <strong>111</strong> (NHS Mental Health Services) or text <strong>SHOUT to 85258</strong></li>
               <li><strong>European Union:</strong> Call <strong>112</strong> (General Emergency Services)</li>
-              <li><strong>International:</strong> Visit <span className="underline font-mono">findahelpline.com</span> for immediate free confidential support worldwide.</li>
+              <li><strong>International:</strong> Visit <a href="https://findahelpline.com/" target="_blank" rel="noopener noreferrer" className="underline font-mono">findahelpline.com</a> for immediate free confidential support worldwide.</li>
             </ul>
           </div>
         </div>

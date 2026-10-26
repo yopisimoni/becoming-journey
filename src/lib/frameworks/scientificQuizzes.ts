@@ -525,7 +525,7 @@ export function scoreEqSq(answers: Record<string, number>): GenericQuizResult {
     primaryResult = 'The System Architect (Type S — Analytical Pattern Clarity)';
     subtitle = 'Gifted in logical structures, troubleshooting, and elegant order';
     summary =
-      'Your mind is a natural diagnostic engine that loves deconstructing rules, finding systemic leverage points, and bringing calm order to chaotic information.';
+      'Your mind is a natural analytical synthesizer that loves deconstructing rules, finding systemic leverage points, and bringing calm order to chaotic information.';
   }
 
   return {
@@ -543,7 +543,7 @@ export function scoreEqSq(answers: Record<string, number>): GenericQuizResult {
     },
     strengths: [
       'Ability to navigate both human relationships and complex technical realities',
-      'High diagnostic perceptiveness without jumping to shallow conclusions',
+      'High analytical perceptiveness without jumping to shallow conclusions',
       'Natural diplomacy when mediating between feelings and facts',
     ],
     growthEdges: [

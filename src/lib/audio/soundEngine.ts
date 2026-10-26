@@ -29,7 +29,7 @@ export interface SoundscapeTrackMeta {
 export const SOUNDSCAPE_TRACKS: SoundscapeTrackMeta[] = [
   // Calm & Relief
   { id: 'sanctuary', category: 'calm', defaultLabel: '432Hz Sanctuary Pad', description: 'Harmonic fifths and slow LFO lowpass breath' },
-  { id: 'solfeggio', category: 'calm', defaultLabel: '528Hz Solfeggio Peace', description: 'Pure 528Hz healing resonance and warm shimmer' },
+  { id: 'solfeggio', category: 'calm', defaultLabel: '528Hz Harmonic Resonance', description: 'Harmonic acoustic resonance for deep relaxation and calm' },
   { id: 'bowl', category: 'calm', defaultLabel: 'Tibetan Singing Bowls', description: 'Rich harmonic overtones with subtle acoustic beating' },
   { id: 'rain', category: 'calm', defaultLabel: 'Midnight Rain', description: 'Gentle pink/brown noise and soft lowpass rain drops' },
   { id: 'ocean', category: 'calm', defaultLabel: 'Ocean Tide Waves', description: 'Slow 8-second sinusoidal gain swells mimicking ocean surf' },

@@ -36,6 +36,10 @@ export function SafetyModal() {
         </div>
 
         <div className="space-y-4 py-4 text-sm leading-relaxed">
+          <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-xs text-amber-950 dark:text-amber-200 font-serif leading-relaxed">
+            BECOMING is a personal self-reflection sanctuary created to help you think, breathe, and find your own clarity. We are not doctors, therapists, or professional coaches. This app is for personal reflection and wellness only. If you are facing a serious medical, psychological, or life crisis, please reach out to a qualified professional, doctor, or local emergency service immediately.
+          </div>
+
           <p className="text-stone-mist dark:text-stone-300">{dict.disclaimer.modalText}</p>
 
           <div className="p-4 rounded-2xl bg-peach-soft/60 dark:bg-peach-deep/20 border border-peach-muted/30">
@@ -56,6 +60,16 @@ export function SafetyModal() {
                 </li>
               ))}
             </ul>
+            <div className="mt-3 pt-2.5 border-t border-peach-muted/20">
+              <a
+                href="https://findahelpline.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-peach-deep dark:text-peach-soft underline underline-offset-2"
+              >
+                <span>Find A Helpline (Global Support Directory) &rarr;</span>
+              </a>
+            </div>
           </div>
 
           <div className="flex items-start gap-2 p-3 bg-mint-soft dark:bg-mint-deep/20 rounded-2xl text-xs text-mint-deep dark:text-mint-soft">

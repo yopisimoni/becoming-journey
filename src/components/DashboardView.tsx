@@ -345,7 +345,7 @@ export function DashboardView() {
             <Quote className="w-4 h-4" />
             <span>Daily Wisdom • {todayQuote.theme}</span>
           </div>
-          <span className="text-[11px] font-mono text-slate-400">Day #{dayOfYear % 365}</span>
+          <span className="text-[11px] font-mono text-slate-600 dark:text-slate-400">Day #{dayOfYear % 365}</span>
         </div>
 
         <blockquote className="text-lg sm:text-xl font-serif italic text-slate-900 dark:text-white font-medium leading-relaxed">
@@ -387,49 +387,49 @@ export function DashboardView() {
       {/* Sanctuary Metrics Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
         <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
-          <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
             Journey Cards
           </div>
           <div className="text-2xl sm:text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">
             {cards.length}
           </div>
-          <div className="text-[11px] text-slate-500">Confirmed insights</div>
+          <div className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Confirmed insights</div>
         </div>
 
         <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
-          <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
             Private Notes
           </div>
           <div className="text-2xl sm:text-3xl font-extrabold text-teal-600 dark:text-teal-400">
             {journalEntries.length}
           </div>
-          <div className="text-[11px] text-slate-500">Local entries saved</div>
+          <div className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Local entries saved</div>
         </div>
 
         <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
-          <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
             Light Moments
           </div>
           <div className="text-2xl sm:text-3xl font-extrabold text-amber-600 dark:text-amber-400">
             {moments.length}
           </div>
-          <div className="text-[11px] text-slate-500">Gratitude & memories</div>
+          <div className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Gratitude & memories</div>
         </div>
 
         <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
-          <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
             Habit Seeds
           </div>
           <div className="text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">
             {nurturedHabitsCount}
           </div>
-          <div className="text-[11px] text-slate-500">Times nurtured</div>
+          <div className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Times nurtured</div>
         </div>
       </div>
 
       {/* Quick Launch Studios */}
       <div className="space-y-4">
-        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-400">
+        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
           Explore Sanctuary Studios
         </h2>
 

@@ -81,7 +81,7 @@ export const en: TranslationDictionary = {
     catCalm: 'Calm & Relief',
     catFocus: 'Focus & Clarity',
     catNature: 'Nature & Warmth',
-    solfeggio: '528Hz Solfeggio Peace',
+    solfeggio: '528Hz Harmonic Resonance',
     ocean: 'Ocean Tide Waves',
     alpha: 'Alpha Wave 10Hz Flow',
     rhodes: 'Ambient Rhodes Chords',
@@ -91,7 +91,7 @@ export const en: TranslationDictionary = {
   },
   breathing: {
     studioTitle: 'Interactive Breathing Studio',
-    studioSubtitle: 'Somatic nervous system reset. Regulate your heartbeat, soothe cortisol, and return to center.',
+    studioSubtitle: 'Somatic nervous system reset. Regulate your breathing rhythm, unwind tension, and return to center.',
     inhale: 'Breathe In',
     hold: 'Hold Gently',
     exhale: 'Breathe Out',
@@ -148,13 +148,13 @@ export const en: TranslationDictionary = {
     apiKeyLabel: 'API Key (stored only in browser memory)',
     modelLabel: 'Model (e.g., gpt-4o-mini)',
     saveBtn: 'Save Preferences',
-    privacyNotice: 'Privacy Guarantee: No keys or prompts are ever stored on any external BECOMING server. Requests travel directly from your browser to your specified endpoint.',
+    privacyNotice: 'Bring Your Own Key (BYOK) Privacy Notice: Your API key is saved strictly in your browser\'s local storage (localStorage) on this device and is never transmitted to any central server or database owned by us. When you use the AI assistant, your prompt is sent directly from your browser to your chosen provider (OpenAI, DeepSeek, Google, etc.) under their respective privacy terms.',
   },
   disclaimer: {
     bannerText: 'Prototype reflection space — not therapy, medical advice, or crisis care. All data stays strictly on your device.',
     learnMore: 'Safety boundaries',
     modalTitle: 'Safety, Privacy & Non-Clinical Scope',
-    modalText: 'BECOMING is an experimental, deterministic personal reflection tool. It does not provide medical diagnosis, psychotherapy, or crisis intervention. Your reflections are never sent to external AI servers or remote databases; everything exists solely inside your browser.',
+    modalText: 'BECOMING is a personal self-reflection sanctuary created to help you think, breathe, and find your own clarity. We are not doctors, therapists, or professional coaches. This app is for personal reflection and wellness only. If you are facing a serious medical, psychological, or life crisis, please reach out to a qualified professional, doctor, or local emergency service immediately.',
     crisisHeading: 'Immediate Support Resources',
     crisisText: 'If you or someone you know is in acute distress or experiencing an emergency, please connect immediately with a qualified local professional or helpline:',
     crisisHotlines: [

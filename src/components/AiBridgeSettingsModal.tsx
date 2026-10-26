@@ -110,9 +110,14 @@ export function AiBridgeSettingsModal() {
             </div>
           )}
 
-          <div className="p-3 rounded-2xl bg-mint-soft/80 dark:bg-mint-deep/20 border border-mint-muted/30 text-[11px] text-mint-deep dark:text-mint-soft flex items-start gap-2">
-            <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" />
-            <span>{dict.aiBridge.privacyNotice}</span>
+          <div className="p-3.5 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-[11px] text-slate-700 dark:text-stone-300 space-y-1">
+            <div className="flex items-center gap-1.5 font-semibold text-slate-900 dark:text-white">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <span>Bring Your Own Key (BYOK) Privacy Notice</span>
+            </div>
+            <p className="leading-relaxed">
+              Your API key is saved strictly in your browser&apos;s local storage (<code className="font-mono px-1 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-[10px]">localStorage</code>) on this device and is never transmitted to any central server or database owned by us. When you use the AI assistant, your prompt is sent directly from your browser to your chosen provider (OpenAI, DeepSeek, Google, etc.) under their respective privacy terms.
+            </p>
           </div>
 
           <div className="flex justify-end gap-2 pt-2 border-t border-ivory-300 dark:border-white/10">

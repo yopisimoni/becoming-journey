@@ -256,7 +256,7 @@ export function HabitBalanceView() {
           {/* Optional Media Attachment */}
           {activeTab === 'seed' && (
             <div className="space-y-2">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 block">
                 Inspiring Photo or Short Video (Optional)
               </label>
 
@@ -463,7 +463,7 @@ export function HabitBalanceView() {
               />
 
               <div className="flex items-center justify-between">
-                <span className="text-[11px] text-slate-400">
+                <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">
                   {judgmentSaved ? 'Perspective released into stillness ✓' : 'Privately stored in memory only.'}
                 </span>
 
@@ -572,7 +572,7 @@ export function HabitBalanceView() {
                             <Feather className="w-4 h-4" />
                           </span>
                         )}
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                           {isSeed ? 'Seed Planted' : 'Weight Released'}
                         </span>
                       </div>
@@ -581,7 +581,7 @@ export function HabitBalanceView() {
                         type="button"
                         onClick={() => deleteHabit(habit.id)}
                         aria-label="Delete habit item"
-                        className="p-1 text-slate-400 hover:text-rose-600 transition-colors"
+                        className="p-1 text-slate-500 dark:text-slate-400 hover:text-rose-600 transition-colors"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>

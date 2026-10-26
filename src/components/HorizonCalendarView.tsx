@@ -290,7 +290,7 @@ export function HorizonCalendarView() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                 Pillar Category
               </label>
               <select
@@ -307,7 +307,7 @@ export function HorizonCalendarView() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                 Target Date (Optional)
               </label>
               <input
@@ -377,7 +377,7 @@ export function HorizonCalendarView() {
                       {catMeta.label}
                     </span>
                     {goal.targetDate && (
-                      <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                      <span className="text-[10px] text-slate-600 dark:text-slate-400 font-medium flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         <span>{goal.targetDate}</span>
                       </span>
@@ -404,7 +404,7 @@ export function HorizonCalendarView() {
                   type="button"
                   onClick={() => deleteGoal(goal.id)}
                   aria-label="Delete milestone"
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                  className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
@@ -416,7 +416,7 @@ export function HorizonCalendarView() {
         {/* Completed Goals Section */}
         {completedList.length > 0 && (
           <div className="pt-4 space-y-2">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 px-1">
               Completed ({completedList.length})
             </div>
             {completedList.map((goal) => (

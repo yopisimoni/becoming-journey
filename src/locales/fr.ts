@@ -81,7 +81,7 @@ export const fr: TranslationDictionary = {
     catCalm: 'Calme & Soulagement',
     catFocus: 'Concentration & Clarté',
     catNature: 'Nature & Chaleur',
-    solfeggio: 'Paix Solfeggio 528Hz',
+    solfeggio: 'Résonance Harmonique 528Hz',
     ocean: 'Vagues de l’Océan',
     alpha: 'Onde Alpha 10Hz Flux',
     rhodes: 'Accords Rhodes Ambiants',
@@ -91,7 +91,7 @@ export const fr: TranslationDictionary = {
   },
   breathing: {
     studioTitle: 'Studio de Respiration Interactive',
-    studioSubtitle: 'Réinitialisation somatique du système nerveux. Régulez votre cœur, apaisez le cortisol et retrouvez votre centre.',
+    studioSubtitle: 'Réinitialisation douce du rythme corporel. Régulez votre respiration, relâchez les tensions et retrouvez votre centre.',
     inhale: 'Inspirez Profondément',
     hold: 'Retenez Doucement',
     exhale: 'Expirez Lentement',
@@ -148,13 +148,13 @@ export const fr: TranslationDictionary = {
     apiKeyLabel: 'Clé API (conservée en mémoire uniquement)',
     modelLabel: 'Modèle (ex: gpt-4o-mini)',
     saveBtn: 'Enregistrer les préférences',
-    privacyNotice: 'Garantie de confidentialité : aucune clé ni texte ne transite par les serveurs de BECOMING.',
+    privacyNotice: 'Avis de confidentialité BYOK (Apportez votre propre clé) : votre clé API est conservée strictement dans le stockage local de votre navigateur (localStorage) sur cet appareil et n\'est jamais transmise à aucun serveur central ou base de données nous appartenant. Lorsque vous utilisez l\'assistant IA, vos requêtes sont envoyées directement depuis votre navigateur à votre fournisseur sous ses propres conditions.',
   },
   disclaimer: {
     bannerText: 'Espace expérimental de réflexion — ni thérapie, ni avis médical, ni urgence. Vos données restent exclusivement sur votre appareil.',
     learnMore: 'Limites de sécurité',
     modalTitle: 'Sécurité, Confidentialité & Cadre Non-Clinique',
-    modalText: "BECOMING est un outil d'exploration personnelle déterministe et strictement local. Il ne fournit aucun diagnostic médical ni prise en charge de crise. Vos écrits ne sont jamais transmis à des serveurs d'IA externes ou des bases de données distantes.",
+    modalText: 'BECOMING est un sanctuaire d\'introspection personnelle conçu pour vous aider à réfléchir, respirer et trouver votre propre clarté. Nous ne sommes ni médecins, ni thérapeutes, ni coachs professionnels. Cette application est réservée à la réflexion personnelle et au bien-être. Si vous traversez une crise médicale, psychologique ou existentielle grave, contactez immédiatement un professionnel qualifié, un médecin ou les services d\'urgence locaux.',
     crisisHeading: "Ressources d'aide immédiate",
     crisisText: "Si vous ou un proche traversez une détresse aiguë ou une situation d'urgence, veuillez contacter sans délai les services d'aide qualifiés :",
     crisisHotlines: [
