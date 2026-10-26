@@ -164,6 +164,71 @@ export const it: TranslationDictionary = {
     ],
     close: 'Chiudi',
   },
+  onboarding: {
+    tourBadge: 'Primi Passi e Benvenuto Sovrano',
+    stepOf: 'Passo',
+    card1: {
+      badge: 'Scheda 1 di 3 • Chi siamo e perché siamo qui',
+      title: 'Un santuario umano e quieto in un mondo digitale rumoroso',
+      subtitle: 'Né un’azienda commerciale né un algoritmo clinico. Un rifugio per la tua mente.',
+      paragraphs: [
+        'BECOMING è nato da una semplice constatazione: la vita digitale moderna è affrettata, estrattiva e satura. Ogni app esige la tua attenzione, le tue abitudini e i tuoi dati.',
+        'Questo santuario è stato creato con la filosofia opposta: Gratuito per sempre, Privacy locale al 100%, Presenza senza fretta. Nessun feed algoritmico, nessun pixel spia e nessun database remoto a scandagliare i tuoi pensieri.',
+        'Tutto ciò che scrivi, esplori o provi rimane rigorosamente nella memoria del browser su questo dispositivo.',
+      ],
+    },
+    card2: {
+      badge: 'Scheda 2 di 3 • Come ti accompagniamo',
+      title: 'Strumenti creati per rispecchiare la tua mente, mai per comandarla',
+      subtitle: 'Scegli lo strumento più in sintonia con la tua energia del momento.',
+      tools: [
+        {
+          title: 'Studio di Respirazione & Rilassamento',
+          desc: '10 paesaggi sonori generati dalla Web Audio API e reset guidati per spalle, occhi e respiro.',
+        },
+        {
+          title: 'Bussola Interiore & Questionari',
+          desc: 'Questionari esplorativi ispirati a 5 modelli psicologici per Lavoro, Vita e Spirito.',
+        },
+        {
+          title: 'Registro delle Abitudini & The Shift',
+          desc: 'Coltiva semi di luce e lascia andare vecchi fardelli con tenerezza e senza sensi di colpa.',
+        },
+        {
+          title: 'Caveau Segreto & Stanza di Dissoluzione',
+          desc: 'Cassaforte con codice PIN o camera effimera per veder svanire ogni peso nella quiete.',
+        },
+      ],
+    },
+    card3: {
+      badge: 'Scheda 3 di 3 • I tuoi confini sovrani',
+      title: 'La vita è breve. Non sei un angelo. Sei libero e sovrano.',
+      subtitle: 'La vera evoluzione nasce dalla pazienza, dalla responsabilità e dalla cura di sé.',
+      paragraphs: [
+        'Non hai bisogno di essere perfetto per meritare serenità. Farai errori, sentirai stanchezza e avrai bisogno di riposare. Questa è la nobiltà dell’essere umano.',
+        'BECOMING non ti dirà mai cosa fare. Sei l’unico autore sovrano delle tue scelte.',
+      ],
+    },
+    consentCheckbox:
+      'Comprendo che BECOMING è uno spazio personale di riflessione e benessere, non una cura medica, una terapia o un percorso di coaching. Ho il controllo al 100% della mia vita, delle mie scelte e della mia pace.',
+    agreeButton: 'Accetta ed Entra nel Santuario',
+    nextButton: 'Avanti',
+    prevButton: 'Indietro',
+    closeTour: 'Chiudi visita',
+  },
+  atmosphere: {
+    switcherTitle: 'Tela Atmosferica',
+    twilightName: 'Calma Crepuscolare',
+    twilightDesc: 'Indaco e ardesia ovattati per momenti di profonda riflessione',
+    mossName: 'Muschio Radicato',
+    mossDesc: 'Verdi forestali tenui e pietra terrosa per calmare l’ansia',
+    dawnName: 'Alabastro dell’Alba',
+    dawnDesc: 'Crema calda e ambra per concentrazione e limpidezza mattutina',
+    midnightName: 'Santuario di Mezzanotte',
+    midnightDesc: 'Ossidiana profonda e carbone per respiro notturno e quiete',
+    autoAtmosphere: 'Atmosfera Contestuale Automatica',
+    autoAtmosphereDesc: 'Adatta morbidamente i colori entrando nello Studio di Respiro o nel Caveau',
+  },
   welcome: {
     question: 'Cosa ti porta qui oggi?',
     subtitle: 'Fai un respiro profondo. Non ci sono risposte giuste, punteggi né fretta.',

@@ -1,9 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
-import { DailyQuote } from '@/types';
 import { getStageInfo, getNextStageInfo } from '@/lib/evolution/evolutionEngine';
+import {
+  getSessionQuote,
+  rotateSessionQuote,
+  fetchAiStageGreeting,
+  WisdomQuote,
+} from '@/lib/quotes/quoteEngine';
+import { AtmosphereSwitcher } from './AtmosphereSwitcher';
 import {
   Compass,
   Wind,
@@ -25,6 +31,7 @@ import {
   Users,
   Smile,
   Check,
+  RefreshCw,
 } from 'lucide-react';
 
 export function DashboardView() {
@@ -45,6 +52,7 @@ export function DashboardView() {
     addEvolutionXp,
     dailyPillars,
     updateDailyPillars,
+    aiSettings,
   } = useApp();
 
   const [savedQuoteToMoments, setSavedQuoteToMoments] = useState(false);
@@ -55,6 +63,8 @@ export function DashboardView() {
     helping: dailyPillars.helpingThoseWhoMoveYou || '',
   });
 
+  const [sessionQuote, setSessionQuote] = useState<WisdomQuote>(() => getSessionQuote());
+
   const currentStage = getStageInfo(evolution.currentLevel);
   const nextStage = getNextStageInfo(evolution.currentLevel);
   const prevRequired = currentStage.requiredXp;
@@ -62,6 +72,28 @@ export function DashboardView() {
   const xpInLevel = Math.max(0, evolution.totalXp - prevRequired);
   const xpNeeded = Math.max(1, nextRequired - prevRequired);
   const progressPercent = nextStage ? Math.min(100, Math.round((xpInLevel / xpNeeded) * 100)) : 100;
+
+  // Background AI Stage Greeting if BYOK AI is configured
+  useEffect(() => {
+    if (aiSettings?.enabled && aiSettings?.apiKey?.trim() && !sessionQuote.isAiGenerated) {
+      let cancelled = false;
+      fetchAiStageGreeting(aiSettings, currentStage.title, currentStage.subtitle).then((aiQuote) => {
+        if (!cancelled && aiQuote) {
+          setSessionQuote(aiQuote);
+        }
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
+  }, [aiSettings, currentStage, sessionQuote.isAiGenerated]);
+
+  const handleRotateQuote = () => {
+    const next = rotateSessionQuote();
+    setSessionQuote(next);
+    setSavedQuoteToMoments(false);
+    playSingingBowl();
+  };
 
   const handleToggleNotAnAngel = () => {
     const nextVal = !dailyPillars.notAnAngelAffirmation;
@@ -83,52 +115,8 @@ export function DashboardView() {
     addEvolutionXp(15, 'Completed Daily Living Compass');
   };
 
-  // Curated Daily Wisdom Quotes (rotates cyclically by day of year)
-  const dailyQuotes: DailyQuote[] = [
-    {
-      quote: 'You do not have to be good. You only have to let the soft animal of your body love what it loves.',
-      author: 'Mary Oliver',
-      theme: 'Radical Grace',
-    },
-    {
-      quote: 'Almost everything will work again if you unplug it for a few minutes, including you.',
-      author: 'Anne Lamott',
-      theme: 'Rest & Renewal',
-    },
-    {
-      quote: 'Peace is the result of retraining your mind to process life as it is, rather than as you think it should be.',
-      author: 'Wayne Dyer',
-      theme: 'Acceptance',
-    },
-    {
-      quote: 'Between stimulus and response there is a space. In that space is our power to choose our response.',
-      author: 'Viktor Frankl',
-      theme: 'Inner Freedom',
-    },
-    {
-      quote: 'Do not hurry, do not rest. Move with the unhurried grace of deep water.',
-      author: 'Goethe',
-      theme: 'Unhurried Pace',
-    },
-    {
-      quote: 'The soul should always stand ajar, ready to welcome the ecstatic experience.',
-      author: 'Emily Dickinson',
-      theme: 'Soul Presence',
-    },
-    {
-      quote: 'Simplicity is about subtracting the obvious and adding the meaningful.',
-      author: 'John Maeda',
-      theme: 'Essential Living',
-    },
-  ];
-
-  const dayOfYear = Math.floor(
-    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24)
-  );
-  const todayQuote = dailyQuotes[dayOfYear % dailyQuotes.length];
-
   const handleSaveQuoteToMoments = () => {
-    addMoment(`“${todayQuote.quote}” — ${todayQuote.author}`);
+    addMoment(`“${sessionQuote.quote}” — ${sessionQuote.author}`);
     setSavedQuoteToMoments(true);
     playSingingBowl();
   };
@@ -143,17 +131,26 @@ export function DashboardView() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12 space-y-10">
-      {/* Welcome Greeting */}
-      <div className="space-y-2">
-        <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
-          Personal Sanctuary Dashboard
-        </span>
-        <h1 className="text-3xl sm:text-4xl font-serif font-bold text-slate-900 dark:text-white">
-          {user ? `Peace and presence, ${user.name.split(' ')[0]}.` : 'Your Sanctuary Dashboard'}
-        </h1>
-        <p className="text-sm text-slate-600 dark:text-slate-300">
-          A calm holistic overview of your reflections, breathing rituals, milestones, and inner discoveries.
-        </p>
+      {/* Welcome Greeting & Inner Weather Switcher */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-2">
+          <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+            Personal Sanctuary Dashboard
+          </span>
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-slate-900 dark:text-white">
+            {user ? `Peace and presence, ${user.name.split(' ')[0]}.` : 'Your Sanctuary Dashboard'}
+          </h1>
+          <p className="text-sm text-slate-600 dark:text-slate-300">
+            A calm holistic overview of your reflections, breathing rituals, milestones, and inner discoveries.
+          </p>
+        </div>
+
+        <div className="flex sm:flex-col items-start sm:items-end gap-1.5 shrink-0">
+          <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+            {dict.atmosphere?.switcherTitle || 'Inner Weather'}
+          </span>
+          <AtmosphereSwitcher variant="dashboard" />
+        </div>
       </div>
 
       {/* Zero to Hero Evolution System Card */}
@@ -338,23 +335,40 @@ export function DashboardView() {
         </div>
       </div>
 
-      {/* Quote of the Day Card */}
+      {/* Quote of the Day / Dynamic Session Wisdom Card */}
       <div className="p-7 sm:p-8 rounded-3xl bg-gradient-to-br from-indigo-50/90 via-white to-violet-50/70 dark:from-indigo-950/40 dark:via-slate-900 dark:to-purple-950/30 border border-indigo-200/80 dark:border-indigo-800/60 shadow-xl space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
             <Quote className="w-4 h-4" />
-            <span>Daily Wisdom • {todayQuote.theme}</span>
+            <span>
+              {sessionQuote.isAiGenerated ? 'AI Sanctuary Greeting' : 'Daily Wisdom'} • {sessionQuote.theme}
+            </span>
           </div>
-          <span className="text-[11px] font-mono text-slate-600 dark:text-slate-400">Day #{dayOfYear % 365}</span>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleRotateQuote}
+              title="Draw another wisdom quote"
+              aria-label="Draw another wisdom quote"
+              className="p-1.5 rounded-xl text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white/80 dark:hover:bg-slate-800 transition-all flex items-center gap-1 text-[11px] font-semibold"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Draw Another</span>
+            </button>
+            <span className="text-[11px] font-mono text-slate-600 dark:text-slate-400">
+              {sessionQuote.isAiGenerated ? 'Live Companion' : 'Philosophical Library'}
+            </span>
+          </div>
         </div>
 
         <blockquote className="text-lg sm:text-xl font-serif italic text-slate-900 dark:text-white font-medium leading-relaxed">
-          &ldquo;{todayQuote.quote}&rdquo;
+          &ldquo;{sessionQuote.quote}&rdquo;
         </blockquote>
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-indigo-100/80 dark:border-slate-800">
           <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
-            — {todayQuote.author}
+            — {sessionQuote.author}
           </span>
 
           <div className="flex items-center gap-2">

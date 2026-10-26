@@ -1,5 +1,14 @@
 import { test, expect } from '@playwright/test';
 
+test.beforeEach(async ({ context }, testInfo) => {
+  if (!testInfo.title.includes('first visit')) {
+    await context.addInitScript(() => {
+      localStorage.setItem('becoming_onboarded', 'true');
+      localStorage.setItem('becoming_consent_agreed', 'true');
+    });
+  }
+});
+
 test.describe('BCM-012: Privacy & Zero-Telemetry Network Audit', () => {
   test('makes ZERO external network requests during entire reflection flow', async ({
     page,
@@ -450,5 +459,112 @@ test.describe('BECOMING v0.5: Human Awakening, Scientific Frameworks, Zero-to-He
     await page.locator('#navbar-settings-button').click();
     // Verify Mirror, Never Boss banner
     await expect(page.getByText(/Mirror, Never Boss/i)).toBeVisible();
+  });
+});
+
+test.describe('BECOMING v0.6: Cinematic Onboarding Portal, Mandatory Consent Gate & Dynamic Quotes', () => {
+  test('triggers Onboarding Welcome Modal on first visit, cycles cards, requires consent, and unlocks app', async ({ page }) => {
+    await page.goto('/');
+
+    // Verify Onboarding Modal is visible
+    const modal = page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+    await expect(page.getByRole('heading', { name: /A Quiet Human Sanctuary in a Loud Digital World/i })).toBeVisible();
+
+    // Navigate to Card 2
+    const nextBtn = page.locator('#onboarding-next-btn');
+    await expect(nextBtn).toBeVisible();
+    await nextBtn.click();
+
+    await expect(page.getByRole('heading', { name: /Tools Designed to Mirror Your Mind, Not Boss It/i })).toBeVisible();
+    await expect(page.getByText(/Breathing & Somatic Studio/i)).toBeVisible();
+
+    // Navigate to Card 3
+    await nextBtn.click();
+    await expect(page.getByRole('heading', { name: /Life is Short\. You Are Not an Angel\. You Are Free\./i })).toBeVisible();
+
+    // Verify Agree button is disabled prior to checking consent
+    const agreeBtn = page.locator('#onboarding-agree-btn');
+    await expect(agreeBtn).toBeDisabled();
+
+    // Check mandatory consent checkbox
+    const consentCheckbox = page.locator('#onboarding-consent-checkbox');
+    await consentCheckbox.check();
+    await expect(agreeBtn).toBeEnabled();
+
+    // Agree and enter sanctuary
+    await agreeBtn.click();
+    await expect(modal).not.toBeVisible();
+
+    // Verify on reload it does not show again
+    await page.reload();
+    await expect(page.getByRole('dialog')).not.toBeVisible();
+  });
+
+  test('displays fresh dynamic quote on Dashboard and allows drawing another quote', async ({ page }) => {
+    await page.goto('/');
+    // Open Studios drawer and navigate to Dashboard
+    await page.locator('#floating-dock-tab-studios').click();
+    await page.locator('#dock-studio-dashboard').click();
+
+    // Verify Quote Card is visible
+    await expect(page.getByText(/Daily Wisdom/i)).toBeVisible();
+
+    // Draw another quote
+    const drawAnotherBtn = page.getByRole('button', { name: /Draw another wisdom quote/i });
+    await expect(drawAnotherBtn).toBeVisible();
+    await drawAnotherBtn.click();
+    await expect(page.getByText(/Philosophical Library/i)).toBeVisible();
+  });
+});
+
+test.describe('BECOMING v0.7: Living Atmospheric Canvas & Dynamic Mood Shifting Backgrounds', () => {
+  test('switches inner weather atmospheres and persists to local storage', async ({ page }) => {
+    await page.goto('/');
+
+    const switcher = page.locator('#atmosphere-switcher-btn');
+    await expect(switcher).toBeVisible();
+
+    // Open switcher
+    await switcher.click();
+    await expect(page.getByRole('menu')).toBeVisible();
+
+    // Select Twilight Calm
+    await page.locator('[data-testid="atmosphere-option-twilight"]').click();
+    await expect(page.locator('html')).toHaveAttribute('data-atmosphere', 'twilight');
+    await expect(page.locator('html')).toHaveClass(/dark/);
+
+    // Switch to Grounded Moss
+    await switcher.click();
+    await page.locator('[data-testid="atmosphere-option-moss"]').click();
+    await expect(page.locator('html')).toHaveAttribute('data-atmosphere', 'moss');
+
+    // Switch to Midnight Sanctuary
+    await switcher.click();
+    await page.locator('[data-testid="atmosphere-option-midnight"]').click();
+    await expect(page.locator('html')).toHaveAttribute('data-atmosphere', 'midnight');
+    await expect(page.locator('html')).toHaveClass(/dark/);
+  });
+
+  test('contextual auto-atmosphere gently adapts in Breathing Studio and Secret Vault', async ({ page }) => {
+    await page.goto('/');
+
+    // Navigate to Secret Vault via Studios dock
+    await page.locator('#floating-dock-tab-studios').click();
+    const vaultStudioBtn = page.locator('#dock-studio-vault');
+    await expect(vaultStudioBtn).toBeVisible();
+    await vaultStudioBtn.click();
+
+    // Verify atmosphere adapts to midnight
+    await expect(page.locator('html')).toHaveAttribute('data-atmosphere', 'midnight');
+
+    // Navigate to Breathing Studio
+    await page.locator('#floating-dock-tab-studios').click();
+    const breatheStudioBtn = page.locator('#dock-studio-breathe');
+    await expect(breatheStudioBtn).toBeVisible();
+    await breatheStudioBtn.click();
+
+    // Verify atmosphere adapts to moss
+    await expect(page.locator('html')).toHaveAttribute('data-atmosphere', 'moss');
   });
 });

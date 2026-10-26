@@ -179,6 +179,49 @@ export interface TranslationDictionary {
     }[];
     close: string;
   };
+  onboarding?: {
+    tourBadge: string;
+    stepOf: string;
+    card1: {
+      badge: string;
+      title: string;
+      subtitle: string;
+      paragraphs: string[];
+    };
+    card2: {
+      badge: string;
+      title: string;
+      subtitle: string;
+      tools: {
+        title: string;
+        desc: string;
+      }[];
+    };
+    card3: {
+      badge: string;
+      title: string;
+      subtitle: string;
+      paragraphs: string[];
+    };
+    consentCheckbox: string;
+    agreeButton: string;
+    nextButton: string;
+    prevButton: string;
+    closeTour: string;
+  };
+  atmosphere?: {
+    switcherTitle: string;
+    twilightName: string;
+    twilightDesc: string;
+    mossName: string;
+    mossDesc: string;
+    dawnName: string;
+    dawnDesc: string;
+    midnightName: string;
+    midnightDesc: string;
+    autoAtmosphere: string;
+    autoAtmosphereDesc: string;
+  };
   welcome: {
     question: string;
     subtitle: string;

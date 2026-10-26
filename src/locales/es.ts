@@ -165,6 +165,71 @@ export const es: TranslationDictionary = {
     ],
     close: 'Cerrar',
   },
+  onboarding: {
+    tourBadge: 'Primeros Pasos y Bienvenida Soberana',
+    stepOf: 'Paso',
+    card1: {
+      badge: 'Tarjeta 1 de 3 • Quiénes somos y por qué estamos aquí',
+      title: 'Un santuario humano y tranquilo en un mundo digital ruidoso',
+      subtitle: 'Ni una empresa corporativa ni un algoritmo clínico. Un refugio para tu mente.',
+      paragraphs: [
+        'BECOMING nació de una observación simple: la vida digital moderna es apresurada, extractiva y ruidosa. Cada app compite por tu atención, tus rachas y tus datos.',
+        'Este santuario fue construido con la filosofía opuesta: Gratis para siempre, 100% Privado y local, Presencia sin prisas. Sin algoritmos publicitarios, sin rastreadores y sin bases de datos remotas cosechando tus diarios.',
+        'Todo lo que escribes, exploras o sientes permanece estrictamente en la memoria del navegador de este dispositivo.',
+      ],
+    },
+    card2: {
+      badge: 'Tarjeta 2 de 3 • Cómo te acompañamos',
+      title: 'Herramientas diseñadas para reflejar tu mente, no para darle órdenes',
+      subtitle: 'Elige la herramienta que mejor resuene con tu energía actual.',
+      tools: [
+        {
+          title: 'Estudio de Respiración y Relajación Somática',
+          desc: '10 paisajes sonoros procedurales y reinicios guiados para hombros, mandíbula y respiración.',
+        },
+        {
+          title: 'Brújula Interior y Cuestionarios',
+          desc: 'Cuestionarios exploratorios inspirados en 5 marcos psicológicos (Trabajo, Vida, Alma).',
+        },
+        {
+          title: 'Balance de Hábitos y The Shift',
+          desc: 'Siembra semillas de luz y suelta con ternura viejos pesos sin culpa ni vergüenza.',
+        },
+        {
+          title: 'Bóveda Secreta y Sala de Disolución',
+          desc: 'Caja con PIN privado o cámara efímera para dejar que las cargas se disuelvan en la quietud.',
+        },
+      ],
+    },
+    card3: {
+      badge: 'Tarjeta 3 de 3 • Tus límites soberanos',
+      title: 'La vida es corta. No eres un ángel. Eres libre y soberano.',
+      subtitle: 'El crecimiento auténtico florece con paciencia, responsabilidad y compasión.',
+      paragraphs: [
+        'No necesitas ser perfecto para merecer paz. Cometerás errores, sentirás cansancio y necesitarás descansar. Eso es parte de la nobleza de ser humano.',
+        'BECOMING jamás te dirá qué hacer. Tú eres el único autor soberano de tu destino.',
+      ],
+    },
+    consentCheckbox:
+      'Entiendo que BECOMING es un espacio personal de autorreflexión y bienestar, no atención médica, psicoterapia ni coaching profesional. Tengo el 100% del control de mi propia vida, elecciones y paz.',
+    agreeButton: 'Aceptar y Entrar al Santuario',
+    nextButton: 'Siguiente',
+    prevButton: 'Anterior',
+    closeTour: 'Cerrar recorrido',
+  },
+  atmosphere: {
+    switcherTitle: 'Lienzo Atmosférico',
+    twilightName: 'Calma Crepuscular',
+    twilightDesc: 'Índigo y pizarra atenuados para momentos profundos de reflexión',
+    mossName: 'Musgo Enraizado',
+    mossDesc: 'Verdes forestales suaves y piedra terrosa para calmar la ansiedad',
+    dawnName: 'Alabastro del Alba',
+    dawnDesc: 'Crema cálida y ámbar para la concentración y la claridad mental',
+    midnightName: 'Santuario de Medianoche',
+    midnightDesc: 'Obsidiana profunda y carbón para respiración y enfoque nocturno',
+    autoAtmosphere: 'Atmósfera Contextual Automática',
+    autoAtmosphereDesc: 'Adapta suavemente la paleta al entrar en Respiración o la Bóveda',
+  },
   welcome: {
     question: '¿Qué te trae hoy por aquí?',
     subtitle: 'Toma aire. No hay respuestas correctas, no hay puntuaciones ni prisas.',

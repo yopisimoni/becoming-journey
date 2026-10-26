@@ -22,6 +22,9 @@ import {
   HeartHandshake,
   ShieldAlert,
   ExternalLink,
+  Sparkles,
+  Palette,
+  Wand2,
 } from 'lucide-react';
 
 export function SettingsAndAboutView() {
@@ -29,6 +32,10 @@ export function SettingsAndAboutView() {
     dict,
     themeMode,
     setThemeMode,
+    atmosphere,
+    setAtmosphere,
+    autoAtmosphere,
+    setAutoAtmosphere,
     locale,
     setLocale,
     soundPreset,
@@ -43,6 +50,7 @@ export function SettingsAndAboutView() {
     exportDataJson,
     exportDataTxt,
     wipeAllData,
+    setOnboardingOpen,
   } = useApp();
 
   const [activeTab, setActiveTab] = useState<'preferences' | 'about' | 'privacy' | 'terms'>('preferences');
@@ -178,6 +186,111 @@ export function SettingsAndAboutView() {
                   <Moon className="w-3.5 h-3.5 text-indigo-400" />
                   <span>Twilight</span>
                 </button>
+              </div>
+            </div>
+
+            {/* Atmosphere Mood Weather */}
+            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <Palette className="w-3.5 h-3.5 text-indigo-500" />
+                    <span>{dict.atmosphere?.switcherTitle || 'Atmosphere Canvas (Mood Shifting Backgrounds)'}</span>
+                  </div>
+                  <div className="text-xs text-slate-500">
+                    Living ambient color palette and background gradient transitions.
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <button
+                  type="button"
+                  data-testid="settings-atmosphere-twilight"
+                  onClick={() => setAtmosphere('twilight', true)}
+                  className={`p-2.5 rounded-xl border text-start transition-all ${
+                    atmosphere === 'twilight'
+                      ? 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-500 ring-1 ring-indigo-500/30'
+                      : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
+                    <span className="text-xs font-semibold text-slate-900 dark:text-white">
+                      {dict.atmosphere?.twilightName || 'Twilight Calm'}
+                    </span>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  data-testid="settings-atmosphere-moss"
+                  onClick={() => setAtmosphere('moss', true)}
+                  className={`p-2.5 rounded-xl border text-start transition-all ${
+                    atmosphere === 'moss'
+                      ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-500 ring-1 ring-emerald-500/30'
+                      : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                    <span className="text-xs font-semibold text-slate-900 dark:text-white">
+                      {dict.atmosphere?.mossName || 'Grounded Moss'}
+                    </span>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  data-testid="settings-atmosphere-dawn"
+                  onClick={() => setAtmosphere('dawn', true)}
+                  className={`p-2.5 rounded-xl border text-start transition-all ${
+                    atmosphere === 'dawn'
+                      ? 'bg-amber-50 dark:bg-amber-950/60 border-amber-500 ring-1 ring-amber-500/30'
+                      : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                    <span className="text-xs font-semibold text-slate-900 dark:text-white">
+                      {dict.atmosphere?.dawnName || 'Dawn Alabaster'}
+                    </span>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  data-testid="settings-atmosphere-midnight"
+                  onClick={() => setAtmosphere('midnight', true)}
+                  className={`p-2.5 rounded-xl border text-start transition-all ${
+                    atmosphere === 'midnight'
+                      ? 'bg-slate-100 dark:bg-slate-800 border-slate-500 ring-1 ring-slate-500/30'
+                      : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-slate-400" />
+                    <span className="text-xs font-semibold text-slate-900 dark:text-white">
+                      {dict.atmosphere?.midnightName || 'Midnight Sanctuary'}
+                    </span>
+                  </div>
+                </button>
+              </div>
+
+              {/* Contextual Auto-Atmosphere */}
+              <div className="flex items-center justify-between pt-2">
+                <div>
+                  <div className="font-medium text-xs text-slate-800 dark:text-slate-200">
+                    {dict.atmosphere?.autoAtmosphere || 'Contextual Auto-Atmosphere'}
+                  </div>
+                  <div className="text-[11px] text-slate-500">
+                    {dict.atmosphere?.autoAtmosphereDesc ||
+                      'Softly adapts ambient colors when entering Breathing & Vault studios'}
+                  </div>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={autoAtmosphere}
+                  onChange={(e) => setAutoAtmosphere(e.target.checked)}
+                  className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                />
               </div>
             </div>
 
@@ -427,6 +540,17 @@ export function SettingsAndAboutView() {
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               </div>
+            </div>
+
+            <div className="pt-2 flex justify-start">
+              <button
+                type="button"
+                onClick={() => setOnboardingOpen(true)}
+                className="px-4 py-2 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50/80 dark:bg-indigo-950/40 text-xs font-bold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 flex items-center gap-2 transition-colors"
+              >
+                <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                <span>Review Onboarding &amp; Sovereign Boundaries</span>
+              </button>
             </div>
           </div>
         </div>

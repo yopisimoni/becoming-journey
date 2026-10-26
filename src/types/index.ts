@@ -1,5 +1,7 @@
 export type Locale = 'en' | 'ar' | 'fr' | 'es' | 'it';
 
+export type AtmosphereMode = 'twilight' | 'moss' | 'dawn' | 'midnight';
+
 export type EntryIntent = 'lost' | 'goal' | 'struggle' | 'grow';
 
 export type InteractionMode = 'guided' | 'journal' | 'listen';

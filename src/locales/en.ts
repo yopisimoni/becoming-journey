@@ -164,6 +164,71 @@ export const en: TranslationDictionary = {
     ],
     close: 'Close',
   },
+  onboarding: {
+    tourBadge: 'First Steps & Sovereign Welcome',
+    stepOf: 'Step',
+    card1: {
+      badge: "Card 1 of 3 • Who We Are & Why We're Here",
+      title: 'A Quiet Human Sanctuary in a Loud Digital World',
+      subtitle: 'Not a corporation. Not a clinical algorithm. A safe harbor for your mind.',
+      paragraphs: [
+        'BECOMING was created out of a simple observation: modern digital life is hurried, extractive, and noisy. Every app wants your attention, streaks, and data.',
+        'This sanctuary was built with an opposite philosophy: Zero Cost Forever, 100% Local Privacy, and Unhurried Presence. There are no algorithmic feeds, no tracking pixels, and no remote databases harvesting your private journals.',
+        'Everything you type, explore, or feel exists strictly in your device’s browser memory. When you are here, you are safe to pause, unclench, and be honest with yourself.',
+      ],
+    },
+    card2: {
+      badge: 'Card 2 of 3 • How We Help You',
+      title: 'Tools Designed to Mirror Your Mind, Not Boss It',
+      subtitle: 'You choose the tool that speaks to your current energy.',
+      tools: [
+        {
+          title: 'Breathing & Somatic Studio',
+          desc: '10 procedural Web Audio soundscapes and guided tension releases for jaw, eyes, and shoulders.',
+        },
+        {
+          title: 'Inner Compass Quizzes',
+          desc: 'Exploratory questionnaires inspired by 5 personality frameworks across Work, Life, and Soul.',
+        },
+        {
+          title: 'The Balance Ledger & The Shift',
+          desc: 'Plant seeds of light and tenderly release habits you outgrew, with 60-second impulse resets.',
+        },
+        {
+          title: 'The Mind Vault & Dissolution',
+          desc: 'A PIN-protected lockbox or disappearing chamber to let burdens vanish into the void.',
+        },
+      ],
+    },
+    card3: {
+      badge: 'Card 3 of 3 • Your Sovereign Boundaries',
+      title: 'Life is Short. You Are Not an Angel. You Are Free.',
+      subtitle: 'Growth happens through patience, responsibility, and self-compassion.',
+      paragraphs: [
+        'You do not need to be perfect to be worthy of peace. You will make mistakes, stumble, and have days where you just want to rest. That is an honorable part of the human journey.',
+        'BECOMING will never tell you what to do. You are the sole, sovereign creator of your decisions.',
+      ],
+    },
+    consentCheckbox:
+      'I understand that BECOMING is a personal self-reflection and wellness sanctuary, not medical care, therapy, or professional coaching. I am in 100% control of my own life, choices, and peace.',
+    agreeButton: 'Agree & Enter Sanctuary',
+    nextButton: 'Next',
+    prevButton: 'Previous',
+    closeTour: 'Close Tour',
+  },
+  atmosphere: {
+    switcherTitle: 'Atmosphere Canvas',
+    twilightName: 'Twilight Calm',
+    twilightDesc: 'Deep muted indigo & slate for heavy or reflective moments',
+    mossName: 'Grounded Moss',
+    mossDesc: 'Soft forest greens & earthy stone for grounding anxiety',
+    dawnName: 'Dawn Alabaster',
+    dawnDesc: 'Warm cream & amber for focus and clear morning thought',
+    midnightName: 'Midnight Sanctuary',
+    midnightDesc: 'Deep obsidian & charcoal for deep focus and night breathing',
+    autoAtmosphere: 'Contextual Auto-Atmosphere',
+    autoAtmosphereDesc: 'Softly adapts ambient colors when entering Breathing & Vault studios',
+  },
   welcome: {
     question: 'What brings you here today?',
     subtitle: 'Take a breath. There are no right answers, no scores, and no rush.',

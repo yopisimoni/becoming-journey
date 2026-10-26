@@ -26,6 +26,7 @@ import {
 import { WipeDataModal } from './WipeDataModal';
 import { StorageSettingsModal } from './StorageSettingsModal';
 import { SoundscapeControlPill } from './SoundscapeControlPill';
+import { AtmosphereSwitcher } from './AtmosphereSwitcher';
 import { AiBridgeSettingsModal } from './AiBridgeSettingsModal';
 import { AuthModal } from './AuthModal';
 
@@ -121,6 +122,9 @@ export function Navbar() {
 
             {/* End: Controls (Sound Pill, Language, Theme Toggle, User Account) */}
             <div className="flex items-center gap-1.5 sm:gap-2">
+              {/* Atmosphere Mood Switcher */}
+              <AtmosphereSwitcher />
+
               {/* Soundscape Control Pill */}
               <SoundscapeControlPill />
 

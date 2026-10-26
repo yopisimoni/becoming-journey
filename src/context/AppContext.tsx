@@ -18,6 +18,7 @@ import {
   DailyLivingPillars,
   CoreLifeDream,
   FrameworkId,
+  AtmosphereMode,
 } from '@/types';
 import { getDictionary, defaultLocale, TranslationDictionary } from '@/locales';
 import { soundEngine, SoundscapePreset } from '@/lib/audio/soundEngine';
@@ -48,6 +49,12 @@ interface AppContextValue {
   // Theme (Light vs Twilight Sanctuary)
   themeMode: ThemeMode;
   setThemeMode: (mode: ThemeMode) => void;
+
+  // Atmosphere Canvas (Mood Shifting Backgrounds)
+  atmosphere: AtmosphereMode;
+  setAtmosphere: (mode: AtmosphereMode, isManual?: boolean) => void;
+  autoAtmosphere: boolean;
+  setAutoAtmosphere: (enabled: boolean) => void;
 
   // Soundscape
   soundPreset: SoundscapePreset;
@@ -140,6 +147,12 @@ interface AppContextValue {
   // Safety Modal
   isSafetyModalOpen: boolean;
   setSafetyModalOpen: (open: boolean) => void;
+
+  // Onboarding & Consent Gate (v0.6)
+  isOnboardingOpen: boolean;
+  setOnboardingOpen: (open: boolean) => void;
+  hasConsented: boolean;
+  completeOnboarding: () => void;
 }
 
 const STORAGE_KEY_CARDS = 'becoming_journey_cards_v1';
@@ -158,6 +171,10 @@ const STORAGE_KEY_THEME = 'becoming_theme_mode_v1';
 const STORAGE_KEY_AI = 'becoming_ai_settings_v1';
 const STORAGE_KEY_REGISTERED_USERS = 'becoming_registered_users_v1';
 const STORAGE_KEY_ACTIVE_USER = 'becoming_active_user_v1';
+const STORAGE_KEY_ONBOARDED = 'becoming_onboarded';
+const STORAGE_KEY_CONSENT = 'becoming_consent_agreed';
+const STORAGE_KEY_ATMOSPHERE = 'becoming_atmosphere_mode';
+const STORAGE_KEY_AUTO_ATMOSPHERE = 'becoming_auto_atmosphere';
 
 const hashPassword = (pwd: string) => {
   let hash = 0;
@@ -174,6 +191,9 @@ const AppContext = createContext<AppContextValue | null>(null);
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(defaultLocale);
   const [themeMode, setThemeModeState] = useState<ThemeMode>('light');
+  const [atmosphere, setAtmosphereState] = useState<AtmosphereMode>('dawn');
+  const [preferredAtmosphere, setPreferredAtmosphere] = useState<AtmosphereMode>('dawn');
+  const [autoAtmosphere, setAutoAtmosphereState] = useState<boolean>(true);
   const [soundPreset, setSoundPresetState] = useState<SoundscapePreset>('none');
   const [soundVolume, setSoundVolumeState] = useState<number>(0.65);
   const [aiSettings, setAiSettingsState] = useState<AISettings>(DEFAULT_AI_SETTINGS);
@@ -193,6 +213,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [reducedMotion, setReducedMotionState] = useState(false);
   const [storageMode, setStorageModeState] = useState<'session' | 'local'>('session');
   const [isSafetyModalOpen, setSafetyModalOpen] = useState(false);
+  const [isOnboardingOpen, setOnboardingOpen] = useState(false);
+  const [hasConsented, setHasConsented] = useState(false);
 
   // App Data
   const [cards, setCards] = useState<JourneyMapCard[]>([]);
@@ -338,6 +360,28 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setThemeModeState(savedTheme);
       }
 
+      const savedAtmosphere = (store.getItem(STORAGE_KEY_ATMOSPHERE) ||
+        localStorage.getItem(STORAGE_KEY_ATMOSPHERE)) as AtmosphereMode | null;
+      if (savedAtmosphere && ['twilight', 'moss', 'dawn', 'midnight'].includes(savedAtmosphere)) {
+        setAtmosphereState(savedAtmosphere);
+        setPreferredAtmosphere(savedAtmosphere);
+        if (savedAtmosphere === 'twilight' || savedAtmosphere === 'midnight') {
+          setThemeModeState('twilight');
+        } else if (savedAtmosphere === 'dawn') {
+          setThemeModeState('light');
+        }
+      } else if (savedTheme === 'twilight') {
+        setAtmosphereState('twilight');
+        setPreferredAtmosphere('twilight');
+      }
+
+      const savedAutoAtmosphere =
+        store.getItem(STORAGE_KEY_AUTO_ATMOSPHERE) ||
+        localStorage.getItem(STORAGE_KEY_AUTO_ATMOSPHERE);
+      if (savedAutoAtmosphere !== null) {
+        setAutoAtmosphereState(savedAutoAtmosphere === 'true');
+      }
+
       const savedAi = store.getItem(STORAGE_KEY_AI);
       if (savedAi) {
         setAiSettingsState(JSON.parse(savedAi));
@@ -349,6 +393,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }
 
       loadUserData(initialUser, store);
+
+      // Onboarding & Mandatory Consent Gate check
+      try {
+        const onboarded = localStorage.getItem(STORAGE_KEY_ONBOARDED);
+        const consented = localStorage.getItem(STORAGE_KEY_CONSENT);
+        if (onboarded === 'true' && consented === 'true') {
+          setHasConsented(true);
+        } else {
+          setOnboardingOpen(true);
+        }
+      } catch {
+        // Storage might be disabled
+      }
     } catch {
       // Storage might be disabled in private mode
     }
@@ -364,22 +421,66 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   }, [locale]);
 
-  // Update theme class on HTML element
+  // Update theme class and data-atmosphere on HTML element
   useEffect(() => {
     if (typeof document !== 'undefined') {
-      if (themeMode === 'twilight') {
+      document.documentElement.setAttribute('data-atmosphere', atmosphere);
+      if (themeMode === 'twilight' || atmosphere === 'twilight' || atmosphere === 'midnight') {
         document.documentElement.classList.add('dark');
       } else {
         document.documentElement.classList.remove('dark');
       }
     }
-  }, [themeMode]);
+  }, [themeMode, atmosphere]);
+
+  // Contextual Auto-Atmosphere based on active studio
+  useEffect(() => {
+    if (!autoAtmosphere) return;
+
+    if (activeTab === 'vault') {
+      setAtmosphereState('midnight');
+    } else if (activeTab === 'breathe' || (activeTab === 'home' && activeMode === 'listen')) {
+      setAtmosphereState('moss');
+    } else {
+      setAtmosphereState(preferredAtmosphere);
+    }
+  }, [activeTab, activeMode, autoAtmosphere, preferredAtmosphere]);
 
   const setLocale = (newLocale: Locale) => {
     setLocaleState(newLocale);
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
       store.setItem(STORAGE_KEY_LOCALE, newLocale);
+    } catch {
+      // ignore
+    }
+  };
+
+  const setAtmosphere = (newAtmosphere: AtmosphereMode, isManual = true) => {
+    setAtmosphereState(newAtmosphere);
+    if (isManual) {
+      setPreferredAtmosphere(newAtmosphere);
+      try {
+        const store = storageMode === 'local' ? localStorage : sessionStorage;
+        store.setItem(STORAGE_KEY_ATMOSPHERE, newAtmosphere);
+        localStorage.setItem(STORAGE_KEY_ATMOSPHERE, newAtmosphere);
+      } catch {
+        // ignore
+      }
+      if (newAtmosphere === 'twilight' || newAtmosphere === 'midnight') {
+        setThemeModeState('twilight');
+      } else if (newAtmosphere === 'dawn') {
+        setThemeModeState('light');
+      }
+    }
+  };
+
+  const setAutoAtmosphere = (enabled: boolean) => {
+    setAutoAtmosphereState(enabled);
+    try {
+      const store = storageMode === 'local' ? localStorage : sessionStorage;
+      store.setItem(STORAGE_KEY_AUTO_ATMOSPHERE, String(enabled));
+      localStorage.setItem(STORAGE_KEY_AUTO_ATMOSPHERE, String(enabled));
     } catch {
       // ignore
     }
@@ -392,6 +493,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       store.setItem(STORAGE_KEY_THEME, newMode);
     } catch {
       // ignore
+    }
+    if (newMode === 'twilight' && atmosphere === 'dawn') {
+      setAtmosphere('twilight', true);
+    } else if (newMode === 'light' && (atmosphere === 'twilight' || atmosphere === 'midnight')) {
+      setAtmosphere('dawn', true);
     }
   };
 
@@ -407,6 +513,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const playSingingBowl = () => {
     soundEngine.playSingingBowlChime();
+  };
+
+  const completeOnboarding = () => {
+    try {
+      localStorage.setItem(STORAGE_KEY_ONBOARDED, 'true');
+      localStorage.setItem(STORAGE_KEY_CONSENT, 'true');
+    } catch {
+      // ignore
+    }
+    setHasConsented(true);
+    setOnboardingOpen(false);
+    playSingingBowl();
   };
 
   const setAiSettings = (newSettings: AISettings) => {
@@ -972,6 +1090,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     themeMode,
     setThemeMode,
 
+    atmosphere,
+    setAtmosphere,
+    autoAtmosphere,
+    setAutoAtmosphere,
+
     soundPreset,
     setSoundPreset,
     soundVolume,
@@ -1043,6 +1166,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     isSafetyModalOpen,
     setSafetyModalOpen,
+
+    // v0.6 Onboarding & Consent
+    isOnboardingOpen,
+    setOnboardingOpen,
+    hasConsented,
+    completeOnboarding,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

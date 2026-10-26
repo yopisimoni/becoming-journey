@@ -165,6 +165,71 @@ export const fr: TranslationDictionary = {
     ],
     close: 'Fermer',
   },
+  onboarding: {
+    tourBadge: 'Premiers Pas & Accueil Souverain',
+    stepOf: 'Étape',
+    card1: {
+      badge: 'Carte 1 sur 3 • Qui nous sommes et pourquoi nous sommes là',
+      title: 'Un sanctuaire humain et paisible dans un monde numérique bruyant',
+      subtitle: 'Ni une entreprise commerciale, ni un algorithme clinique. Un havre pour votre esprit.',
+      paragraphs: [
+        'BECOMING est né d’un constat simple : la vie numérique moderne est pressante, extractive et saturée. Chaque application réclame votre attention, vos séries et vos données.',
+        'Ce sanctuaire a été bâti selon la philosophie inverse : Gratuit pour toujours, 100% Privé et local, Présence sereine. Aucun flux algorithmique, aucun pixel espion, aucune base de données exploitant vos écrits.',
+        'Tout ce que vous écrivez ou ressentez demeure strictement dans la mémoire de votre navigateur sur cet appareil.',
+      ],
+    },
+    card2: {
+      badge: 'Carte 2 sur 3 • Comment nous vous aidons',
+      title: 'Des outils conçus pour refléter votre esprit, sans jamais lui dicter sa loi',
+      subtitle: 'Choisissez l’outil qui répond à votre énergie du moment.',
+      tools: [
+        {
+          title: 'Studio de Respiration & Somatique',
+          desc: '10 ambiances Web Audio procédurales et guidages pour relâcher la mâchoire, les yeux et les épaules.',
+        },
+        {
+          title: 'Boussole Intérieure & Questionnaires',
+          desc: 'Questionnaires exploratoires inspirés de 5 cadres psychologiques (Travail, Vie, Âme).',
+        },
+        {
+          title: 'Livre des Habitudes & The Shift',
+          desc: 'Semez des graines de clarté et déposez tendrement vos fardeaux sans culpabilité.',
+        },
+        {
+          title: 'Coffre Secret & Chambre de Dissolution',
+          desc: 'Boîte secrète protégée par code PIN ou chambre éphémère pour laisser vos soucis s’évanouir.',
+        },
+      ],
+    },
+    card3: {
+      badge: 'Carte 3 sur 3 • Vos limites souveraines',
+      title: 'La vie est courte. Vous n’êtes pas un ange. Vous êtes souverain.',
+      subtitle: 'Le vrai cheminement se fait dans la patience, la responsabilité et la bienveillance.',
+      paragraphs: [
+        'Vous n’avez pas besoin d’être parfait(e) pour mériter la paix. Vous ferez des erreurs, ressentirez de la fatigue et aurez besoin de repos.',
+        'BECOMING ne vous ordonnera jamais quoi faire. Vous êtes le seul auteur souverain de votre existence.',
+      ],
+    },
+    consentCheckbox:
+      'Je comprends que BECOMING est un espace personnel d’autoréflexion et de bien-être, et non un soin médical, une thérapie ou un coaching professionnel. Je suis à 100% responsable de ma vie, de mes choix et de ma paix.',
+    agreeButton: 'Accepter & Entrer dans le Sanctuaire',
+    nextButton: 'Suivant',
+    prevButton: 'Précédent',
+    closeTour: 'Fermer la visite',
+  },
+  atmosphere: {
+    switcherTitle: 'Toile Atmosphérique',
+    twilightName: 'Calme Crépusculaire',
+    twilightDesc: 'Indigo et ardoise feutrés pour les moments de recueillement profond',
+    mossName: 'Mousse Enracinée',
+    mossDesc: 'Verts forestiers doux et pierre terrestre pour apaiser l’anxiété',
+    dawnName: 'Albâtre de l’Aube',
+    dawnDesc: 'Crème chaleureuse et ambre pour la clarté et la concentration',
+    midnightName: 'Sanctuaire de Minuit',
+    midnightDesc: 'Obsidienne profonde et charbon pour la respiration nocturne',
+    autoAtmosphere: 'Atmosphère Contextuelle Auto',
+    autoAtmosphereDesc: 'Harmonise doucement la palette en entrant dans la Respiration ou la Voûte',
+  },
   welcome: {
     question: "Qu'est-ce qui vous amène aujourd'hui ?",
     subtitle: "Prenez une respiration. Il n'y a pas de bonne réponse, pas de score, et aucune hâte.",
