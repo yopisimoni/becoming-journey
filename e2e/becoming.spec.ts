@@ -274,3 +274,102 @@ test.describe('Sanctuary Overhaul v0.3: Floating Dock & Local-First Auth', () =>
     await expect(page.getByRole('button', { name: /Sign In/i })).toBeVisible();
   });
 });
+
+test.describe('Sanctuary v0.4: Breathing Studio, Inner Compass & Life Horizons', () => {
+  test('navigates to Breathing Studio and verifies techniques & somatic guide', async ({ page }) => {
+    await page.goto('/');
+
+    // Open Studios drawer from dock
+    const studiosBtn = page.locator('#floating-dock-tab-studios');
+    await expect(studiosBtn).toBeVisible();
+    await studiosBtn.click();
+
+    // Click Breathing Studio
+    const breatheStudioBtn = page.locator('#dock-studio-breathe');
+    await expect(breatheStudioBtn).toBeVisible();
+    await breatheStudioBtn.click();
+
+    // Verify Breathing Studio header and technique options
+    await expect(page.getByRole('heading', { name: /Interactive Breathing Studio/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /4-7-8 Deep Calm/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /4-4-4-4 Box Breathing/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /5-5 Coherent Balance/i })).toBeVisible();
+
+    // Switch technique to Box Breathing
+    await page.getByRole('button', { name: /4-4-4-4 Box Breathing/i }).click();
+
+    // Verify somatic checklist items exist and can be toggled
+    const jawCheck = page.getByRole('button', { name: /Unclench your jaw/i });
+    await expect(jawCheck).toBeVisible();
+    await jawCheck.click();
+  });
+
+  test('walks through Inner Compass Quiz and views personalized Archetype result', async ({ page }) => {
+    await page.goto('/');
+
+    // Open Studios drawer and select Inner Compass Quiz
+    await page.locator('#floating-dock-tab-studios').click();
+    await page.locator('#dock-studio-quiz').click();
+
+    // Verify quiz studio entrance
+    await expect(page.getByRole('heading', { name: /Inner Compass/i })).toBeVisible();
+
+    // Select 10 Questions length
+    const tenQBtn = page.getByRole('button', { name: /10 Questions/i });
+    await expect(tenQBtn).toBeVisible();
+    await tenQBtn.click();
+
+    // Answer 10 questions by selecting the first option each time
+    for (let i = 0; i < 10; i++) {
+      const optionBtn = page.locator('div.space-y-2\\.5 button').first();
+      await optionBtn.waitFor({ state: 'visible' });
+      await optionBtn.click();
+    }
+
+    // Verify Archetype Result Card is rendered
+    await expect(page.getByText(/Your Primary Inner Compass Archetype/i)).toBeVisible();
+    await expect(page.getByRole('button', { name: /Save Portrait to Journey Map/i })).toBeVisible();
+
+    // Save portrait to journey map
+    await page.getByRole('button', { name: /Save Portrait to Journey Map/i }).click();
+    await expect(page.getByText(/Saved to Journey Map/i)).toBeVisible();
+  });
+
+  test('plants and completes an intention in Life Horizons', async ({ page }) => {
+    await page.goto('/');
+
+    // Open Studios drawer and select Life Horizons
+    await page.locator('#floating-dock-tab-studios').click();
+    await page.locator('#dock-studio-calendar').click();
+
+    // Verify calendar view
+    await expect(page.getByRole('heading', { name: /Life Horizons/i })).toBeVisible();
+
+    // Click "Plant a New Intention"
+    const addIntentionBtn = page.getByRole('button', { name: /Plant a New Intention/i });
+    await expect(addIntentionBtn).toBeVisible();
+    await addIntentionBtn.click();
+
+    // Fill goal title and submit
+    await page.locator('input[placeholder*="Read 20 pages"]').fill('Breathe deeply before opening emails');
+    await page.getByRole('button', { name: /Save Milestone/i }).click();
+
+    // Verify goal card is rendered
+    await expect(page.getByText('Breathe deeply before opening emails')).toBeVisible();
+  });
+
+  test('opens Settings & Information from header button', async ({ page }) => {
+    await page.goto('/');
+
+    const settingsBtn = page.locator('#navbar-settings-button');
+    await expect(settingsBtn).toBeVisible();
+    await settingsBtn.click();
+
+    await expect(page.getByRole('heading', { name: /Sanctuary Settings & Information/i })).toBeVisible();
+
+    // Switch to Privacy tab
+    await page.getByRole('button', { name: /Privacy Manifesto/i }).click();
+    await expect(page.getByText(/Privacy Manifesto & Local Sovereignty/i)).toBeVisible();
+    await expect(page.getByText(/No Tracking Pixels/i)).toBeVisible();
+  });
+});

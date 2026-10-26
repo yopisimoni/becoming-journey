@@ -93,7 +93,37 @@ describe('BCM-004: Multilingual Framework & Five Locales', () => {
         expect(dict.stages.reflect.label).toBeTruthy();
       });
 
-      it('includes deterministic fallback explanation', () => {
+      it('defines v0.4 breathing, quiz, calendar, habits, and vault dictionaries', () => {
+        expect(dict.breathing).toBeDefined();
+        expect(dict.breathing?.studioTitle).toBeTruthy();
+        expect(dict.breathing?.inhale).toBeTruthy();
+        expect(dict.breathing?.hold).toBeTruthy();
+        expect(dict.breathing?.exhale).toBeTruthy();
+        expect(dict.breathing?.t478Name).toBeTruthy();
+        expect(dict.breathing?.tBoxName).toBeTruthy();
+        expect(dict.breathing?.tCoherentName).toBeTruthy();
+
+        expect(dict.quiz).toBeDefined();
+        expect(dict.quiz?.title).toBeTruthy();
+        expect(dict.quiz?.chooseLength).toBeTruthy();
+
+        expect(dict.calendar).toBeDefined();
+        expect(dict.calendar?.title).toBeTruthy();
+        expect(dict.calendar?.addGoal).toBeTruthy();
+
+        expect(dict.habits).toBeDefined();
+        expect(dict.habits?.title).toBeTruthy();
+
+        expect(dict.vault).toBeDefined();
+        expect(dict.vault?.title).toBeTruthy();
+
+        expect(dict.audio.studioTitle).toBeTruthy();
+        expect(dict.audio.catCalm).toBeTruthy();
+        expect(dict.audio.catFocus).toBeTruthy();
+        expect(dict.audio.catNature).toBeTruthy();
+      });
+
+      it('defines deterministic fallback explanation', () => {
         expect(dict.fallback.heading).toBeTruthy();
         expect(dict.fallback.notice).toBeTruthy();
       });

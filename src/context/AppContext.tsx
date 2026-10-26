@@ -5,15 +5,20 @@ import {
   Locale,
   EntryIntent,
   InteractionMode,
+  NavigationTab,
   JourneyMapCard,
   JournalEntry,
   MomentOfLight,
   UserProfile,
   AvatarId,
+  LifeGoal,
+  HabitItem,
+  VaultSecret,
 } from '@/types';
 import { getDictionary, defaultLocale, TranslationDictionary } from '@/locales';
 import { soundEngine, SoundscapePreset } from '@/lib/audio/soundEngine';
 import { AISettings, DEFAULT_AI_SETTINGS } from '@/lib/engine/aiAdapter';
+import { clearAllMedia } from '@/lib/storage/mediaDb';
 
 export type ThemeMode = 'light' | 'twilight';
 
@@ -42,6 +47,8 @@ interface AppContextValue {
   // Soundscape
   soundPreset: SoundscapePreset;
   setSoundPreset: (preset: SoundscapePreset) => void;
+  soundVolume: number;
+  setSoundVolume: (val: number) => void;
   playSingingBowl: () => void;
 
   // AI Bridge Settings (Optional)
@@ -59,8 +66,8 @@ interface AppContextValue {
   setActiveMode: (mode: InteractionMode) => void;
   currentIntent: EntryIntent | null;
   setCurrentIntent: (intent: EntryIntent | null) => void;
-  activeTab: 'home' | 'map' | 'progress';
-  setActiveTab: (tab: 'home' | 'map' | 'progress') => void;
+  activeTab: NavigationTab;
+  setActiveTab: (tab: NavigationTab) => void;
 
   // Reduced Motion
   reducedMotion: boolean;
@@ -83,7 +90,26 @@ interface AppContextValue {
   // Moments of Light
   moments: MomentOfLight[];
   addMoment: (text: string) => void;
+  addMomentWithMedia: (text: string, mediaDataUrl?: string, mediaType?: 'image' | 'video') => void;
   deleteMoment: (id: string) => void;
+
+  // Multi-Horizon Goals
+  goals: LifeGoal[];
+  addGoal: (goal: Omit<LifeGoal, 'id' | 'createdAt'>) => void;
+  toggleGoal: (id: string) => void;
+  deleteGoal: (id: string) => void;
+  moveGoalToTomorrow: (id: string) => void;
+
+  // Habit Seeds & Weights
+  habits: HabitItem[];
+  addHabit: (habit: Omit<HabitItem, 'id' | 'createdAt'>) => void;
+  nurtureHabit: (id: string) => void;
+  deleteHabit: (id: string) => void;
+
+  // Vault Secrets
+  vaultSecrets: VaultSecret[];
+  addVaultSecret: (secret: Omit<VaultSecret, 'id' | 'createdAt'>) => void;
+  deleteVaultSecret: (id: string) => void;
 
   // Data Sovereignty
   wipeAllData: () => void;
@@ -98,6 +124,9 @@ interface AppContextValue {
 const STORAGE_KEY_CARDS = 'becoming_journey_cards_v1';
 const STORAGE_KEY_JOURNAL = 'becoming_journal_entries_v1';
 const STORAGE_KEY_MOMENTS = 'becoming_moments_v1';
+const STORAGE_KEY_GOALS = 'becoming_goals_v1';
+const STORAGE_KEY_HABITS = 'becoming_habits_v1';
+const STORAGE_KEY_VAULT = 'becoming_vault_secrets_v1';
 const STORAGE_KEY_MODE = 'becoming_storage_mode_v1';
 const STORAGE_KEY_LOCALE = 'becoming_locale_v1';
 const STORAGE_KEY_MOTION = 'becoming_reduced_motion_v1';
@@ -109,10 +138,11 @@ const STORAGE_KEY_ACTIVE_USER = 'becoming_active_user_v1';
 const hashPassword = (pwd: string) => {
   let hash = 0;
   for (let i = 0; i < pwd.length; i++) {
-    hash = (hash << 5) - hash + pwd.charCodeAt(i);
+    const char = pwd.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
     hash |= 0;
   }
-  return 'bcm_h_' + Math.abs(hash).toString(36);
+  return `hash_${hash}`;
 };
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -121,36 +151,55 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(defaultLocale);
   const [themeMode, setThemeModeState] = useState<ThemeMode>('light');
   const [soundPreset, setSoundPresetState] = useState<SoundscapePreset>('none');
+  const [soundVolume, setSoundVolumeState] = useState<number>(0.65);
   const [aiSettings, setAiSettingsState] = useState<AISettings>(DEFAULT_AI_SETTINGS);
   const [isAiModalOpen, setAiModalOpen] = useState(false);
+  const [sanctuaryStep, setSanctuaryStep] = useState(0);
 
-  // Authentication State
+  // User Authentication
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
 
-  const [sanctuaryStep, setSanctuaryStep] = useState<number>(0);
+  // Navigation
   const [activeMode, setActiveMode] = useState<InteractionMode>('guided');
   const [currentIntent, setCurrentIntent] = useState<EntryIntent | null>(null);
-  const [activeTab, setActiveTab] = useState<'home' | 'map' | 'progress'>('home');
-  const [reducedMotion, setReducedMotionState] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<NavigationTab>('home');
+
+  // Accessibility & Storage
+  const [reducedMotion, setReducedMotionState] = useState(false);
   const [storageMode, setStorageModeState] = useState<'session' | 'local'>('session');
   const [isSafetyModalOpen, setSafetyModalOpen] = useState(false);
 
+  // App Data
   const [cards, setCards] = useState<JourneyMapCard[]>([]);
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
   const [moments, setMoments] = useState<MomentOfLight[]>([]);
+  const [goals, setGoals] = useState<LifeGoal[]>([]);
+  const [habits, setHabits] = useState<HabitItem[]>([]);
+  const [vaultSecrets, setVaultSecrets] = useState<VaultSecret[]>([]);
 
-  // Key helper scoped to active user
-  const getUserScopedKey = (type: 'cards' | 'journal' | 'moments', userId?: string) => {
-    const uid = userId || user?.id;
-    if (uid) {
-      return `becoming_${uid}_${type}_v1`;
+  const dict = useMemo(() => getDictionary(locale), [locale]);
+  const isRtl = useMemo(() => locale === 'ar', [locale]);
+
+  const getUserScopedKey = (type: 'cards' | 'journal' | 'moments' | 'goals' | 'habits' | 'vault', userId?: string) => {
+    const activeId = userId || user?.id;
+    if (activeId) {
+      return `becoming_${activeId}_${type}_v1`;
     }
-    return type === 'cards'
-      ? STORAGE_KEY_CARDS
-      : type === 'journal'
-      ? STORAGE_KEY_JOURNAL
-      : STORAGE_KEY_MOMENTS;
+    switch (type) {
+      case 'cards':
+        return STORAGE_KEY_CARDS;
+      case 'journal':
+        return STORAGE_KEY_JOURNAL;
+      case 'moments':
+        return STORAGE_KEY_MOMENTS;
+      case 'goals':
+        return STORAGE_KEY_GOALS;
+      case 'habits':
+        return STORAGE_KEY_HABITS;
+      case 'vault':
+        return STORAGE_KEY_VAULT;
+    }
   };
 
   const loadUserData = (targetUser: UserProfile | null, store: Storage) => {
@@ -158,6 +207,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const cardsKey = getUserScopedKey('cards', targetUser?.id);
       const journalKey = getUserScopedKey('journal', targetUser?.id);
       const momentsKey = getUserScopedKey('moments', targetUser?.id);
+      const goalsKey = getUserScopedKey('goals', targetUser?.id);
+      const habitsKey = getUserScopedKey('habits', targetUser?.id);
+      const vaultKey = getUserScopedKey('vault', targetUser?.id);
 
       const savedCards = store.getItem(cardsKey);
       setCards(savedCards ? JSON.parse(savedCards) : []);
@@ -167,6 +219,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       const savedMoments = store.getItem(momentsKey);
       setMoments(savedMoments ? JSON.parse(savedMoments) : []);
+
+      const savedGoals = store.getItem(goalsKey);
+      setGoals(savedGoals ? JSON.parse(savedGoals) : []);
+
+      const savedHabits = store.getItem(habitsKey);
+      setHabits(savedHabits ? JSON.parse(savedHabits) : []);
+
+      const savedVault = store.getItem(vaultKey);
+      setVaultSecrets(savedVault ? JSON.parse(savedVault) : []);
     } catch {
       // ignore
     }
@@ -182,7 +243,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         }
       }
 
-      // Check for active signed in user
       const savedUserStr = localStorage.getItem(STORAGE_KEY_ACTIVE_USER);
       let initialUser: UserProfile | null = null;
       if (savedUserStr) {
@@ -248,9 +308,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   }, [themeMode]);
 
-  const dict = useMemo(() => getDictionary(locale), [locale]);
-  const isRtl = locale === 'ar';
-
   const setLocale = (newLocale: Locale) => {
     setLocaleState(newLocale);
     try {
@@ -261,11 +318,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const setThemeMode = (mode: ThemeMode) => {
-    setThemeModeState(mode);
+  const setThemeMode = (newMode: ThemeMode) => {
+    setThemeModeState(newMode);
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
-      store.setItem(STORAGE_KEY_THEME, mode);
+      store.setItem(STORAGE_KEY_THEME, newMode);
     } catch {
       // ignore
     }
@@ -276,76 +333,66 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     soundEngine.setPreset(preset);
   };
 
+  const setSoundVolume = (val: number) => {
+    setSoundVolumeState(val);
+    soundEngine.setVolume(val);
+  };
+
   const playSingingBowl = () => {
     soundEngine.playSingingBowlChime();
   };
 
-  const setAiSettings = (settings: AISettings) => {
-    setAiSettingsState(settings);
+  const setAiSettings = (newSettings: AISettings) => {
+    setAiSettingsState(newSettings);
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
-      store.setItem(STORAGE_KEY_AI, JSON.stringify(settings));
+      store.setItem(STORAGE_KEY_AI, JSON.stringify(newSettings));
     } catch {
       // ignore
     }
   };
 
-  const setReducedMotion = (enabled: boolean) => {
-    setReducedMotionState(enabled);
+  const setReducedMotion = (reduced: boolean) => {
+    setReducedMotionState(reduced);
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
-      store.setItem(STORAGE_KEY_MOTION, String(enabled));
+      store.setItem(STORAGE_KEY_MOTION, String(reduced));
     } catch {
       // ignore
     }
   };
 
-  const setStorageMode = (newMode: 'session' | 'local') => {
-    setStorageModeState(newMode);
+  const setStorageMode = (mode: 'session' | 'local') => {
+    setStorageModeState(mode);
     try {
-      if (newMode === 'local') {
-        localStorage.setItem(STORAGE_KEY_MODE, 'local');
-        localStorage.setItem(STORAGE_KEY_CARDS, JSON.stringify(cards));
-        localStorage.setItem(STORAGE_KEY_JOURNAL, JSON.stringify(journalEntries));
-        localStorage.setItem(STORAGE_KEY_MOMENTS, JSON.stringify(moments));
-        localStorage.setItem(STORAGE_KEY_LOCALE, locale);
-        localStorage.setItem(STORAGE_KEY_THEME, themeMode);
-        localStorage.setItem(STORAGE_KEY_AI, JSON.stringify(aiSettings));
-        localStorage.setItem(STORAGE_KEY_MOTION, String(reducedMotion));
-        sessionStorage.clear();
-      } else {
-        sessionStorage.setItem(STORAGE_KEY_MODE, 'session');
-        sessionStorage.setItem(STORAGE_KEY_CARDS, JSON.stringify(cards));
-        sessionStorage.setItem(STORAGE_KEY_JOURNAL, JSON.stringify(journalEntries));
-        sessionStorage.setItem(STORAGE_KEY_MOMENTS, JSON.stringify(moments));
-        sessionStorage.setItem(STORAGE_KEY_LOCALE, locale);
-        sessionStorage.setItem(STORAGE_KEY_THEME, themeMode);
-        sessionStorage.setItem(STORAGE_KEY_AI, JSON.stringify(aiSettings));
-        sessionStorage.setItem(STORAGE_KEY_MOTION, String(reducedMotion));
-        localStorage.clear();
-      }
+      localStorage.setItem(STORAGE_KEY_MODE, mode);
+      sessionStorage.setItem(STORAGE_KEY_MODE, mode);
+      const targetStore = mode === 'local' ? localStorage : sessionStorage;
+
+      targetStore.setItem(getUserScopedKey('cards'), JSON.stringify(cards));
+      targetStore.setItem(getUserScopedKey('journal'), JSON.stringify(journalEntries));
+      targetStore.setItem(getUserScopedKey('moments'), JSON.stringify(moments));
+      targetStore.setItem(getUserScopedKey('goals'), JSON.stringify(goals));
+      targetStore.setItem(getUserScopedKey('habits'), JSON.stringify(habits));
+      targetStore.setItem(getUserScopedKey('vault'), JSON.stringify(vaultSecrets));
     } catch {
       // ignore
     }
   };
 
   const signUp = (name: string, email: string, password: string, avatar: AvatarId = 'lotus') => {
-    const cleanName = name.trim();
     const cleanEmail = email.trim().toLowerCase();
-    if (!cleanName) return { success: false, error: 'Please enter your name.' };
-    if (!cleanEmail || !cleanEmail.includes('@')) return { success: false, error: 'Please enter a valid email.' };
-    if (password.length < 4) return { success: false, error: 'Password must be at least 4 characters.' };
-
     try {
       const usersStr = localStorage.getItem(STORAGE_KEY_REGISTERED_USERS);
       const registered: StoredAccount[] = usersStr ? JSON.parse(usersStr) : [];
+
       if (registered.some((u) => u.email === cleanEmail)) {
         return { success: false, error: dict.auth.emailExists };
       }
 
       const newProfile: UserProfile = {
-        id: 'usr_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6),
-        name: cleanName,
+        id: `user_${Date.now()}`,
+        name: name.trim(),
         email: cleanEmail,
         avatar,
         createdAt: new Date().toISOString(),
@@ -363,20 +410,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setStorageModeState('local');
       localStorage.setItem(STORAGE_KEY_MODE, 'local');
 
-      // Migrate guest cards/journal/moments if any
+      // Migrate guest data if any
       const userCardsKey = getUserScopedKey('cards', newProfile.id);
       const userJournalKey = getUserScopedKey('journal', newProfile.id);
       const userMomentsKey = getUserScopedKey('moments', newProfile.id);
+      const userGoalsKey = getUserScopedKey('goals', newProfile.id);
+      const userHabitsKey = getUserScopedKey('habits', newProfile.id);
+      const userVaultKey = getUserScopedKey('vault', newProfile.id);
 
-      if (cards.length > 0) {
-        localStorage.setItem(userCardsKey, JSON.stringify(cards));
-      }
-      if (journalEntries.length > 0) {
-        localStorage.setItem(userJournalKey, JSON.stringify(journalEntries));
-      }
-      if (moments.length > 0) {
-        localStorage.setItem(userMomentsKey, JSON.stringify(moments));
-      }
+      if (cards.length > 0) localStorage.setItem(userCardsKey, JSON.stringify(cards));
+      if (journalEntries.length > 0) localStorage.setItem(userJournalKey, JSON.stringify(journalEntries));
+      if (moments.length > 0) localStorage.setItem(userMomentsKey, JSON.stringify(moments));
+      if (goals.length > 0) localStorage.setItem(userGoalsKey, JSON.stringify(goals));
+      if (habits.length > 0) localStorage.setItem(userHabitsKey, JSON.stringify(habits));
+      if (vaultSecrets.length > 0) localStorage.setItem(userVaultKey, JSON.stringify(vaultSecrets));
 
       return { success: true };
     } catch {
@@ -425,6 +472,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     loadUserData(null, store);
   };
 
+  // Cards
   const saveCard = (cardData: Omit<JourneyMapCard, 'id' | 'createdAt'>) => {
     const newCard: JourneyMapCard = {
       ...cardData,
@@ -452,6 +500,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Journal
   const saveJournalEntry = (content: string) => {
     if (!content.trim()) return;
     const words = content.trim().split(/\s+/).filter(Boolean).length;
@@ -483,12 +532,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Moments
   const addMoment = (text: string) => {
-    if (!text.trim()) return;
+    addMomentWithMedia(text);
+  };
+
+  const addMomentWithMedia = (text: string, mediaDataUrl?: string, mediaType?: 'image' | 'video') => {
+    if (!text.trim() && !mediaDataUrl) return;
     const newMoment: MomentOfLight = {
       id: 'moment_' + Date.now(),
-      date: new Date().toISOString(),
+      date: new Date().toISOString().split('T')[0],
       text: text.trim(),
+      mediaDataUrl,
+      mediaType,
     };
     const updated = [newMoment, ...moments];
     setMoments(updated);
@@ -511,17 +567,157 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Goals
+  const addGoal = (goalData: Omit<LifeGoal, 'id' | 'createdAt'>) => {
+    const newGoal: LifeGoal = {
+      ...goalData,
+      id: 'goal_' + Date.now(),
+      createdAt: new Date().toISOString(),
+    };
+    const updated = [newGoal, ...goals];
+    setGoals(updated);
+    try {
+      const store = storageMode === 'local' ? localStorage : sessionStorage;
+      store.setItem(getUserScopedKey('goals'), JSON.stringify(updated));
+    } catch {
+      // ignore
+    }
+  };
+
+  const toggleGoal = (id: string) => {
+    const updated = goals.map((g) => (g.id === id ? { ...g, completed: !g.completed } : g));
+    setGoals(updated);
+    try {
+      const store = storageMode === 'local' ? localStorage : sessionStorage;
+      store.setItem(getUserScopedKey('goals'), JSON.stringify(updated));
+    } catch {
+      // ignore
+    }
+  };
+
+  const deleteGoal = (id: string) => {
+    const updated = goals.filter((g) => g.id !== id);
+    setGoals(updated);
+    try {
+      const store = storageMode === 'local' ? localStorage : sessionStorage;
+      store.setItem(getUserScopedKey('goals'), JSON.stringify(updated));
+    } catch {
+      // ignore
+    }
+  };
+
+  const moveGoalToTomorrow = (id: string) => {
+    const updated = goals.map((g) => {
+      if (g.id === id) {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        return { ...g, targetDate: tomorrow.toISOString().split('T')[0] };
+      }
+      return g;
+    });
+    setGoals(updated);
+    try {
+      const store = storageMode === 'local' ? localStorage : sessionStorage;
+      store.setItem(getUserScopedKey('goals'), JSON.stringify(updated));
+    } catch {
+      // ignore
+    }
+  };
+
+  // Habits
+  const addHabit = (habitData: Omit<HabitItem, 'id' | 'createdAt'>) => {
+    const newHabit: HabitItem = {
+      ...habitData,
+      id: 'habit_' + Date.now(),
+      createdAt: new Date().toISOString(),
+    };
+    const updated = [newHabit, ...habits];
+    setHabits(updated);
+    try {
+      const store = storageMode === 'local' ? localStorage : sessionStorage;
+      store.setItem(getUserScopedKey('habits'), JSON.stringify(updated));
+    } catch {
+      // ignore
+    }
+  };
+
+  const nurtureHabit = (id: string) => {
+    const updated = habits.map((h) =>
+      h.id === id
+        ? {
+            ...h,
+            nurturedCount: h.nurturedCount + 1,
+            lastNurturedDate: new Date().toISOString().split('T')[0],
+          }
+        : h
+    );
+    setHabits(updated);
+    try {
+      const store = storageMode === 'local' ? localStorage : sessionStorage;
+      store.setItem(getUserScopedKey('habits'), JSON.stringify(updated));
+    } catch {
+      // ignore
+    }
+  };
+
+  const deleteHabit = (id: string) => {
+    const updated = habits.filter((h) => h.id !== id);
+    setHabits(updated);
+    try {
+      const store = storageMode === 'local' ? localStorage : sessionStorage;
+      store.setItem(getUserScopedKey('habits'), JSON.stringify(updated));
+    } catch {
+      // ignore
+    }
+  };
+
+  // Vault
+  const addVaultSecret = (secretData: Omit<VaultSecret, 'id' | 'createdAt'>) => {
+    const newSecret: VaultSecret = {
+      ...secretData,
+      id: 'vault_' + Date.now(),
+      createdAt: new Date().toISOString(),
+    };
+    const updated = [newSecret, ...vaultSecrets];
+    setVaultSecrets(updated);
+    try {
+      const store = storageMode === 'local' ? localStorage : sessionStorage;
+      store.setItem(getUserScopedKey('vault'), JSON.stringify(updated));
+    } catch {
+      // ignore
+    }
+  };
+
+  const deleteVaultSecret = (id: string) => {
+    const updated = vaultSecrets.filter((s) => s.id !== id);
+    setVaultSecrets(updated);
+    try {
+      const store = storageMode === 'local' ? localStorage : sessionStorage;
+      store.setItem(getUserScopedKey('vault'), JSON.stringify(updated));
+    } catch {
+      // ignore
+    }
+  };
+
   const wipeAllData = () => {
     setCards([]);
     setJournalEntries([]);
     setMoments([]);
+    setGoals([]);
+    setHabits([]);
+    setVaultSecrets([]);
     setCurrentIntent(null);
     setSanctuaryStep(0);
+    clearAllMedia().catch(() => {});
     try {
       const store = storageMode === 'local' ? localStorage : sessionStorage;
       store.removeItem(getUserScopedKey('cards'));
       store.removeItem(getUserScopedKey('journal'));
       store.removeItem(getUserScopedKey('moments'));
+      store.removeItem(getUserScopedKey('goals'));
+      store.removeItem(getUserScopedKey('habits'));
+      store.removeItem(getUserScopedKey('vault'));
+      localStorage.removeItem('becoming_vault_pin_v1');
       if (!user) {
         localStorage.clear();
         sessionStorage.clear();
@@ -534,7 +730,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const exportDataJson = () => {
     const exportPayload = {
       app: 'BECOMING',
-      version: '0.2.0',
+      version: '0.4.0',
       themeMode,
       exportedAt: new Date().toISOString(),
       storageMode,
@@ -542,6 +738,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       journeyCards: cards,
       journalEntries,
       momentsOfLight: moments,
+      lifeGoals: goals,
+      habitLedger: habits,
+      vaultSecretsCount: vaultSecrets.length,
     };
     const blob = new Blob([JSON.stringify(exportPayload, null, 2)], {
       type: 'application/json',
@@ -556,10 +755,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const exportDataTxt = () => {
     let txt = `=================================================\n`;
-    txt += `BECOMING — Private Personal Reflection Export (v0.2)\n`;
+    txt += `BECOMING — Complete Life Sanctuary Export (v0.4)\n`;
     txt += `Exported: ${new Date().toLocaleString()}\n`;
     txt += `Theme: ${themeMode}\n`;
-    txt += `Note: All reflections were generated & kept locally.\n`;
+    txt += `Note: All reflections & memories are strictly local.\n`;
     txt += `=================================================\n\n`;
 
     txt += `--- CONFIRMED JOURNEY MAP CARDS (${cards.length}) ---\n\n`;
@@ -581,7 +780,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     txt += `\n--- MOMENTS OF LIGHT (${moments.length}) ---\n\n`;
     moments.forEach((m, idx) => {
-      txt += `[${idx + 1}] ${new Date(m.date).toLocaleDateString()}: ${m.text}\n`;
+      txt += `[${idx + 1}] ${m.date}: ${m.text}\n`;
+    });
+
+    txt += `\n--- LIFE GOALS & HORIZONS (${goals.length}) ---\n\n`;
+    goals.forEach((g, idx) => {
+      txt += `[${idx + 1}] [${g.horizon.toUpperCase()}] ${g.title} (${g.completed ? 'COMPLETED' : 'ACTIVE'})\n`;
+    });
+
+    txt += `\n--- HABIT BALANCE LEDGER (${habits.length}) ---\n\n`;
+    habits.forEach((h, idx) => {
+      txt += `[${idx + 1}] [${h.type.toUpperCase()}] ${h.title} (Nurtured: ${h.nurturedCount} times)\n`;
     });
 
     const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
@@ -598,45 +807,76 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setLocale,
     dict,
     isRtl,
+
     user,
     isAuthModalOpen,
     setAuthModalOpen,
     signUp,
     signIn,
     signOut,
+
     themeMode,
     setThemeMode,
+
     soundPreset,
     setSoundPreset,
+    soundVolume,
+    setSoundVolume,
     playSingingBowl,
+
     aiSettings,
     setAiSettings,
     isAiModalOpen,
     setAiModalOpen,
+
     sanctuaryStep,
     setSanctuaryStep,
+
     activeMode,
     setActiveMode,
     currentIntent,
     setCurrentIntent,
     activeTab,
     setActiveTab,
+
     reducedMotion,
     setReducedMotion,
+
     storageMode,
     setStorageMode,
+
     cards,
     saveCard,
     deleteCard,
+
     journalEntries,
     saveJournalEntry,
     deleteJournalEntry,
+
     moments,
     addMoment,
+    addMomentWithMedia,
     deleteMoment,
+
+    goals,
+    addGoal,
+    toggleGoal,
+    deleteGoal,
+    moveGoalToTomorrow,
+
+    habits,
+    addHabit,
+    nurtureHabit,
+    deleteHabit,
+
+    vaultSecrets,
+    addVaultSecret,
+    deleteVaultSecret,
+
     wipeAllData,
     exportDataJson,
     exportDataTxt,
+
     isSafetyModalOpen,
     setSafetyModalOpen,
   };

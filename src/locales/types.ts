@@ -40,6 +40,11 @@ export interface TranslationDictionary {
     journalTab: string;
     mapTab: string;
     momentsTab: string;
+    breatheTab?: string;
+    quizTab?: string;
+    calendarTab?: string;
+    vaultTab?: string;
+    settingsTab?: string;
   };
   auth: {
     signIn: string;
@@ -85,6 +90,70 @@ export interface TranslationDictionary {
     rain: string;
     bowl: string;
     mute: string;
+    studioTitle?: string;
+    studioSubtitle?: string;
+    volumeLabel?: string;
+    catCalm?: string;
+    catFocus?: string;
+    catNature?: string;
+    solfeggio?: string;
+    ocean?: string;
+    alpha?: string;
+    rhodes?: string;
+    brown?: string;
+    breeze?: string;
+    hearth?: string;
+  };
+  breathing?: {
+    studioTitle: string;
+    studioSubtitle: string;
+    inhale: string;
+    hold: string;
+    exhale: string;
+    rest: string;
+    secondsLabel: string;
+    cyclesCompleted: string;
+    pause: string;
+    resume: string;
+    t478Name: string;
+    t478Tagline: string;
+    tBoxName: string;
+    tBoxTagline: string;
+    tCoherentName: string;
+    tCoherentTagline: string;
+    somaticTitle: string;
+    somaticSubtitle: string;
+    unclenchJaw: string;
+    dropShoulders: string;
+    softenEyes: string;
+    openHands: string;
+    released: string;
+  };
+  quiz?: {
+    title: string;
+    subtitle: string;
+    chooseLength: string;
+    retake: string;
+  };
+  calendar?: {
+    title: string;
+    subtitle: string;
+    addGoal: string;
+    dayHorizon: string;
+    weekHorizon: string;
+    monthHorizon: string;
+    yearHorizon: string;
+    anytimeHorizon: string;
+    newGoalTitle: string;
+  };
+  habits?: {
+    title: string;
+    subtitle: string;
+  };
+  vault?: {
+    title: string;
+    subtitle: string;
+    lockboxTitle: string;
   };
   aiBridge: {
     modalTitle: string;
