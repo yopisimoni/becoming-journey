@@ -1,5 +1,4 @@
 'use client';
-import { JourneyActionLoop } from "@/components/JourneyActionLoop";
 import { TodayNeeds } from "@/components/TodayNeeds";
 
 import React, { useState, useEffect } from 'react';
@@ -12,7 +11,7 @@ import {
   StruggleWaterShelterArt,
   GrowBotanicalLeavesArt,
 } from '@/components/illustrations/AtmosphereArt';
-import { Volume2, VolumeX, ArrowLeft, Feather, Sparkles, Compass, Shield, Eye, Sun, Moon, Wind, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Volume2, VolumeX, ArrowLeft, Feather, Sparkles, Compass, Shield, Eye, Sun, Moon, Wind } from 'lucide-react';
 import { TheBecomingHorizon, AtmosphericOrb, CinematicReveal, LivingLightIdentity } from '@/components/motion';
 
 export function WelcomeView() {
@@ -29,61 +28,9 @@ export function WelcomeView() {
     reducedMotion,
     isRtl,
     user,
-    journalEntries,
-    cards,
-    moments,
-    goals,
   } = useApp();
 
   const [showHorizon, setShowHorizon] = useState(false);
-  const [journeyPhase, setJourneyPhase] = useState(0);
-  useEffect(() => {
-    try {
-      const saved = Number(window.localStorage.getItem('becoming_journey_phase_v1'));
-      if (Number.isInteger(saved) && saved >= 0 && saved <= 4) setJourneyPhase(saved);
-    } catch { /* Local storage can be unavailable in private browsing. */ }
-  }, []);
-
-  const changeJourneyPhase = (next: number) => {
-    setJourneyPhase(next);
-    try { window.localStorage.setItem('becoming_journey_phase_v1', String(next)); } catch { /* Ephemeral journey still works. */ }
-  };
-
-  const journeyCopy = locale === 'ar' ? {
-    eyebrow: 'رحلتك الخاصة', title: 'ما خطوتك التالية؟', subtitle: 'اختر ما يفيدك الآن. لا نقاط ولا ضغط ولا عقاب على الغياب.',
-    phases: ['اكتشف', 'افهم', 'اختر', 'جرّب', 'راجع'],
-    descriptions: ['ابدأ بتحديد ما يشغل بالك', 'اكتب أفكارك لتفهمها', 'حدد خطوة واحدة صغيرة', 'جرّب ممارسة بسيطة', 'راجع ما تعلمته'],
-    action: 'ابدأ هذه الخطوة', progress: 'يمكنك تغيير المرحلة متى شئت',
-  } : locale === 'fr' ? {
-    eyebrow: 'Votre parcours', title: 'Quelle est la prochaine étape ?', subtitle: 'Choisissez ce qui vous aide. Sans points ni séries obligatoires.',
-    phases: ['Découvrir', 'Comprendre', 'Choisir', 'Pratiquer', 'Réfléchir'],
-    descriptions: ['Repérer ce qui compte', 'Explorer vos pensées', 'Choisir une petite action', 'Essayer une pratique douce', 'Revoir ce que vous avez appris'],
-    action: 'Commencer cette étape', progress: 'Changez d’étape à tout moment',
-  } : locale === 'es' ? {
-    eyebrow: 'Tu camino', title: '¿Cuál es tu próximo paso?', subtitle: 'Elige lo que te ayuda. Sin puntos ni rachas obligatorias.',
-    phases: ['Descubrir', 'Entender', 'Elegir', 'Practicar', 'Reflexionar'],
-    descriptions: ['Reconoce lo importante', 'Explora tus pensamientos', 'Elige un pequeño paso', 'Prueba una práctica suave', 'Revisa lo aprendido'],
-    action: 'Empezar este paso', progress: 'Puedes cambiar de paso cuando quieras',
-  } : locale === 'it' ? {
-    eyebrow: 'Il tuo percorso', title: 'Qual è il prossimo passo?', subtitle: 'Scegli ciò che ti aiuta. Senza punti o serie obbligatorie.',
-    phases: ['Scopri', 'Comprendi', 'Scegli', 'Pratica', 'Rifletti'],
-    descriptions: ['Nota ciò che conta', 'Esplora i tuoi pensieri', 'Scegli un piccolo passo', 'Prova una pratica gentile', 'Rivedi ciò che hai imparato'],
-    action: 'Inizia questo passo', progress: 'Puoi cambiare fase quando vuoi',
-  } : {
-    eyebrow: 'Your personal journey', title: 'What comes next for you?', subtitle: 'Choose what helps today. No scores, streaks or pressure.',
-    phases: ['Discover', 'Understand', 'Choose', 'Practice', 'Reflect'],
-    descriptions: ['Notice what is on your mind', 'Explore your thoughts in writing', 'Choose one meaningful step', 'Try a gentle daily practice', 'Look back at what you learned'],
-    action: 'Start this step', progress: 'You can change steps at any time',
-  };
-
-  const startJourneyPhase = () => {
-    if (journeyPhase === 0 || journeyPhase === 2) { setActiveTab('home'); setActiveMode('guided'); setSanctuaryStep(1); return; }
-    if (journeyPhase === 1) { setActiveTab('home'); setActiveMode('journal'); return; }
-    if (journeyPhase === 3) { setActiveTab('morning'); return; }
-    setActiveTab('map');
-  };
-
-
   const handleBeginWithSound = () => {
     setSoundPreset('sanctuary');
     setSanctuaryStep(1);
@@ -109,13 +56,6 @@ export function WelcomeView() {
     : { type: 'spring', stiffness: 120, damping: 20 };
 
   const isSoundPlaying = soundPreset !== 'none';
-  // Evidence-based suggestions: only actual saved artifacts count. A selected tab is not completion.
-  const hasReflection = journalEntries.length > 0 || cards.length > 0;
-  const hasAction = goals.length > 0;
-  const hasReview = moments.length > 0;
-  const suggestedPhase = !hasReflection ? 0 : !hasAction ? 2 : !hasReview ? 3 : 4;
-  const completedEvidence = [hasReflection, journalEntries.length > 0, hasAction, false, hasReview];
-
 
   return (
     <div className="relative max-w-4xl mx-auto px-4 py-8 sm:py-12 min-h-[calc(100vh-10rem)] flex flex-col justify-center">
@@ -187,30 +127,6 @@ export function WelcomeView() {
               </AnimatePresence>
 
               <TodayNeeds />
-              {/* Optional journey guide: user chooses the stage, never an imposed streak. */}
-              <section aria-label={journeyCopy.eyebrow} className="relative z-10 text-start rounded-2xl border border-stone-200 dark:border-slate-700 bg-[#F8F2EA] dark:bg-slate-800 p-4 sm:p-5 space-y-3">
-                <p className="text-xs uppercase tracking-wider font-semibold text-amber-800 dark:text-amber-300">{journeyCopy.eyebrow}</p>
-                <h2 className="text-xl font-serif font-bold text-slate-900 dark:text-white">{journeyCopy.title}</h2>
-                <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">{journeyCopy.subtitle}</p>
-                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2" role="group" aria-label={journeyCopy.eyebrow}>
-                  {journeyCopy.phases.map((phase, i) => (
-                    <button key={phase} type="button" onClick={() => changeJourneyPhase(i)} aria-pressed={journeyPhase === i} aria-label={`${i + 1}. ${phase}`} className={`min-h-14 min-w-0 rounded-xl px-1.5 py-2 flex flex-col justify-center items-center gap-1 focus-visible:ring-2 focus-visible:ring-indigo-500 ${journeyPhase === i ? 'bg-slate-900 text-white dark:bg-amber-200 dark:text-slate-900' : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-white border border-stone-200 dark:border-slate-600'}`}>
-                      {completedEvidence[i] ? <CheckCircle2 className="w-4 h-4" aria-label="Activity recorded" /> : <span className="text-xs font-bold">{i + 1}</span>}
-                      <span className="text-[11px] leading-snug break-words text-center w-full">{phase}</span>
-                    </button>
-                  ))}
-                </div>
-                <p aria-live="polite" className="text-sm font-medium text-slate-800 dark:text-slate-100">{journeyCopy.descriptions[journeyPhase]}</p>
-                {journalEntries.length > 0 && <p className="text-xs text-slate-600 dark:text-slate-300">{locale === 'ar' ? `لديك ${journalEntries.length} تدوينة محفوظة. يمكنك مراجعتها في رحلتك.` : `${journalEntries.length} journal entr${journalEntries.length === 1 ? 'y' : 'ies'} saved on this device.`}</p>}
-                {journeyPhase !== suggestedPhase && <button type="button" onClick={() => changeJourneyPhase(suggestedPhase)} className="text-xs font-semibold underline underline-offset-4 text-start text-amber-800 dark:text-amber-200">{locale === 'ar' ? 'الخطوة المقترحة' : locale === 'fr' ? 'Prochaine étape suggérée' : locale === 'es' ? 'Siguiente paso sugerido' : locale === 'it' ? 'Prossimo passo suggerito' : 'Suggested next step'}: {journeyCopy.phases[suggestedPhase]}</button>}
-                <button type="button" onClick={startJourneyPhase} className="w-full min-h-12 inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 dark:bg-amber-200 text-white dark:text-slate-950 font-semibold text-sm focus-visible:ring-2 focus-visible:ring-indigo-500">
-                  {journeyCopy.action} <ArrowRight className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} />
-                </button>
-                <p className="text-xs text-slate-500 dark:text-slate-400">{journeyCopy.progress}</p>
-                <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">{locale === 'ar' ? 'علامات الإنجاز تشير فقط إلى وجود نشاط محفوظ، ولا تقيس التحسن الشخصي.' : 'Checkmarks mean saved activity exists, not that personal growth has been measured.'}</p>
-              </section>
-
-              <JourneyActionLoop />
               {/* Centerpiece Sacred Orb Art */}
               <div className="flex flex-col items-center justify-center relative">
                 <LivingLightIdentity size={220} reducedMotion={reducedMotion} interactive={false} ariaLabel="BECOMING flowing light orb" />
