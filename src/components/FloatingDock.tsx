@@ -15,6 +15,9 @@ import {
   Lock,
   Settings,
   SunMedium,
+  Sun,
+  Moon,
+  Share2,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -73,6 +76,9 @@ export function FloatingDock() {
     'habits',
     'vault',
     'settings',
+    'morning',
+    'evening',
+    'goodvibes',
   ].includes(activeTab);
 
   const tabs = [
@@ -103,6 +109,27 @@ export function FloatingDock() {
   ];
 
   const studios = [
+    {
+      id: 'morning' as const,
+      label: dict.nav.morningTab || 'Morning Ritual',
+      icon: Sun,
+      color: 'text-amber-500 bg-amber-50 dark:bg-amber-950/40',
+      action: () => setActiveTab('morning'),
+    },
+    {
+      id: 'evening' as const,
+      label: dict.nav.eveningTab || 'Evening Ritual',
+      icon: Moon,
+      color: 'text-indigo-500 bg-indigo-50 dark:bg-indigo-950/40',
+      action: () => setActiveTab('evening'),
+    },
+    {
+      id: 'goodvibes' as const,
+      label: dict.nav.goodVibesTab || 'Good Vibes Studio',
+      icon: Share2,
+      color: 'text-rose-500 bg-rose-50 dark:bg-rose-950/40',
+      action: () => setActiveTab('goodvibes'),
+    },
     {
       id: 'breathe' as const,
       label: dict.nav.breatheTab || 'Breathing Studio',

@@ -18,6 +18,9 @@ export type NavigationTab =
   | 'calendar'
   | 'vault'
   | 'habits'
+  | 'morning'
+  | 'evening'
+  | 'goodvibes'
   | 'settings';
 
 export interface SupportSelectorOption {
@@ -74,6 +77,9 @@ export interface UserProfile {
   email: string;
   avatar: AvatarId;
   createdAt: string;
+  isGuest?: boolean;
+  emailVerified?: boolean;
+  authProvider?: 'firebase' | 'local';
 }
 
 export interface UserSessionData {
@@ -265,4 +271,78 @@ export interface EchoStory {
   narrative: string[];
   takeaway: string;
   authorOrOrigin: string;
+}
+
+// --- v0.8 DAILY RITUALS, GOOD VIBES & DATA BACKUP ---
+export type MorningFeeling =
+  | 'calm'
+  | 'energized'
+  | 'anxious'
+  | 'grateful'
+  | 'tender'
+  | 'sluggish'
+  | 'seeking';
+
+export interface MorningRitualEntry {
+  id: string;
+  date: string; // YYYY-MM-DD
+  feeling: MorningFeeling;
+  intention: string;
+  microAction: string;
+  action?: string;
+  actionCompleted: boolean;
+  reflectionText: string;
+  completedAt: string;
+}
+
+export interface EveningRitualEntry {
+  id: string;
+  date: string; // YYYY-MM-DD
+  goodMoments: string[];
+  gratitude?: string[];
+  eveningRelease: string;
+  releaseWritten?: boolean;
+  leaveTomorrowForTomorrow: boolean;
+  tomorrowAffirmed?: boolean;
+  peaceMantra: string;
+  completedAt: string;
+}
+
+export type GoodVibesTemplateId = 'sunrise' | 'twilight' | 'moss' | 'dawn' | 'cosmic';
+export type GoodVibesContentType = 'quote' | 'moment' | 'achievement' | 'gratitude' | 'quiz_summary';
+
+export interface GoodVibesCardData {
+  templateId: GoodVibesTemplateId;
+  contentType: GoodVibesContentType;
+  headline: string;
+  bodyText: string;
+  subText?: string;
+  includeWatermark: boolean;
+  authorOrTagline?: string;
+}
+
+export interface SanctuaryBackupPayload {
+  app: 'BECOMING';
+  schemaVersion: '0.8.0';
+  exportedAt: string;
+  userId?: string;
+  isGuest: boolean;
+  storageMode: 'session' | 'local';
+  locale: Locale;
+  themeMode: 'light' | 'twilight';
+  atmosphereMode: AtmosphereMode;
+  journeyCards: JourneyMapCard[];
+  cards?: JourneyMapCard[];
+  journalEntries: JournalEntry[];
+  momentsOfLight: MomentOfLight[];
+  moments?: MomentOfLight[];
+  lifeGoals: LifeGoal[];
+  goals?: LifeGoal[];
+  habitLedger: HabitItem[];
+  habits?: HabitItem[];
+  vaultSecretsCount: number;
+  morningRituals?: MorningRitualEntry[];
+  morningRitual?: MorningRitualEntry;
+  eveningRituals?: EveningRitualEntry[];
+  eveningRitual?: EveningRitualEntry;
 }

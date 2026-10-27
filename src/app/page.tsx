@@ -14,6 +14,9 @@ import { DashboardView } from '@/components/DashboardView';
 import { SecretVaultView } from '@/components/SecretVaultView';
 import { HabitBalanceView } from '@/components/HabitBalanceView';
 import { SettingsAndAboutView } from '@/components/SettingsAndAboutView';
+import { MorningRitualView } from '@/components/MorningRitualView';
+import { EveningRitualView } from '@/components/EveningRitualView';
+import { GoodVibesStudioView } from '@/components/GoodVibesStudioView';
 
 export default function HomePage() {
   const { activeTab, activeMode, currentIntent } = useApp();
@@ -53,6 +56,18 @@ export default function HomePage() {
 
   if (activeTab === 'settings') {
     return <SettingsAndAboutView />;
+  }
+
+  if (activeTab === 'morning') {
+    return <MorningRitualView />;
+  }
+
+  if (activeTab === 'evening') {
+    return <EveningRitualView />;
+  }
+
+  if (activeTab === 'goodvibes') {
+    return <GoodVibesStudioView />;
   }
 
   // Active tab is 'home'

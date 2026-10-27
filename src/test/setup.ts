@@ -11,6 +11,16 @@ vi.mock('framer-motion', async () => {
   };
 });
 
+// Polyfill URL.createObjectURL & URL.revokeObjectURL for JSDOM
+if (typeof window !== 'undefined') {
+  if (!window.URL.createObjectURL) {
+    window.URL.createObjectURL = vi.fn().mockReturnValue('blob:mock-url');
+  }
+  if (!window.URL.revokeObjectURL) {
+    window.URL.revokeObjectURL = vi.fn();
+  }
+}
+
 // Polyfill window.matchMedia for JSDOM
 if (typeof window !== 'undefined') {
   Object.defineProperty(window, 'matchMedia', {

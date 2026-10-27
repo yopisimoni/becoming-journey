@@ -32,6 +32,9 @@ import {
   Smile,
   Check,
   RefreshCw,
+  Sun,
+  Moon,
+  Share2,
 } from 'lucide-react';
 
 export function DashboardView() {
@@ -438,6 +441,89 @@ export function DashboardView() {
             {nurturedHabitsCount}
           </div>
           <div className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Times nurtured</div>
+        </div>
+      </div>
+
+      {/* Daily Rituals & Good Vibes */}
+      <div className="space-y-4">
+        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+          Daily Rituals &amp; Radiance
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <button
+            type="button"
+            data-testid="dashboard-morning-btn"
+            onClick={() => setActiveTab('morning')}
+            className="p-5 rounded-3xl bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent dark:from-amber-950/30 dark:via-slate-900 border border-amber-200/80 dark:border-amber-800/60 shadow-sm hover:border-amber-400 text-start flex flex-col justify-between group transition-all hover:scale-[1.01]"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-3 rounded-2xl bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                <Sun className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="font-bold text-sm text-slate-900 dark:text-white">
+                  {dict.rituals?.morningTitle || 'Morning Ritual'}
+                </div>
+                <div className="text-[11px] text-slate-500">
+                  Ready to Start Your Day
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center justify-between text-xs font-semibold text-amber-700 dark:text-amber-400 pt-2 border-t border-amber-100/60 dark:border-amber-900/40">
+              <span>Set Intention &amp; Breathe</span>
+              <ArrowRight className={`w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform ${isRtl ? 'rotate-180' : ''}`} />
+            </div>
+          </button>
+
+          <button
+            type="button"
+            data-testid="dashboard-evening-btn"
+            onClick={() => setActiveTab('evening')}
+            className="p-5 rounded-3xl bg-gradient-to-br from-indigo-500/10 via-indigo-500/5 to-transparent dark:from-indigo-950/30 dark:via-slate-900 border border-indigo-200/80 dark:border-indigo-800/60 shadow-sm hover:border-indigo-400 text-start flex flex-col justify-between group transition-all hover:scale-[1.01]"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-3 rounded-2xl bg-indigo-500/20 text-indigo-600 dark:text-indigo-400">
+                <Moon className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="font-bold text-sm text-slate-900 dark:text-white">
+                  {dict.rituals?.eveningTitle || 'Evening Ritual'}
+                </div>
+                <div className="text-[11px] text-slate-500">
+                  Ready to Sleep &amp; Release
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center justify-between text-xs font-semibold text-indigo-700 dark:text-indigo-400 pt-2 border-t border-indigo-100/60 dark:border-indigo-900/40">
+              <span>Gratitude &amp; Unclench</span>
+              <ArrowRight className={`w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform ${isRtl ? 'rotate-180' : ''}`} />
+            </div>
+          </button>
+
+          <button
+            type="button"
+            data-testid="dashboard-goodvibes-btn"
+            onClick={() => setActiveTab('goodvibes')}
+            className="p-5 rounded-3xl bg-gradient-to-br from-rose-500/10 via-rose-500/5 to-transparent dark:from-rose-950/30 dark:via-slate-900 border border-rose-200/80 dark:border-rose-800/60 shadow-sm hover:border-rose-400 text-start flex flex-col justify-between group transition-all hover:scale-[1.01]"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-3 rounded-2xl bg-rose-500/20 text-rose-600 dark:text-rose-400">
+                <Share2 className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="font-bold text-sm text-slate-900 dark:text-white">
+                  {dict.goodVibes?.studioTitle || 'Good Vibes Studio'}
+                </div>
+                <div className="text-[11px] text-slate-500">
+                  Share Inspiration &amp; Wisdom
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center justify-between text-xs font-semibold text-rose-700 dark:text-rose-400 pt-2 border-t border-rose-100/60 dark:border-rose-900/40">
+              <span>Craft Canvas &amp; Share</span>
+              <ArrowRight className={`w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform ${isRtl ? 'rotate-180' : ''}`} />
+            </div>
+          </button>
         </div>
       </div>
 

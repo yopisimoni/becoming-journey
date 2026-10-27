@@ -17,14 +17,19 @@ import {
   Cpu,
   Trash2,
   Download,
+  Upload,
   CheckCircle2,
   Lock,
   HeartHandshake,
   ShieldAlert,
+  ShieldCheck,
+  EyeOff,
   ExternalLink,
   Sparkles,
   Palette,
   Wand2,
+  HardDrive,
+  Cloud,
 } from 'lucide-react';
 
 export function SettingsAndAboutView() {
@@ -49,12 +54,56 @@ export function SettingsAndAboutView() {
     setAiModalOpen,
     exportDataJson,
     exportDataTxt,
+    importDataJson,
     wipeAllData,
     setOnboardingOpen,
+    user,
+    deleteAccount,
   } = useApp();
 
   const [activeTab, setActiveTab] = useState<'preferences' | 'about' | 'privacy' | 'terms'>('preferences');
   const [showWipeConfirm, setShowWipeConfirm] = useState(false);
+  const [importStatus, setImportStatus] = useState<{ success: boolean; message: string } | null>(null);
+  const [showDeleteAccountConfirm, setShowDeleteAccountConfirm] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const handleFileImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      if (content) {
+        const res = importDataJson(content);
+        if (res.success) {
+          setImportStatus({ success: true, message: res.message || 'Backup restored successfully!' });
+        } else {
+          setImportStatus({ success: false, message: res.error || 'Failed to import backup.' });
+        }
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
+  const handleDeleteAccount = async () => {
+    setIsDeletingAccount(true);
+    setDeleteError(null);
+    try {
+      const res = await deleteAccount(deletePassword);
+      if (!res.success) {
+        setDeleteError(res.error || 'Failed to delete account.');
+      } else {
+        setShowDeleteAccountConfirm(false);
+        setDeletePassword('');
+      }
+    } finally {
+      setIsDeletingAccount(false);
+    }
+  };
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12 space-y-8">
@@ -437,6 +486,7 @@ export function SettingsAndAboutView() {
               <div className="flex gap-2">
                 <button
                   type="button"
+                  data-testid="export-json-btn"
                   onClick={exportDataJson}
                   className="px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100"
                 >
@@ -444,6 +494,7 @@ export function SettingsAndAboutView() {
                 </button>
                 <button
                   type="button"
+                  data-testid="export-txt-btn"
                   onClick={exportDataTxt}
                   className="px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100"
                 >
@@ -451,6 +502,109 @@ export function SettingsAndAboutView() {
                 </button>
               </div>
             </div>
+
+            {/* Import Backup (JSON) */}
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <div className="font-bold text-sm text-slate-900 dark:text-white">
+                  {dict.privacyData?.importBackup || 'Restore Sanctuary Backup (JSON)'}
+                </div>
+                <div className="text-xs text-slate-500">
+                  Safely merge or restore a previously exported BECOMING backup file.
+                </div>
+              </div>
+              <div>
+                <label
+                  htmlFor="import-backup-file"
+                  className="px-3.5 py-1.5 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/40 text-xs font-bold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 cursor-pointer inline-flex items-center gap-1.5 transition-colors"
+                >
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>Choose Backup File</span>
+                </label>
+                <input
+                  id="import-backup-file"
+                  data-testid="import-backup-file"
+                  type="file"
+                  accept=".json,application/json"
+                  onChange={handleFileImport}
+                  className="hidden"
+                />
+              </div>
+            </div>
+
+            {importStatus && (
+              <div
+                data-testid="import-status-banner"
+                className={`p-3 rounded-2xl text-xs font-medium ${
+                  importStatus.success
+                    ? 'bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200'
+                    : 'bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-200'
+                }`}
+              >
+                {importStatus.message}
+              </div>
+            )}
+
+            {/* Delete Account (if signed in) */}
+            {user && (
+              <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <div className="font-bold text-sm text-slate-900 dark:text-white">
+                    {dict.auth.deleteAccount || 'Delete Cloud Account'}
+                  </div>
+                  <div className="text-xs text-slate-500">
+                    {dict.auth.deleteAccountWarning ||
+                      'Permanently remove your account login. Local device reflections will remain safe.'}
+                  </div>
+                </div>
+                {!showDeleteAccountConfirm ? (
+                  <button
+                    type="button"
+                    data-testid="delete-account-btn"
+                    onClick={() => setShowDeleteAccountConfirm(true)}
+                    className="px-3.5 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  >
+                    Delete Account
+                  </button>
+                ) : (
+                  <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-2 w-full sm:w-auto">
+                    {deleteError && (
+                      <p className="text-[11px] text-rose-600 font-medium">{deleteError}</p>
+                    )}
+                    <input
+                      type="password"
+                      data-testid="delete-account-password"
+                      value={deletePassword}
+                      onChange={(e) => setDeletePassword(e.target.value)}
+                      placeholder="Confirm password"
+                      className="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-xs w-full"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        data-testid="confirm-delete-account-btn"
+                        onClick={handleDeleteAccount}
+                        disabled={isDeletingAccount}
+                        className="px-3 py-1 rounded-xl bg-rose-600 text-white text-xs font-bold disabled:opacity-50"
+                      >
+                        {isDeletingAccount ? 'Deleting...' : 'Confirm Delete'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowDeleteAccountConfirm(false);
+                          setDeletePassword('');
+                          setDeleteError(null);
+                        }}
+                        className="px-3 py-1 rounded-xl border text-xs text-slate-600 dark:text-slate-300"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Wipe Data */}
             <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
@@ -585,6 +739,56 @@ export function SettingsAndAboutView() {
                 <li><strong>Complete Data Wipe:</strong> One click permanently purges all localStorage, IndexedDB, and memory data.</li>
                 <li><strong>Zero AI API Exfiltration:</strong> By default, all reflections are 100% deterministic local algorithms.</li>
               </ul>
+            </div>
+
+            {/* Educational Data Transparency Matrix (Phase 5) */}
+            <div className="pt-4 space-y-4">
+              <div className="space-y-1">
+                <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+                  {dict.privacyData?.localDataOverview || 'How Your Sanctuary Stays 100% Private'}
+                </h3>
+                <p className="text-xs text-slate-500">
+                  {dict.privacyData?.subtitle || 'Full client-side backup, safe JSON restoration, and educational data transparency.'}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4" data-testid="privacy-transparency-grid">
+                {/* Column 1: Stored on Device */}
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                    <HardDrive className="w-4 h-4" />
+                    <span>Stored on This Device</span>
+                  </div>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    {dict.privacyData?.whatIsStoredLocally ||
+                      'All reflections, Mind Vault secrets, audio preferences, and micro-goals reside exclusively on your browser storage.'}
+                  </p>
+                </div>
+
+                {/* Column 2: Sent to Firebase */}
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-bold text-sky-600 dark:text-sky-400">
+                    <Cloud className="w-4 h-4" />
+                    <span>Sent to Firebase</span>
+                  </div>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    {dict.privacyData?.whatIsSentToFirebase ||
+                      'Only your email address and authentication credentials if you deliberately choose to create a cloud login.'}
+                  </p>
+                </div>
+
+                {/* Column 3: Never Shared */}
+                <div className="p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/60 space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 dark:text-emerald-300">
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>Never Shared Anywhere</span>
+                  </div>
+                  <p className="text-xs text-emerald-800 dark:text-emerald-300 leading-relaxed">
+                    {dict.privacyData?.whatIsNeverShared ||
+                      'Journals, vault notes, personal scores, or tracking data. Zero analytics, zero ad networks, zero sale.'}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

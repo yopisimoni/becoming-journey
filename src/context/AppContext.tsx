@@ -19,12 +19,23 @@ import {
   CoreLifeDream,
   FrameworkId,
   AtmosphereMode,
+  SanctuaryBackupPayload,
+  MorningRitualEntry,
+  EveningRitualEntry,
 } from '@/types';
 import { getDictionary, defaultLocale, TranslationDictionary } from '@/locales';
 import { soundEngine, SoundscapePreset } from '@/lib/audio/soundEngine';
 import { AISettings, DEFAULT_AI_SETTINGS } from '@/lib/engine/aiAdapter';
 import { clearAllMedia } from '@/lib/storage/mediaDb';
 import { INITIAL_EVOLUTION_PROGRESS, calculateEvolutionLevel } from '@/lib/evolution/evolutionEngine';
+import {
+  isFirebaseConfigured,
+  firebaseSignUp,
+  firebaseSignIn,
+  firebaseSignOut,
+  firebaseDeleteAccount,
+  subscribeToAuthChanges,
+} from '@/lib/auth/firebaseAuth';
 
 export type ThemeMode = 'light' | 'twilight';
 
@@ -38,13 +49,15 @@ interface AppContextValue {
   dict: TranslationDictionary;
   isRtl: boolean;
 
-  // Local-First User Authentication & Profile
+  // User Authentication & Profile
   user: UserProfile | null;
   isAuthModalOpen: boolean;
   setAuthModalOpen: (open: boolean) => void;
-  signUp: (name: string, email: string, password: string, avatar?: AvatarId) => { success: boolean; error?: string };
-  signIn: (email: string, password: string) => { success: boolean; error?: string };
-  signOut: () => void;
+  signUp: (name: string, email: string, password: string, avatar?: AvatarId) => Promise<{ success: boolean; error?: string }>;
+  signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  signOut: () => Promise<void>;
+  deleteAccount: (passwordConfirm: string) => Promise<{ success: boolean; error?: string }>;
+  importDataJson: (jsonStr: string) => { success: boolean; message?: string; error?: string };
 
   // Theme (Light vs Twilight Sanctuary)
   themeMode: ThemeMode;
@@ -175,6 +188,8 @@ const STORAGE_KEY_ONBOARDED = 'becoming_onboarded';
 const STORAGE_KEY_CONSENT = 'becoming_consent_agreed';
 const STORAGE_KEY_ATMOSPHERE = 'becoming_atmosphere_mode';
 const STORAGE_KEY_AUTO_ATMOSPHERE = 'becoming_auto_atmosphere';
+const STORAGE_KEY_MORNING = 'becoming_morning_ritual_v1';
+const STORAGE_KEY_EVENING = 'becoming_evening_ritual_v1';
 
 const hashPassword = (pwd: string) => {
   let hash = 0;
@@ -565,8 +580,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signUp = (name: string, email: string, password: string, avatar: AvatarId = 'lotus') => {
+  const signUp = async (name: string, email: string, password: string, avatar: AvatarId = 'lotus') => {
     const cleanEmail = email.trim().toLowerCase();
+
+    if (isFirebaseConfigured()) {
+      const fbRes = await firebaseSignUp(name, email, password, avatar);
+      if (!fbRes.success) {
+        return { success: false, error: fbRes.error };
+      }
+      if (fbRes.user) {
+        setUser(fbRes.user);
+        setStorageModeState('local');
+        localStorage.setItem(STORAGE_KEY_ACTIVE_USER, JSON.stringify(fbRes.user));
+        loadUserData(fbRes.user, localStorage);
+      }
+      return { success: true };
+    }
+
     try {
       const usersStr = localStorage.getItem(STORAGE_KEY_REGISTERED_USERS);
       const registered: StoredAccount[] = usersStr ? JSON.parse(usersStr) : [];
@@ -581,6 +611,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         email: cleanEmail,
         avatar,
         createdAt: new Date().toISOString(),
+        isGuest: false,
+        authProvider: 'local',
       };
 
       const account: StoredAccount = {
@@ -595,29 +627,30 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setStorageModeState('local');
       localStorage.setItem(STORAGE_KEY_MODE, 'local');
 
-      // Migrate guest data if any
-      const userCardsKey = getUserScopedKey('cards', newProfile.id);
-      const userJournalKey = getUserScopedKey('journal', newProfile.id);
-      const userMomentsKey = getUserScopedKey('moments', newProfile.id);
-      const userGoalsKey = getUserScopedKey('goals', newProfile.id);
-      const userHabitsKey = getUserScopedKey('habits', newProfile.id);
-      const userVaultKey = getUserScopedKey('vault', newProfile.id);
-
-      if (cards.length > 0) localStorage.setItem(userCardsKey, JSON.stringify(cards));
-      if (journalEntries.length > 0) localStorage.setItem(userJournalKey, JSON.stringify(journalEntries));
-      if (moments.length > 0) localStorage.setItem(userMomentsKey, JSON.stringify(moments));
-      if (goals.length > 0) localStorage.setItem(userGoalsKey, JSON.stringify(goals));
-      if (habits.length > 0) localStorage.setItem(userHabitsKey, JSON.stringify(habits));
-      if (vaultSecrets.length > 0) localStorage.setItem(userVaultKey, JSON.stringify(vaultSecrets));
-
+      loadUserData(newProfile, localStorage);
       return { success: true };
     } catch {
       return { success: false, error: 'Failed to access local storage.' };
     }
   };
 
-  const signIn = (email: string, password: string) => {
+  const signIn = async (email: string, password: string) => {
     const cleanEmail = email.trim().toLowerCase();
+
+    if (isFirebaseConfigured()) {
+      const fbRes = await firebaseSignIn(email, password);
+      if (!fbRes.success) {
+        return { success: false, error: fbRes.error };
+      }
+      if (fbRes.user) {
+        setUser(fbRes.user);
+        setStorageModeState('local');
+        localStorage.setItem(STORAGE_KEY_ACTIVE_USER, JSON.stringify(fbRes.user));
+        loadUserData(fbRes.user, localStorage);
+      }
+      return { success: true };
+    }
+
     try {
       const usersStr = localStorage.getItem(STORAGE_KEY_REGISTERED_USERS);
       const registered: StoredAccount[] = usersStr ? JSON.parse(usersStr) : [];
@@ -632,6 +665,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         email: found.email,
         avatar: found.avatar,
         createdAt: found.createdAt,
+        isGuest: false,
+        authProvider: 'local',
       };
 
       localStorage.setItem(STORAGE_KEY_ACTIVE_USER, JSON.stringify(profile));
@@ -646,8 +681,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signOut = () => {
+  const signOut = async () => {
     try {
+      if (isFirebaseConfigured()) {
+        await firebaseSignOut();
+      }
       localStorage.removeItem(STORAGE_KEY_ACTIVE_USER);
     } catch {
       // ignore
@@ -655,6 +693,30 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     const store = storageMode === 'local' ? localStorage : sessionStorage;
     loadUserData(null, store);
+  };
+
+  const deleteAccount = async (passwordConfirm: string) => {
+    try {
+      if (isFirebaseConfigured() && user?.authProvider === 'firebase') {
+        const fbRes = await firebaseDeleteAccount(passwordConfirm);
+        if (!fbRes.success) {
+          return { success: false, error: fbRes.error };
+        }
+      } else if (user) {
+        const usersStr = localStorage.getItem(STORAGE_KEY_REGISTERED_USERS);
+        const registered: StoredAccount[] = usersStr ? JSON.parse(usersStr) : [];
+        const filtered = registered.filter((u) => u.id !== user.id);
+        localStorage.setItem(STORAGE_KEY_REGISTERED_USERS, JSON.stringify(filtered));
+      }
+
+      localStorage.removeItem(STORAGE_KEY_ACTIVE_USER);
+      setUser(null);
+      const store = storageMode === 'local' ? localStorage : sessionStorage;
+      loadUserData(null, store);
+      return { success: true };
+    } catch {
+      return { success: false, error: 'Failed to delete account.' };
+    }
   };
 
   // Cards
@@ -1000,19 +1062,41 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const exportDataJson = () => {
-    const exportPayload = {
+    let morningData: MorningRitualEntry[] = [];
+    let eveningData: EveningRitualEntry[] = [];
+    try {
+      const mStr = localStorage.getItem(STORAGE_KEY_MORNING);
+      if (mStr) morningData = [JSON.parse(mStr)];
+      const eStr = localStorage.getItem(STORAGE_KEY_EVENING);
+      if (eStr) eveningData = [JSON.parse(eStr)];
+    } catch {
+      // ignore
+    }
+
+    const exportPayload: SanctuaryBackupPayload = {
       app: 'BECOMING',
-      version: '0.4.0',
-      themeMode,
+      schemaVersion: '0.8.0',
       exportedAt: new Date().toISOString(),
+      userId: user?.id,
+      isGuest: !user,
       storageMode,
       locale,
+      themeMode,
+      atmosphereMode: atmosphere,
+      cards,
       journeyCards: cards,
       journalEntries,
+      moments,
       momentsOfLight: moments,
+      goals,
       lifeGoals: goals,
+      habits,
       habitLedger: habits,
       vaultSecretsCount: vaultSecrets.length,
+      morningRitual: morningData[0],
+      morningRituals: morningData,
+      eveningRitual: eveningData[0],
+      eveningRituals: eveningData,
     };
     const blob = new Blob([JSON.stringify(exportPayload, null, 2)], {
       type: 'application/json',
@@ -1020,9 +1104,79 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `becoming-export-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `becoming-sanctuary-backup-${new Date().toISOString().split('T')[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const importDataJson = (jsonString: string): { success: boolean; message?: string; error?: string } => {
+    try {
+      const parsed = JSON.parse(jsonString);
+      if (!parsed || parsed.app !== 'BECOMING') {
+        return { success: false, error: 'Invalid file: Not a recognized BECOMING backup file.' };
+      }
+
+      let restoredCount = 0;
+      const store = storageMode === 'local' ? localStorage : sessionStorage;
+
+      // Restore Journey Cards
+      const rawCards = parsed.cards || parsed.journeyCards;
+      if (Array.isArray(rawCards)) {
+        setCards(rawCards);
+        store.setItem(getUserScopedKey('cards'), JSON.stringify(rawCards));
+        restoredCount += rawCards.length;
+      }
+
+      // Restore Journal Entries
+      if (Array.isArray(parsed.journalEntries)) {
+        setJournalEntries(parsed.journalEntries);
+        store.setItem(getUserScopedKey('journal'), JSON.stringify(parsed.journalEntries));
+        restoredCount += parsed.journalEntries.length;
+      }
+
+      // Restore Moments of Light
+      const rawMoments = parsed.moments || parsed.momentsOfLight;
+      if (Array.isArray(rawMoments)) {
+        setMoments(rawMoments);
+        store.setItem(getUserScopedKey('moments'), JSON.stringify(rawMoments));
+        restoredCount += rawMoments.length;
+      }
+
+      // Restore Life Goals
+      const rawGoals = parsed.goals || parsed.lifeGoals;
+      if (Array.isArray(rawGoals)) {
+        setGoals(rawGoals);
+        store.setItem(getUserScopedKey('goals'), JSON.stringify(rawGoals));
+        restoredCount += rawGoals.length;
+      }
+
+      // Restore Habit Ledger
+      const rawHabits = parsed.habits || parsed.habitLedger;
+      if (Array.isArray(rawHabits)) {
+        setHabits(rawHabits);
+        store.setItem(getUserScopedKey('habits'), JSON.stringify(rawHabits));
+        restoredCount += rawHabits.length;
+      }
+
+      // Restore Morning Rituals if present
+      const morningEntry = parsed.morningRitual || (Array.isArray(parsed.morningRituals) ? parsed.morningRituals[0] : null);
+      if (morningEntry) {
+        localStorage.setItem(STORAGE_KEY_MORNING, JSON.stringify(morningEntry));
+      }
+
+      // Restore Evening Rituals if present
+      const eveningEntry = parsed.eveningRitual || (Array.isArray(parsed.eveningRituals) ? parsed.eveningRituals[0] : null);
+      if (eveningEntry) {
+        localStorage.setItem(STORAGE_KEY_EVENING, JSON.stringify(eveningEntry));
+      }
+
+      return {
+        success: true,
+        message: `Successfully imported backup with ${restoredCount} restored sanctuary items.`,
+      };
+    } catch {
+      return { success: false, error: 'JSON parsing failed. Ensure file is uncorrupted.' };
+    }
   };
 
   const exportDataTxt = () => {
@@ -1086,6 +1240,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     signUp,
     signIn,
     signOut,
+    deleteAccount,
+    importDataJson,
 
     themeMode,
     setThemeMode,

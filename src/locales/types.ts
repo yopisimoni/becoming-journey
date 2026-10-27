@@ -45,6 +45,9 @@ export interface TranslationDictionary {
     calendarTab?: string;
     vaultTab?: string;
     settingsTab?: string;
+    morningTab?: string;
+    eveningTab?: string;
+    goodVibesTab?: string;
   };
   auth: {
     signIn: string;
@@ -70,6 +73,14 @@ export interface TranslationDictionary {
     waveAvatar: string;
     leafAvatar: string;
     starAvatar: string;
+    forgotPassword?: string;
+    sendResetLink?: string;
+    resetSentMessage?: string;
+    continueAsGuest?: string;
+    deleteAccount?: string;
+    deleteAccountWarning?: string;
+    firebaseNotice?: string;
+    localGuestNotice?: string;
   };
   sanctuary: {
     headline: string;
@@ -381,5 +392,57 @@ export interface TranslationDictionary {
     boundaryShieldTitle: string;
     releaseJudgmentTitle: string;
     focusAnchorTitle: string;
+  };
+  rituals?: {
+    morningTitle: string;
+    morningSubtitle: string;
+    howDoYouFeel: string;
+    feelings: Record<string, string>;
+    setIntention: string;
+    intentionPlaceholder: string;
+    microActionLabel: string;
+    microActionPlaceholder: string;
+    morningReflection: string;
+    startBreathing: string;
+    saveIntention: string;
+    markActionDone: string;
+    actionDoneCelebration: string;
+    skipStep: string;
+    eveningTitle: string;
+    eveningSubtitle: string;
+    shiftToNight: string;
+    somaticRelax: string;
+    goodMomentsPrompt: string;
+    privateReleasePrompt: string;
+    dissolveIntoNight: string;
+    leaveTomorrowForTomorrow: string;
+    closingSlumber: string;
+  };
+  goodVibes?: {
+    studioTitle: string;
+    studioSubtitle: string;
+    selectTemplate: string;
+    templates: Record<string, string>;
+    contentTypes: Record<string, string>;
+    quoteSource: string;
+    downloadPng: string;
+    shareCard: string;
+    copyText: string;
+    copied: string;
+    watermarkLabel: string;
+    privacyDisclaimer: string;
+  };
+  privacyData?: {
+    title: string;
+    subtitle: string;
+    exportBackup: string;
+    importBackup: string;
+    importSuccess: string;
+    importError: string;
+    confirmImport: string;
+    localDataOverview: string;
+    whatIsStoredLocally: string;
+    whatIsSentToFirebase: string;
+    whatIsNeverShared: string;
   };
 }

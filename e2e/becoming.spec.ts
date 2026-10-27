@@ -568,3 +568,144 @@ test.describe('BECOMING v0.7: Living Atmospheric Canvas & Dynamic Mood Shifting 
     await expect(page.locator('html')).toHaveAttribute('data-atmosphere', 'moss');
   });
 });
+
+test.describe('BECOMING v0.8: Daily Rituals, Good Vibes & Private Identity', () => {
+  test.beforeEach(async ({ page }) => {
+    // Dismiss onboarding by setting local storage
+    await page.addInitScript(() => {
+      localStorage.setItem('becoming_onboarded', 'true');
+    });
+  });
+
+  test('Morning Ritual: sets feeling, intention, micro-action, and marks action complete', async ({ page }) => {
+    await page.goto('/');
+
+    // Navigate to Morning Ritual via Studios Dock
+    await page.locator('#floating-dock-tab-studios').click();
+    const morningStudioBtn = page.locator('#dock-studio-morning');
+    await expect(morningStudioBtn).toBeVisible();
+    await morningStudioBtn.click();
+
+    // Verify Morning Ritual view
+    await expect(page.locator('[data-testid="morning-ritual-view"]')).toBeVisible();
+
+    // Select feeling
+    const calmBtn = page.locator('[data-testid="feeling-option-calm"]');
+    await expect(calmBtn).toBeVisible();
+    await calmBtn.click();
+
+    // Fill intention
+    const intentionInput = page.locator('[data-testid="morning-intention-input"]');
+    await intentionInput.fill('Honor quiet moments and speak with kindness');
+
+    // Fill micro-action
+    const actionInput = page.locator('[data-testid="morning-action-input"]');
+    await actionInput.fill('Take 3 conscious breaths before lunch');
+
+    // Commit Morning Ritual
+    const commitBtn = page.locator('[data-testid="morning-commit-btn"]');
+    await commitBtn.click();
+
+    // Verify summary card appears
+    await expect(page.locator('[data-testid="morning-summary-card"]')).toBeVisible();
+    await expect(page.getByText('Honor quiet moments and speak with kindness')).toBeVisible();
+
+    // Check action completion checkbox
+    const actionCheckbox = page.locator('[data-testid="morning-action-checkbox"]');
+    await expect(actionCheckbox).toBeVisible();
+    await actionCheckbox.check();
+    await expect(actionCheckbox).toBeChecked();
+  });
+
+  test('Evening Ritual: somatics, gratitude, private dissolution, and slumber affirmation', async ({ page }) => {
+    await page.goto('/');
+
+    // Navigate to Evening Ritual via Studios Dock
+    await page.locator('#floating-dock-tab-studios').click();
+    const eveningStudioBtn = page.locator('#dock-studio-evening');
+    await expect(eveningStudioBtn).toBeVisible();
+    await eveningStudioBtn.click();
+
+    // Verify Evening Ritual view
+    await expect(page.locator('[data-testid="evening-ritual-view"]')).toBeVisible();
+
+    // Check somatic jaw checkbox
+    const jawCheck = page.locator('[data-testid="somatic-jaw"]');
+    await jawCheck.check();
+    await expect(jawCheck).toBeChecked();
+
+    // Enter a good moment
+    const momentInput = page.locator('[data-testid="good-moment-input-1"]');
+    await momentInput.fill('Watched the amber sunset in silence');
+
+    // Enter private release
+    const releaseInput = page.locator('[data-testid="evening-release-input"]');
+    await releaseInput.fill('Releasing deadline worries into the night');
+
+    // Click Dissolve into Night
+    const dissolveBtn = page.locator('[data-testid="dissolve-btn"]');
+    await dissolveBtn.click();
+
+    // Commit Evening Ritual
+    const commitBtn = page.locator('[data-testid="evening-commit-btn"]');
+    await commitBtn.click();
+
+    // Verify closing slumber card
+    await expect(page.locator('[data-testid="evening-summary-card"]')).toBeVisible();
+    await expect(page.getByText(/You did enough today\. Rest deeply\./i)).toBeVisible();
+  });
+
+  test('Good Vibes Studio: switches templates, updates content, and toggles watermark', async ({ page }) => {
+    await page.goto('/');
+
+    // Navigate to Good Vibes via Studios Dock
+    await page.locator('#floating-dock-tab-studios').click();
+    const goodVibesBtn = page.locator('#dock-studio-goodvibes');
+    await expect(goodVibesBtn).toBeVisible();
+    await goodVibesBtn.click();
+
+    // Verify Good Vibes Studio view
+    await expect(page.locator('[data-testid="good-vibes-view"]')).toBeVisible();
+    await expect(page.locator('[data-testid="goodvibes-card-preview"]')).toBeVisible();
+
+    // Switch to Cosmic Reflection template
+    const cosmicBtn = page.locator('[data-testid="goodvibes-template-cosmic"]');
+    await cosmicBtn.click();
+
+    // Switch to Achievement content type
+    const achievementBtn = page.locator('[data-testid="goodvibes-content-type-achievement"]');
+    await achievementBtn.click();
+    await expect(page.locator('[data-testid="goodvibes-card-preview"]')).toContainText(/Evolution Milestone/i);
+
+    // Toggle watermark
+    const watermarkToggle = page.locator('[data-testid="watermark-toggle"]');
+    await watermarkToggle.uncheck();
+    await expect(watermarkToggle).not.toBeChecked();
+
+    // Copy card text
+    const copyBtn = page.locator('[data-testid="goodvibes-copy-btn"]');
+    await expect(copyBtn).toBeVisible();
+    await copyBtn.click();
+  });
+
+  test('Privacy Transparency Matrix: validates local isolation and sovereign export', async ({ page }) => {
+    await page.goto('/');
+
+    // Open Settings & About
+    await page.locator('#navbar-settings-button').click();
+
+    // Navigate to Privacy Manifesto tab
+    const privacyTabBtn = page.getByRole('button', { name: /Privacy Manifesto/i });
+    await privacyTabBtn.click();
+
+    // Verify 3-column educational transparency matrix
+    await expect(page.locator('[data-testid="privacy-transparency-grid"]')).toBeVisible();
+    await expect(page.getByText('Stored on This Device', { exact: true })).toBeVisible();
+    await expect(page.getByText('Sent to Firebase', { exact: true })).toBeVisible();
+    await expect(page.getByText('Never Shared Anywhere', { exact: true })).toBeVisible();
+
+    // Switch back to Preferences tab to check sovereign export
+    await page.getByRole('button', { name: /Preferences/i }).click();
+    await expect(page.locator('[data-testid="export-json-btn"]')).toBeVisible();
+  });
+});
