@@ -1,5 +1,6 @@
 'use client';
 import { JourneyActionLoop } from "@/components/JourneyActionLoop";
+import { TodayNeeds } from "@/components/TodayNeeds";
 
 import React, { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
@@ -185,6 +186,7 @@ export function WelcomeView() {
                 )}
               </AnimatePresence>
 
+              <TodayNeeds />
               {/* Optional journey guide: user chooses the stage, never an imposed streak. */}
               <section aria-label={journeyCopy.eyebrow} className="relative z-10 text-start rounded-2xl border border-stone-200 dark:border-slate-700 bg-[#F8F2EA] dark:bg-slate-800 p-4 sm:p-5 space-y-3">
                 <p className="text-xs uppercase tracking-wider font-semibold text-amber-800 dark:text-amber-300">{journeyCopy.eyebrow}</p>
