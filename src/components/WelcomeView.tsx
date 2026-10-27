@@ -11,7 +11,7 @@ import {
   StruggleWaterShelterArt,
   GrowBotanicalLeavesArt,
 } from '@/components/illustrations/AtmosphereArt';
-import { Volume2, VolumeX, ArrowLeft, Feather, Sparkles, Compass, Shield, Eye } from 'lucide-react';
+import { Volume2, VolumeX, ArrowLeft, Feather, Sparkles, Compass, Shield, Eye, Sun, Moon, Wind } from 'lucide-react';
 import { TheBecomingHorizon, AtmosphericOrb, CinematicReveal } from '@/components/motion';
 
 export function WelcomeView() {
@@ -21,6 +21,7 @@ export function WelcomeView() {
     setSanctuaryStep,
     setCurrentIntent,
     setActiveMode,
+    setActiveTab,
     soundPreset,
     setSoundPreset,
     reducedMotion,
@@ -172,6 +173,26 @@ export function WelcomeView() {
                 </button>
               </div>
 
+              {/* Context-Aware Daily Ritual Quick Access */}
+              <div className="pt-2 flex flex-wrap items-center justify-center gap-2 relative z-10">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('morning')}
+                  className="min-h-11 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 border border-amber-200 dark:border-amber-800/70 text-xs font-semibold text-amber-800 dark:text-amber-300 transition-colors"
+                >
+                  <Sun className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                  <span>{dict.nav.morningTab || 'Morning Ritual'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('evening')}
+                  className="min-h-11 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:hover:bg-indigo-900/60 border border-indigo-200 dark:border-indigo-800/70 text-xs font-semibold text-indigo-800 dark:text-indigo-300 transition-colors"
+                >
+                  <Moon className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                  <span>{dict.nav.eveningTab || 'Evening Ritual'}</span>
+                </button>
+              </div>
+
               {/* Quiet Privacy & Local-First Badges */}
               <div className="pt-2 flex items-center justify-center gap-4 text-[11px] text-stone-600 dark:text-slate-400 border-t border-stone-100 dark:border-slate-800/80">
                 <span className="flex items-center gap-1">
@@ -225,27 +246,27 @@ export function WelcomeView() {
             </div>
 
             {/* 4 Rich Bento Intent Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-5 pt-2">
               {/* Card 1: Lost (Indigo Accent) */}
               <motion.button
-                whileHover={reducedMotion ? {} : { y: -6, scale: 1.01 }}
+                whileHover={reducedMotion ? {} : { y: -4, scale: 1.01 }}
                 whileTap={reducedMotion ? {} : { scale: 0.99 }}
                 onClick={() => handleSelectIntent('lost')}
-                className="p-6 rounded-[2rem] bg-gradient-to-br from-indigo-500/[0.08] via-purple-500/[0.03] to-white dark:to-slate-900/90 backdrop-blur-xl border border-indigo-200/90 dark:border-indigo-900/50 hover:border-indigo-500 dark:hover:border-indigo-400 shadow-lg hover:shadow-indigo-500/10 transition-all text-start flex flex-col justify-between gap-4 group focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] bg-gradient-to-br from-indigo-500/[0.08] via-purple-500/[0.03] to-white dark:to-slate-900/90 backdrop-blur-xl border border-indigo-200/90 dark:border-indigo-900/50 hover:border-indigo-500 dark:hover:border-indigo-400 shadow-md hover:shadow-indigo-500/10 transition-all text-start flex flex-col justify-between gap-3 sm:gap-4 group focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <div className="flex items-start justify-between w-full">
-                  <div className="p-2.5 rounded-2xl bg-indigo-100/80 dark:bg-indigo-950/50">
+                  <div className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-indigo-100/80 dark:bg-indigo-950/50">
                     <LostCompassMistArt size="sm" />
                   </div>
-                  <span className="text-xs font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-100/90 dark:bg-indigo-950/60 px-3 py-1 rounded-full border border-indigo-200 dark:border-indigo-800">
+                  <span className="text-[11px] sm:text-xs font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-100/90 dark:bg-indigo-950/60 px-2.5 sm:px-3 py-1 rounded-full border border-indigo-200 dark:border-indigo-800">
                     {dict.welcome.intents.lost.tagline}
                   </span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold font-serif text-stone-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                  <h3 className="text-lg sm:text-xl font-bold font-serif text-stone-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                     {dict.welcome.intents.lost.title}
                   </h3>
-                  <p className="text-sm text-stone-600 dark:text-stone-300 mt-1.5 leading-relaxed font-normal">
+                  <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-300 mt-1 leading-relaxed font-normal">
                     {dict.welcome.intents.lost.description}
                   </p>
                 </div>
@@ -253,24 +274,24 @@ export function WelcomeView() {
 
               {/* Card 2: Goal (Amber/Coral Accent) */}
               <motion.button
-                whileHover={reducedMotion ? {} : { y: -6, scale: 1.01 }}
+                whileHover={reducedMotion ? {} : { y: -4, scale: 1.01 }}
                 whileTap={reducedMotion ? {} : { scale: 0.99 }}
                 onClick={() => handleSelectIntent('goal')}
-                className="p-6 rounded-[2rem] bg-gradient-to-br from-amber-500/[0.08] via-orange-500/[0.03] to-white dark:to-slate-900/90 backdrop-blur-xl border border-amber-200/90 dark:border-amber-900/50 hover:border-amber-500 dark:hover:border-amber-400 shadow-lg hover:shadow-amber-500/10 transition-all text-start flex flex-col justify-between gap-4 group focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] bg-gradient-to-br from-amber-500/[0.08] via-orange-500/[0.03] to-white dark:to-slate-900/90 backdrop-blur-xl border border-amber-200/90 dark:border-amber-900/50 hover:border-amber-500 dark:hover:border-amber-400 shadow-md hover:shadow-amber-500/10 transition-all text-start flex flex-col justify-between gap-3 sm:gap-4 group focus:outline-none focus:ring-2 focus:ring-amber-500"
               >
                 <div className="flex items-start justify-between w-full">
-                  <div className="p-2.5 rounded-2xl bg-amber-100/80 dark:bg-amber-950/50">
+                  <div className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-amber-100/80 dark:bg-amber-950/50">
                     <GoalMountainSunriseArt size="sm" />
                   </div>
-                  <span className="text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-100/90 dark:bg-amber-950/60 px-3 py-1 rounded-full border border-amber-200 dark:border-amber-800">
+                  <span className="text-[11px] sm:text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-100/90 dark:bg-amber-950/60 px-2.5 sm:px-3 py-1 rounded-full border border-amber-200 dark:border-amber-800">
                     {dict.welcome.intents.goal.tagline}
                   </span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold font-serif text-stone-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                  <h3 className="text-lg sm:text-xl font-bold font-serif text-stone-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                     {dict.welcome.intents.goal.title}
                   </h3>
-                  <p className="text-sm text-stone-600 dark:text-stone-300 mt-1.5 leading-relaxed font-normal">
+                  <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-300 mt-1 leading-relaxed font-normal">
                     {dict.welcome.intents.goal.description}
                   </p>
                 </div>
@@ -278,24 +299,24 @@ export function WelcomeView() {
 
               {/* Card 3: Struggle (Teal/Emerald Accent) */}
               <motion.button
-                whileHover={reducedMotion ? {} : { y: -6, scale: 1.01 }}
+                whileHover={reducedMotion ? {} : { y: -4, scale: 1.01 }}
                 whileTap={reducedMotion ? {} : { scale: 0.99 }}
                 onClick={() => handleSelectIntent('struggle')}
-                className="p-6 rounded-[2rem] bg-gradient-to-br from-teal-500/[0.08] via-emerald-500/[0.03] to-white dark:to-slate-900/90 backdrop-blur-xl border border-teal-200/90 dark:border-teal-900/50 hover:border-teal-500 dark:hover:border-teal-400 shadow-lg hover:shadow-teal-500/10 transition-all text-start flex flex-col justify-between gap-4 group focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] bg-gradient-to-br from-teal-500/[0.08] via-emerald-500/[0.03] to-white dark:to-slate-900/90 backdrop-blur-xl border border-teal-200/90 dark:border-teal-900/50 hover:border-teal-500 dark:hover:border-teal-400 shadow-md hover:shadow-teal-500/10 transition-all text-start flex flex-col justify-between gap-3 sm:gap-4 group focus:outline-none focus:ring-2 focus:ring-teal-500"
               >
                 <div className="flex items-start justify-between w-full">
-                  <div className="p-2.5 rounded-2xl bg-teal-100/80 dark:bg-teal-950/50">
+                  <div className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-teal-100/80 dark:bg-teal-950/50">
                     <StruggleWaterShelterArt size="sm" />
                   </div>
-                  <span className="text-xs font-bold text-teal-700 dark:text-teal-300 bg-teal-100/90 dark:bg-teal-950/60 px-3 py-1 rounded-full border border-teal-200 dark:border-teal-800">
+                  <span className="text-[11px] sm:text-xs font-bold text-teal-700 dark:text-teal-300 bg-teal-100/90 dark:bg-teal-950/60 px-2.5 sm:px-3 py-1 rounded-full border border-teal-200 dark:border-teal-800">
                     {dict.welcome.intents.struggle.tagline}
                   </span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold font-serif text-stone-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                  <h3 className="text-lg sm:text-xl font-bold font-serif text-stone-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
                     {dict.welcome.intents.struggle.title}
                   </h3>
-                  <p className="text-sm text-stone-600 dark:text-stone-300 mt-1.5 leading-relaxed font-normal">
+                  <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-300 mt-1 leading-relaxed font-normal">
                     {dict.welcome.intents.struggle.description}
                   </p>
                 </div>
@@ -303,24 +324,24 @@ export function WelcomeView() {
 
               {/* Card 4: Grow (Rose/Mint Accent) */}
               <motion.button
-                whileHover={reducedMotion ? {} : { y: -6, scale: 1.01 }}
+                whileHover={reducedMotion ? {} : { y: -4, scale: 1.01 }}
                 whileTap={reducedMotion ? {} : { scale: 0.99 }}
                 onClick={() => handleSelectIntent('grow')}
-                className="p-6 rounded-[2rem] bg-gradient-to-br from-rose-500/[0.08] via-emerald-500/[0.03] to-white dark:to-slate-900/90 backdrop-blur-xl border border-rose-200/90 dark:border-rose-900/50 hover:border-rose-500 dark:hover:border-rose-400 shadow-lg hover:shadow-rose-500/10 transition-all text-start flex flex-col justify-between gap-4 group focus:outline-none focus:ring-2 focus:ring-rose-500"
+                className="p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] bg-gradient-to-br from-rose-500/[0.08] via-emerald-500/[0.03] to-white dark:to-slate-900/90 backdrop-blur-xl border border-rose-200/90 dark:border-rose-900/50 hover:border-rose-500 dark:hover:border-rose-400 shadow-md hover:shadow-rose-500/10 transition-all text-start flex flex-col justify-between gap-3 sm:gap-4 group focus:outline-none focus:ring-2 focus:ring-rose-500"
               >
                 <div className="flex items-start justify-between w-full">
-                  <div className="p-2.5 rounded-2xl bg-rose-100/80 dark:bg-rose-950/50">
+                  <div className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-rose-100/80 dark:bg-rose-950/50">
                     <GrowBotanicalLeavesArt size="sm" />
                   </div>
-                  <span className="text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-100/90 dark:bg-rose-950/60 px-3 py-1 rounded-full border border-rose-200 dark:border-rose-800">
+                  <span className="text-[11px] sm:text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-100/90 dark:bg-rose-950/60 px-2.5 sm:px-3 py-1 rounded-full border border-rose-200 dark:border-rose-800">
                     {dict.welcome.intents.grow.tagline}
                   </span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold font-serif text-stone-900 dark:text-white group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">
+                  <h3 className="text-lg sm:text-xl font-bold font-serif text-stone-900 dark:text-white group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">
                     {dict.welcome.intents.grow.title}
                   </h3>
-                  <p className="text-sm text-stone-600 dark:text-stone-300 mt-1.5 leading-relaxed font-normal">
+                  <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-300 mt-1 leading-relaxed font-normal">
                     {dict.welcome.intents.grow.description}
                   </p>
                 </div>
@@ -328,11 +349,11 @@ export function WelcomeView() {
             </div>
 
             {/* Quick Access Floating Pills for Journal and Just Listen */}
-            <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
+            <div className="pt-3 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
               <button
                 type="button"
                 onClick={() => handleSelectMode('journal')}
-                className="px-5 py-2.5 rounded-full bg-white/90 dark:bg-slate-800/90 border border-stone-200 dark:border-slate-700 hover:bg-stone-100 dark:hover:bg-slate-700 text-xs font-bold text-stone-800 dark:text-slate-100 flex items-center gap-2 shadow-xs transition-colors"
+                className="min-h-11 px-4 sm:px-5 py-2.5 rounded-full bg-white/90 dark:bg-slate-800/90 border border-stone-200 dark:border-slate-700 hover:bg-stone-100 dark:hover:bg-slate-700 text-xs font-bold text-stone-800 dark:text-slate-100 flex items-center gap-2 shadow-xs transition-colors"
               >
                 <Feather className="w-3.5 h-3.5 text-emerald-500" />
                 <span>{dict.welcome.modes.journal.name}</span>
@@ -341,9 +362,9 @@ export function WelcomeView() {
               <button
                 type="button"
                 onClick={() => handleSelectMode('listen')}
-                className="px-5 py-2.5 rounded-full bg-white/90 dark:bg-slate-800/90 border border-stone-200 dark:border-slate-700 hover:bg-stone-100 dark:hover:bg-slate-700 text-xs font-bold text-stone-800 dark:text-slate-100 flex items-center gap-2 shadow-xs transition-colors"
+                className="min-h-11 px-4 sm:px-5 py-2.5 rounded-full bg-white/90 dark:bg-slate-800/90 border border-stone-200 dark:border-slate-700 hover:bg-stone-100 dark:hover:bg-slate-700 text-xs font-bold text-stone-800 dark:text-slate-100 flex items-center gap-2 shadow-xs transition-colors"
               >
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <Wind className="w-3.5 h-3.5 text-sky-500" />
                 <span>{dict.welcome.modes.listen.name}</span>
               </button>
             </div>

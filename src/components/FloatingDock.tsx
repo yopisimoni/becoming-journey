@@ -184,7 +184,7 @@ export function FloatingDock() {
   return (
     <nav
       aria-label="Sanctuary Navigation Dock"
-      className="fixed bottom-5 inset-x-0 mx-auto w-fit max-w-[96vw] z-40 pointer-events-auto"
+      className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] inset-x-0 mx-auto w-fit max-w-[calc(100vw-1rem)] z-40 pointer-events-auto"
       ref={popoverRef}
     >
       {/* Studios Popover Menu */}
@@ -195,7 +195,7 @@ export function FloatingDock() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={reducedMotion ? { duration: 0 } : { duration: 0.18 }}
-            className="absolute bottom-full mb-3 inset-x-0 mx-auto w-72 sm:w-80 p-3 rounded-3xl backdrop-blur-2xl bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-white/10 shadow-2xl shadow-slate-900/20 ring-1 ring-slate-950/5 z-50 text-xs"
+            className="absolute bottom-full mb-3 inset-x-0 mx-auto w-72 sm:w-80 max-h-[min(65dvh,520px)] overflow-y-auto overscroll-contain p-3 rounded-3xl backdrop-blur-2xl bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-white/10 shadow-2xl shadow-slate-900/20 ring-1 ring-slate-950/5 z-50 text-xs"
           >
             <div className="px-2 py-1 mb-1 font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500">
               Sanctuary Studios & Spaces
@@ -213,7 +213,7 @@ export function FloatingDock() {
                       item.action();
                       setStudiosOpen(false);
                     }}
-                    className={`w-full flex items-center gap-3 p-2 rounded-2xl text-start transition-all ${
+                    className={`w-full min-h-11 flex items-center gap-3 p-2 rounded-2xl text-start transition-all ${
                       isSelected
                         ? 'bg-indigo-600 text-white font-semibold shadow-md'
                         : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
@@ -247,7 +247,7 @@ export function FloatingDock() {
               type="button"
               onClick={() => handleSelectTab(tab.id)}
               aria-label={tab.label}
-              className={`relative p-2.5 sm:px-3.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold transition-all whitespace-nowrap flex items-center gap-2 select-none focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+              className={`relative min-w-11 min-h-11 justify-center p-2.5 sm:px-3.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold transition-all whitespace-nowrap flex items-center gap-2 select-none focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
                 active
                   ? 'text-white dark:text-slate-950'
                   : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/60'
@@ -276,7 +276,7 @@ export function FloatingDock() {
           type="button"
           onClick={() => setStudiosOpen(!studiosOpen)}
           aria-label="Sanctuary Studios"
-          className={`relative p-2.5 sm:px-3.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold transition-all whitespace-nowrap flex items-center gap-2 select-none focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+          className={`relative min-w-11 min-h-11 justify-center p-2.5 sm:px-3.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold transition-all whitespace-nowrap flex items-center gap-2 select-none focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
             isStudioActive
               ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50'
               : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/60'

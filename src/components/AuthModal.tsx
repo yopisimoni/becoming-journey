@@ -360,10 +360,13 @@ export function AuthModal() {
           </div>
 
           {/* Privacy Footnote */}
-          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 text-center">
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 text-center space-y-1">
             <p className="text-[11px] text-slate-400 leading-snug">
               {dict.auth.firebaseNotice ||
                 'Optional cloud identity. Signing in never automatically uploads or exposes your private journals, Mind Vault, or local reflections.'}
+            </p>
+            <p className="text-[10px] text-slate-400/80 leading-normal">
+              Private reflections remain stored solely on this device and do not sync across devices.
             </p>
           </div>
         </form>

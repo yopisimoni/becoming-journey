@@ -1,10 +1,35 @@
 import { test, expect } from '@playwright/test';
 
+async function openHeaderControls(page: import('@playwright/test').Page) {
+  const menuRegion = page.locator('#mobile-sanctuary-menu');
+  if (await menuRegion.isVisible()) return;
+  const mobileMenu = page.getByRole('button', { name: 'Open sanctuary controls' });
+  if (await mobileMenu.isVisible()) await mobileMenu.click();
+}
+
+async function closeHeaderControls(page: import('@playwright/test').Page) {
+  const closeBtn = page.locator('#mobile-sanctuary-menu button').filter({ hasText: /Close|إغلاق/i });
+  if (await closeBtn.isVisible()) {
+    await closeBtn.click();
+  }
+}
+
+async function openSettings(page: import('@playwright/test').Page) {
+  await openHeaderControls(page);
+  const desktopSettings = page.locator('#navbar-settings-button');
+  if (await desktopSettings.isVisible()) await desktopSettings.click();
+  else await page.getByRole('region', { name: 'Sanctuary controls' }).getByRole('button', { name: /settings/i }).click();
+}
+
 test.beforeEach(async ({ context }, testInfo) => {
   if (!testInfo.title.includes('first visit')) {
     await context.addInitScript(() => {
-      localStorage.setItem('becoming_onboarded', 'true');
-      localStorage.setItem('becoming_consent_agreed', 'true');
+      try {
+        localStorage.setItem('becoming_onboarded', 'true');
+        localStorage.setItem('becoming_consent_agreed', 'true');
+      } catch {
+        // Ignored on restricted worker frames
+      }
     });
   }
 });
@@ -111,6 +136,17 @@ test.describe('Sanctuary Upgrade v0.2: Step Deck, Themes, and Audio Engine', () 
       await themeToggle.click();
       const isStillDark = await page.evaluate(() => document.documentElement.classList.contains('dark'));
       expect(isStillDark).toBe(false);
+    } else {
+      await openHeaderControls(page);
+      const mobileToggle = page.locator('#mobile-twilight-toggle');
+      await expect(mobileToggle).toBeVisible();
+      await mobileToggle.click();
+      const isDark = await page.evaluate(() => document.documentElement.classList.contains('dark'));
+      expect(isDark).toBe(true);
+
+      await mobileToggle.click();
+      const isStillDark = await page.evaluate(() => document.documentElement.classList.contains('dark'));
+      expect(isStillDark).toBe(false);
     }
   });
 
@@ -172,10 +208,11 @@ test.describe('BCM-004: Multilingual & Arabic RTL', () => {
   test('switching to Arabic sets dir="rtl" on html root', async ({ page }) => {
     await page.goto('/');
 
-    const menuBtn = page.getByRole('button', { name: /Toggle navigation menu/i });
+    const menuBtn = page.getByRole('button', { name: 'Open sanctuary controls' });
     if (await menuBtn.isVisible()) {
       await menuBtn.click();
-      await page.locator('#mobile-lang-select').selectOption('ar');
+      await page.locator('#mobile-sanctuary-language').selectOption('ar');
+      await closeHeaderControls(page);
     } else {
       await page.locator('header select').first().selectOption('ar');
     }
@@ -205,6 +242,34 @@ test.describe('BCM-003: Responsive Layouts & Accessibility', () => {
     });
 
     expect(hasHorizontalScroll).toBe(false);
+  });
+
+  test('primary navigation and interactive controls meet 44px minimum touch target size', async ({ page }) => {
+    await page.goto('/');
+
+    const undersizedTargets = await page.evaluate(() => {
+      const selectors = [
+        '#floating-dock-tab-sanctuary',
+        '#floating-dock-tab-journal',
+        '#floating-dock-tab-map',
+        '#floating-dock-tab-moments',
+        '#floating-dock-tab-studios',
+        'button[aria-label="Open sanctuary controls"]',
+      ];
+      const issues: { selector: string; width: number; height: number }[] = [];
+      for (const sel of selectors) {
+        const el = document.querySelector(sel);
+        if (el) {
+          const r = el.getBoundingClientRect();
+          if (r.width > 0 && r.height > 0 && (r.width < 44 || r.height < 44)) {
+            issues.push({ selector: sel, width: Math.round(r.width), height: Math.round(r.height) });
+          }
+        }
+      }
+      return issues;
+    });
+
+    expect(undersizedTargets).toEqual([]);
   });
 });
 
@@ -243,6 +308,7 @@ test.describe('Sanctuary Overhaul v0.3: Floating Dock & Local-First Auth', () =>
     await page.goto('/');
 
     // Open Auth modal from top header
+    await openHeaderControls(page);
     const signInBtn = page.getByRole('button', { name: /Sign In/i });
     await expect(signInBtn).toBeVisible();
     await signInBtn.click();
@@ -271,16 +337,22 @@ test.describe('Sanctuary Overhaul v0.3: Floating Dock & Local-First Auth', () =>
 
     // Open profile menu
     const profileBtn = page.locator('#user-profile-button');
-    await expect(profileBtn).toBeVisible();
-    await profileBtn.click();
+    if (await profileBtn.isVisible()) {
+      await profileBtn.click();
+      await page.locator('#profile-sign-out-button').click();
+    } else {
+      await openHeaderControls(page);
+      await page.getByRole('region', { name: 'Sanctuary controls' }).getByRole('button', { name: /sign out/i }).click();
+    }
 
-    // Click Sign Out
-    const signOutBtn = page.locator('#profile-sign-out-button');
-    await expect(signOutBtn).toBeVisible();
-    await signOutBtn.click();
-
-    // Header returns to "Sign In" button
-    await expect(page.getByRole('button', { name: /Sign In/i })).toBeVisible();
+    // Header returns to "Sign In" button (desktop header or mobile controls menu)
+    const desktopSignIn = page.getByRole('button', { name: /Sign In/i });
+    if (await desktopSignIn.isVisible()) {
+      await expect(desktopSignIn).toBeVisible();
+    } else {
+      await openHeaderControls(page);
+      await expect(page.getByRole('region', { name: 'Sanctuary controls' }).getByRole('button', { name: /sign in/i })).toBeVisible();
+    }
   });
 });
 
@@ -370,9 +442,7 @@ test.describe('Sanctuary v0.4: Breathing Studio, Inner Compass & Life Horizons',
   test('opens Settings & Information from header button', async ({ page }) => {
     await page.goto('/');
 
-    const settingsBtn = page.locator('#navbar-settings-button');
-    await expect(settingsBtn).toBeVisible();
-    await settingsBtn.click();
+    await openSettings(page);
 
     await expect(page.getByRole('heading', { name: /Sanctuary Settings & Information/i })).toBeVisible();
 
@@ -456,7 +526,7 @@ test.describe('BECOMING v0.5: Human Awakening, Scientific Frameworks, Zero-to-He
     await expect(page.getByText(/Dreams-to-Reality Bridge/i)).toBeVisible();
 
     // Open Settings
-    await page.locator('#navbar-settings-button').click();
+    await openSettings(page);
     // Verify Mirror, Never Boss banner
     await expect(page.getByText(/Mirror, Never Boss/i)).toBeVisible();
   });
@@ -547,7 +617,14 @@ test.describe('BECOMING v0.7: Living Atmospheric Canvas & Dynamic Mood Shifting 
   test('switches inner weather atmospheres and persists to local storage', async ({ page }) => {
     await page.goto('/');
 
-    const switcher = page.locator('#atmosphere-switcher-btn');
+    const getSwitcher = async () => {
+      const desktop = page.locator('#atmosphere-switcher-btn').first();
+      if (await desktop.isVisible()) return desktop;
+      await openHeaderControls(page);
+      return page.locator('#mobile-sanctuary-menu #atmosphere-switcher-btn');
+    };
+
+    let switcher = await getSwitcher();
     await expect(switcher).toBeVisible();
 
     // Open switcher
@@ -560,11 +637,13 @@ test.describe('BECOMING v0.7: Living Atmospheric Canvas & Dynamic Mood Shifting 
     await expect(page.locator('html')).toHaveClass(/dark/);
 
     // Switch to Grounded Moss
+    switcher = await getSwitcher();
     await switcher.click();
     await page.locator('[data-testid="atmosphere-option-moss"]').click();
     await expect(page.locator('html')).toHaveAttribute('data-atmosphere', 'moss');
 
     // Switch to Midnight Sanctuary
+    switcher = await getSwitcher();
     await switcher.click();
     await page.locator('[data-testid="atmosphere-option-midnight"]').click();
     await expect(page.locator('html')).toHaveAttribute('data-atmosphere', 'midnight');
@@ -717,7 +796,7 @@ test.describe('BECOMING v0.8: Daily Rituals, Good Vibes & Private Identity', () 
     await page.goto('/');
 
     // Open Settings & About
-    await page.locator('#navbar-settings-button').click();
+    await openSettings(page);
 
     // Navigate to Privacy Manifesto tab
     const privacyTabBtn = page.getByRole('button', { name: /Privacy Manifesto/i });

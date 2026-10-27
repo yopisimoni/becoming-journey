@@ -828,6 +828,9 @@ export function SettingsAndAboutView() {
                     {dict.privacyData?.whatIsStoredLocally ||
                       'All reflections, Mind Vault secrets, audio preferences, and micro-goals reside exclusively on your browser storage.'}
                   </p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed pt-1.5 border-t border-slate-200/60 dark:border-slate-700/60">
+                    Local storage notice: Data does not auto-sync across different devices or browsers. On shared computers, remember to export periodic backups and wipe data when finished.
+                  </p>
                 </div>
 
                 {/* Column 2: Sent to Firebase */}

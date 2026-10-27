@@ -137,7 +137,7 @@ export function OnboardingWelcomeModal() {
       role="dialog"
       aria-modal="true"
       aria-labelledby="onboarding-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-950/80 backdrop-blur-2xl overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-950/80 backdrop-blur-2xl overflow-y-auto overscroll-contain"
     >
       {/* Background ambient celestial orbs */}
       <AtmosphericOrb
@@ -154,9 +154,9 @@ export function OnboardingWelcomeModal() {
         className="-bottom-20 -end-20"
       />
 
-      <div className="relative w-full max-w-2xl bg-white/95 dark:bg-[#0B0F19]/95 border border-stone-200/90 dark:border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden my-auto backdrop-blur-xl">
+      <div className="relative w-full max-w-2xl bg-white/95 dark:bg-[#0B0F19]/95 border border-stone-200/90 dark:border-slate-800 rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl overflow-hidden my-auto backdrop-blur-xl max-h-[calc(100dvh-1.5rem)] flex flex-col">
         {/* Top Header & Step Progress Bar */}
-        <div className="p-5 sm:p-6 pb-3 border-b border-stone-100 dark:border-slate-800/80 flex items-center justify-between">
+        <div className="p-4 sm:p-6 pb-3 border-b border-stone-100 dark:border-slate-800/80 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-2xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800/60 flex items-center justify-center text-amber-700 dark:text-amber-300 shadow-xs">
               <Sparkles className="w-5 h-5 animate-pulse" />
@@ -177,7 +177,7 @@ export function OnboardingWelcomeModal() {
               type="button"
               onClick={() => setOnboardingOpen(false)}
               aria-label="Close tour"
-              className="p-1.5 rounded-xl text-stone-400 hover:text-stone-800 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors"
+              className="min-w-11 min-h-11 inline-flex items-center justify-center rounded-xl text-stone-400 hover:text-stone-800 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -185,7 +185,7 @@ export function OnboardingWelcomeModal() {
         </div>
 
         {/* 5 Step Indicator Pills */}
-        <div className="px-6 pt-3 flex items-center justify-center gap-1.5 sm:gap-2">
+        <div className="px-4 sm:px-6 pt-3 flex items-center justify-center gap-1.5 sm:gap-2 shrink-0">
           {stepsList.map((s, idx) => (
             <button
               key={s.id}
@@ -194,7 +194,7 @@ export function OnboardingWelcomeModal() {
                 setDirection(idx > currentStep ? 1 : -1);
                 setCurrentStep(idx);
               }}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all ${
+              className={`flex items-center justify-center min-h-9 sm:min-h-10 px-2.5 sm:px-3 py-1 rounded-full text-[11px] font-semibold transition-all focus-visible:ring-2 focus-visible:ring-amber-500 ${
                 currentStep === idx
                   ? 'bg-stone-900 dark:bg-white text-white dark:text-stone-900 shadow-sm'
                   : currentStep > idx
@@ -203,14 +203,14 @@ export function OnboardingWelcomeModal() {
               }`}
             >
               <span>{idx + 1}</span>
-              <span className="hidden sm:inline">{s.label}</span>
-              {currentStep > idx && <Check className="w-3 h-3 text-amber-600 dark:text-amber-400" />}
+              <span className="hidden sm:inline ms-1">{s.label}</span>
+              {currentStep > idx && <Check className="w-3 h-3 text-amber-600 dark:text-amber-400 ms-0.5" />}
             </button>
           ))}
         </div>
 
         {/* Card Body with Animated Transitions */}
-        <div className="p-6 sm:p-8 min-h-[380px] flex flex-col justify-between">
+        <div className="p-5 sm:p-8 flex-1 min-h-[340px] overflow-y-auto flex flex-col justify-between">
           <AnimatePresence custom={direction} mode="wait">
             {/* ============================================================== */}
             {/* STEP 1: CINEMATIC MOTION INTRO & LIVING LIGHT IDENTITY         */}
@@ -662,7 +662,7 @@ export function OnboardingWelcomeModal() {
                     <span>{locale === "ar" ? "الموافقة على المتابعة" : locale === "fr" ? "Consentement" : locale === "es" ? "Consentimiento" : locale === "it" ? "Consenso" : "Consent to continue"}</span>
                   </div>
 
-                  <label className="flex items-start gap-3 cursor-pointer group">
+                  <label className="flex items-start gap-3 cursor-pointer group min-h-11 py-1">
                     <input
                       type="checkbox"
                       id="onboarding-consent-checkbox"
@@ -680,14 +680,14 @@ export function OnboardingWelcomeModal() {
           </AnimatePresence>
 
           {/* Bottom Navigation Toolbar */}
-          <div className="pt-6 border-t border-stone-100 dark:border-slate-800 flex items-center justify-between gap-3 mt-4">
+          <div className="pt-4 sm:pt-6 border-t border-stone-100 dark:border-slate-800 flex items-center justify-between gap-3 mt-4 shrink-0">
             <div>
               {currentStep > 0 ? (
                 <button
                   type="button"
                   id="onboarding-prev-btn"
                   onClick={handlePrev}
-                  className="px-4 py-2 rounded-xl border border-stone-200 dark:border-slate-700 text-xs font-bold text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-slate-800 flex items-center gap-1.5 transition-colors"
+                  className="min-h-11 px-4 py-2.5 rounded-xl border border-stone-200 dark:border-slate-700 text-xs font-bold text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-slate-800 flex items-center gap-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500"
                 >
                   <ArrowLeft className={`w-3.5 h-3.5 ${isRtl ? 'rotate-180' : ''}`} />
                   <span>{t?.prevButton || 'Previous'}</span>
@@ -697,7 +697,7 @@ export function OnboardingWelcomeModal() {
                   type="button"
                   id="onboarding-skip-btn"
                   onClick={handleSkipIntro}
-                  className="text-xs text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 font-medium py-1"
+                  className="min-h-11 min-w-11 px-3.5 py-2 inline-flex items-center justify-center text-xs font-semibold text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-white rounded-xl hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500"
                 >
                   {t?.intro?.skipButton || 'Skip Intro'}
                 </button>
@@ -710,7 +710,7 @@ export function OnboardingWelcomeModal() {
                   type="button"
                   id="onboarding-next-btn"
                   onClick={handleNext}
-                  className="px-6 py-2.5 rounded-xl bg-stone-900 dark:bg-white hover:bg-stone-800 dark:hover:bg-stone-100 text-white dark:text-stone-900 text-xs font-bold shadow-lg shadow-stone-900/15 flex items-center gap-2 transition-all hover:scale-105"
+                  className="min-h-11 px-6 py-2.5 rounded-xl bg-stone-900 dark:bg-white hover:bg-stone-800 dark:hover:bg-stone-100 text-white dark:text-stone-900 text-xs font-bold shadow-lg shadow-stone-900/15 flex items-center gap-2 transition-all hover:scale-105 focus-visible:ring-2 focus-visible:ring-indigo-500"
                 >
                   <span>
                     {currentStep === 0
@@ -725,7 +725,7 @@ export function OnboardingWelcomeModal() {
                   id="onboarding-agree-btn"
                   onClick={handleComplete}
                   disabled={!hasAgreedConsent}
-                  className={`px-6 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg transition-all ${
+                  className={`min-h-11 px-6 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg transition-all focus-visible:ring-2 focus-visible:ring-emerald-500 ${
                     hasAgreedConsent
                       ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/25 hover:scale-105 cursor-pointer animate-pulse'
                       : 'bg-stone-200 dark:bg-slate-800 text-stone-400 dark:text-slate-600 cursor-not-allowed shadow-none'

@@ -328,6 +328,14 @@ export function SecretVaultView() {
             )}
           </div>
         )}
+
+        {/* Local UI Lock Privacy Notice */}
+        <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700/60 text-center">
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+            <ShieldAlert className="w-3.5 h-3.5 inline-block me-1 text-amber-500 align-text-bottom" />
+            <strong>Privacy Transparency:</strong> The 4-digit PIN is a device-local interface privacy lock designed to prevent casual on-screen inspection. Entries are stored directly in your browser&apos;s local storage and are not encrypted with cloud-grade cryptographic keys. Please do not store credentials or financial data.
+          </p>
+        </div>
       </div>
     </div>
   );

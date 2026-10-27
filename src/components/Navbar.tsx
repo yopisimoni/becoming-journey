@@ -22,6 +22,8 @@ import {
   Feather,
   Compass,
   Settings,
+  Menu,
+  X,
 } from 'lucide-react';
 import { WipeDataModal } from './WipeDataModal';
 import { StorageSettingsModal } from './StorageSettingsModal';
@@ -50,31 +52,57 @@ export function Navbar() {
     setSanctuaryStep,
   } = useApp();
 
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isWipeOpen, setWipeOpen] = useState(false);
   const [isStorageOpen, setStorageOpen] = useState(false);
   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const mobileTriggerRef = useRef<HTMLButtonElement>(null);
 
   const handleLogoClick = () => {
     setActiveTab('home');
     setCurrentIntent(null);
     setSanctuaryStep(0);
+    setMobileMenuOpen(false);
   };
 
   const toggleTheme = () => {
     setThemeMode(themeMode === 'twilight' ? 'light' : 'twilight');
   };
 
-  // Close dropdown on outside click
+  // Close dropdown and mobile menu on outside click or Escape
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      if (menuRef.current && !menuRef.current.contains(target)) {
         setProfileMenuOpen(false);
       }
+      if (
+        isMobileMenuOpen &&
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(target) &&
+        mobileTriggerRef.current &&
+        !mobileTriggerRef.current.contains(target)
+      ) {
+        setMobileMenuOpen(false);
+      }
     };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setProfileMenuOpen(false);
+        setMobileMenuOpen(false);
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isMobileMenuOpen]);
 
   const renderAvatarIcon = (avatarId?: string) => {
     switch (avatarId) {
@@ -95,9 +123,9 @@ export function Navbar() {
     <>
       <header className="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border-b border-slate-200/80 dark:border-white/10 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 gap-3">
+          <div className="flex items-center justify-between h-16 gap-2 min-w-0">
             {/* Start: Brand Logo & Prototype Badge */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 min-w-0 shrink">
               <button
                 type="button"
                 onClick={handleLogoClick}
@@ -121,8 +149,19 @@ export function Navbar() {
               </span>
             </div>
 
+            <button
+              ref={mobileTriggerRef}
+              type="button"
+              aria-label="Open sanctuary controls"
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-sanctuary-menu"
+              onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
+              className="sm:hidden min-w-11 min-h-11 shrink-0 inline-flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white focus-visible:ring-2 focus-visible:ring-indigo-500"
+            >
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
             {/* End: Controls (Sound Pill, Language, Theme Toggle, User Account) */}
-            <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="hidden sm:flex items-center gap-1.5 sm:gap-2">
               {/* Atmosphere Mood Switcher */}
               <AtmosphereSwitcher />
 
@@ -328,6 +367,28 @@ export function Navbar() {
         </div>
       </header>
 
+      {isMobileMenuOpen && (
+        <div
+          ref={mobileMenuRef}
+          id="mobile-sanctuary-menu"
+          className="sm:hidden fixed top-16 inset-x-0 z-50 p-4 bg-white/98 dark:bg-slate-900/98 border-b border-slate-200 dark:border-slate-700 shadow-xl max-h-[calc(100dvh-4.5rem)] overflow-y-auto"
+          role="region"
+          aria-label="Sanctuary controls"
+        >
+          <div className="flex flex-wrap gap-3 items-center mb-4"><AtmosphereSwitcher /><SoundscapeControlPill /></div>
+          <div className="grid grid-cols-2 gap-3 mb-3">
+            <button id="mobile-twilight-toggle" type="button" onClick={toggleTheme} className="min-h-12 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-2 text-slate-800 dark:text-white">{themeMode === 'twilight' ? <Sun className="w-5 h-5"/> : <Moon className="w-5 h-5"/>}<span>{themeMode === 'twilight' ? 'Light' : 'Twilight'}</span></button>
+            <button id="mobile-navbar-settings" type="button" onClick={() => {setActiveTab('settings'); setMobileMenuOpen(false);}} className="min-h-12 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-2 text-slate-800 dark:text-white"><Settings className="w-5 h-5" />{dict.nav.settingsTab || 'Settings'}</button>
+          </div>
+          <label className="block text-sm font-medium text-slate-800 dark:text-white" htmlFor="mobile-sanctuary-language">Language</label>
+          <select id="mobile-sanctuary-language" value={locale} onChange={e => setLocale(e.target.value as Locale)} className="w-full min-h-12 mt-2 px-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">{supportedLocales.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}</select>
+          <div className="grid grid-cols-2 gap-3 mt-3">
+            <button type="button" onClick={() => {setSafetyModalOpen(true);setMobileMenuOpen(false);}} className="min-h-12 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white">{dict.nav.safetyButton}</button>
+            <button id="mobile-auth-button" type="button" onClick={() => {if (user) {signOut();} else {setAuthModalOpen(true);} setMobileMenuOpen(false);}} className="min-h-12 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white">{user ? dict.auth.signOut : dict.auth.signIn}</button>
+          </div>
+          <button type="button" onClick={() => setMobileMenuOpen(false)} className="mt-3 w-full min-h-11 text-sm font-medium rounded-xl border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition-colors">{dict.disclaimer?.close || 'Close'}</button>
+        </div>
+      )}
       {/* Modals */}
       <AuthModal />
       <WipeDataModal isOpen={isWipeOpen} onClose={() => setWipeOpen(false)} />
