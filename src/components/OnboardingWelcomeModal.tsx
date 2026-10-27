@@ -26,7 +26,7 @@ import {
   Shield,
   HelpCircle,
 } from 'lucide-react';
-import { AtmosphericOrb } from '@/components/motion';
+import { AtmosphericOrb, LivingIdentity3D } from '@/components/motion';
 
 export function OnboardingWelcomeModal() {
   const {
@@ -225,22 +225,17 @@ export function OnboardingWelcomeModal() {
                 exit="exit"
                 className="space-y-6 text-center py-4"
               >
-                {/* Floating Cosmic Centerpiece */}
-                <div className="relative mx-auto w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center">
-                  <motion.div
-                    animate={
-                      shouldReduceMotion
-                        ? { scale: 1 }
-                        : { scale: [0.95, 1.08, 0.95], rotate: [0, 5, -5, 0] }
-                    }
-                    transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-tr from-amber-500 via-rose-500 to-indigo-600 shadow-xl shadow-amber-500/25 flex items-center justify-center text-white text-3xl sm:text-4xl font-serif font-bold"
-                  >
-                    B
-                  </motion.div>
+                {/* Luminous 3D Living Identity Sculpture */}
+                <div className="relative mx-auto w-56 h-56 sm:w-64 sm:h-64 flex items-center justify-center">
+                  <LivingIdentity3D
+                    currentStep={currentStep}
+                    size={260}
+                    interactive={true}
+                    reducedMotion={shouldReduceMotion ?? false}
+                  />
                   <div
                     aria-hidden="true"
-                    className="absolute inset-0 rounded-full bg-amber-400/20 blur-2xl animate-pulse pointer-events-none"
+                    className="absolute inset-4 rounded-full bg-amber-400/15 dark:bg-purple-500/20 blur-3xl pointer-events-none -z-10 animate-pulse"
                   />
                 </div>
 
@@ -250,13 +245,13 @@ export function OnboardingWelcomeModal() {
                   </span>
                   <h1
                     id="onboarding-title"
-                    className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-stone-900 dark:text-white tracking-tight"
+                    className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-stone-900 dark:text-white tracking-widest"
                   >
                     {t?.intro?.title || 'BECOMING'}
                   </h1>
                   <h2 className="text-sm sm:text-base font-serif font-medium text-stone-600 dark:text-stone-300 max-w-md mx-auto leading-relaxed">
                     {t?.intro?.subtitle ||
-                      'A Quiet Human Sanctuary in a Loud Digital World'}
+                      'A calm space to understand yourself'}
                   </h2>
                 </div>
 
@@ -265,7 +260,7 @@ export function OnboardingWelcomeModal() {
                   Zero cost forever, 100% private to your device, and zero surveillance.
                 </p>
 
-                <div className="pt-2 flex flex-wrap items-center justify-center gap-3 text-xs text-stone-500 dark:text-slate-400">
+                <div className="pt-1 flex flex-wrap items-center justify-center gap-3 text-xs text-stone-500 dark:text-slate-400">
                   <span className="flex items-center gap-1.5">
                     <Shield className="w-3.5 h-3.5 text-emerald-500" />
                     <span>Zero Cloud AI</span>
@@ -297,17 +292,27 @@ export function OnboardingWelcomeModal() {
                 exit="exit"
                 className="space-y-5"
               >
-                <div className="space-y-1">
-                  <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-                    {t?.languageSelect?.badge || 'Step 2 • Sanctuary Language'}
-                  </span>
-                  <h3 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 dark:text-white leading-tight">
-                    {t?.languageSelect?.title || 'Choose Your Sanctuary Language'}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400">
-                    {t?.languageSelect?.subtitle ||
-                      'Select the language that speaks most intimately to your mind and reflections.'}
-                  </p>
+                <div className="flex items-center gap-3.5 sm:gap-4">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center rounded-2xl bg-slate-900/40 border border-white/5 shadow-inner overflow-hidden">
+                    <LivingIdentity3D
+                      currentStep={1}
+                      size={80}
+                      interactive={true}
+                      reducedMotion={shouldReduceMotion ?? false}
+                    />
+                  </div>
+                  <div className="space-y-1 flex-1">
+                    <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                      {t?.languageSelect?.badge || 'Step 2 • Sanctuary Language'}
+                    </span>
+                    <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900 dark:text-white leading-tight">
+                      {t?.languageSelect?.title || 'Choose your language'}
+                    </h3>
+                    <p className="text-xs text-stone-600 dark:text-stone-400">
+                      {t?.languageSelect?.subtitle ||
+                        'Select the language that speaks most intimately to your mind and reflections.'}
+                    </p>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
@@ -370,17 +375,27 @@ export function OnboardingWelcomeModal() {
                 exit="exit"
                 className="space-y-5"
               >
-                <div className="space-y-1">
-                  <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-                    {t?.genderSelect?.badge || 'Step 3 • Respectful Addressing'}
-                  </span>
-                  <h3 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 dark:text-white leading-tight">
-                    {t?.genderSelect?.title || 'How Would You Like Us to Address You?'}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400">
-                    {t?.genderSelect?.subtitle ||
-                      'This is optional and helps us personalize grammar and reflections respectfully.'}
-                  </p>
+                <div className="flex items-center gap-3.5 sm:gap-4">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center rounded-2xl bg-slate-900/40 border border-white/5 shadow-inner overflow-hidden">
+                    <LivingIdentity3D
+                      currentStep={2}
+                      size={80}
+                      interactive={true}
+                      reducedMotion={shouldReduceMotion ?? false}
+                    />
+                  </div>
+                  <div className="space-y-1 flex-1">
+                    <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                      {t?.genderSelect?.badge || 'Step 3 • Respectful Addressing'}
+                    </span>
+                    <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900 dark:text-white leading-tight">
+                      {t?.genderSelect?.title || 'How Would You Like Us to Address You?'}
+                    </h3>
+                    <p className="text-xs text-stone-600 dark:text-stone-400">
+                      {t?.genderSelect?.subtitle ||
+                        'This is optional and helps us personalize grammar and reflections respectfully.'}
+                    </p>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-3 pt-2">
@@ -476,16 +491,26 @@ export function OnboardingWelcomeModal() {
                 exit="exit"
                 className="space-y-4"
               >
-                <div className="space-y-1">
-                  <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-                    {stepIndicator(4)} • BECOMING
-                  </span>
-                  <h3 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 dark:text-white leading-tight">
-                    {t?.card2?.title ?? "About BECOMING"}
-                  </h3>
-                  <p className="text-xs sm:text-sm font-medium text-amber-700 dark:text-amber-400">
-                    {t?.card2?.subtitle ?? "Explore at your own pace."}
-                  </p>
+                <div className="flex items-center gap-3.5 sm:gap-4">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center rounded-2xl bg-slate-900/40 border border-white/5 shadow-inner overflow-hidden">
+                    <LivingIdentity3D
+                      currentStep={3}
+                      size={80}
+                      interactive={true}
+                      reducedMotion={shouldReduceMotion ?? false}
+                    />
+                  </div>
+                  <div className="space-y-1 flex-1">
+                    <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                      {stepIndicator(4)} • BECOMING
+                    </span>
+                    <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900 dark:text-white leading-tight">
+                      {t?.card2?.title ?? "Tools to help you find your own way"}
+                    </h3>
+                    <p className="text-xs font-medium text-amber-700 dark:text-amber-400">
+                      {t?.card2?.subtitle ?? "Explore at your own pace."}
+                    </p>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
@@ -552,16 +577,26 @@ export function OnboardingWelcomeModal() {
                 exit="exit"
                 className="space-y-4"
               >
-                <div className="space-y-1.5">
-                  <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-                    {stepIndicator(5)} • {stepsList[4].label}
-                  </span>
-                  <h3 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 dark:text-white leading-tight">
-                    {t?.card3?.title ?? "Your choices matter"}
-                  </h3>
-                  <p className="text-xs sm:text-sm font-medium text-stone-600 dark:text-stone-400">
-                    {t?.card3?.subtitle ?? "Take your time."}
-                  </p>
+                <div className="flex items-center gap-3.5 sm:gap-4">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center rounded-2xl bg-slate-900/40 border border-white/5 shadow-inner overflow-hidden">
+                    <LivingIdentity3D
+                      currentStep={4}
+                      size={80}
+                      interactive={true}
+                      reducedMotion={shouldReduceMotion ?? false}
+                    />
+                  </div>
+                  <div className="space-y-1 flex-1">
+                    <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                      {stepIndicator(5)} • {stepsList[4].label}
+                    </span>
+                    <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900 dark:text-white leading-tight">
+                      {t?.card3?.title ?? "Your choices remain yours"}
+                    </h3>
+                    <p className="text-xs font-medium text-stone-600 dark:text-stone-400">
+                      {t?.card3?.subtitle ?? "Take your time."}
+                    </p>
+                  </div>
                 </div>
 
                 <div className="space-y-2 text-xs sm:text-sm text-stone-700 dark:text-stone-300 leading-relaxed font-normal">
