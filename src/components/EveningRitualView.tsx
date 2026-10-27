@@ -148,23 +148,23 @@ export function EveningRitualView() {
         className="-top-12 -start-12"
       />
       {/* Header Banner with Night Atmosphere */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-indigo-950/40 via-purple-950/20 to-slate-900/60 border border-indigo-900/40 dark:border-indigo-800/50 shadow-2xl space-y-4">
-        <div className="flex items-center justify-between">
+      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 border border-slate-700 shadow-2xl space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="p-2 rounded-2xl bg-indigo-500/20 text-indigo-300">
-              <Moon className="w-5 h-5 text-indigo-300" />
+            <span className="p-2 rounded-2xl bg-white/15 text-white">
+              <Moon className="w-5 h-5 text-white" />
             </span>
-            <span className="text-xs font-bold uppercase tracking-wider text-indigo-300">
+            <span className="text-xs font-bold uppercase tracking-wider text-indigo-100">
               {rDict?.eveningTitle || 'Ready to Sleep'}
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             {/* Ambient Sound Toggle */}
             <button
               type="button"
               onClick={handleToggleSound}
-              className="p-2 rounded-xl bg-indigo-900/40 hover:bg-indigo-900/70 text-indigo-300 border border-indigo-700/50 text-xs flex items-center gap-1.5 transition-all"
+              className="p-2 rounded-xl min-h-11 min-w-11 bg-white/10 hover:bg-white/20 text-white border border-white/30 text-xs flex items-center gap-1.5 transition-all"
               title="Toggle Night Ambient Sound"
             >
               {soundPreset !== 'none' ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
@@ -178,14 +178,14 @@ export function EveningRitualView() {
               type="button"
               data-testid="shift-night-btn"
               onClick={handleShiftToNight}
-              className={`px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all ${
+              className={`min-h-11 max-w-full px-3 py-2 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-colors text-start ${
                 atmosphere === 'twilight' || atmosphere === 'midnight'
-                  ? 'bg-indigo-600 text-white border-indigo-400'
-                  : 'bg-indigo-950/60 hover:bg-indigo-900/80 text-indigo-200 border-indigo-700/60'
+                  ? 'bg-indigo-600 text-white border-indigo-300'
+                  : 'bg-white/10 hover:bg-white/20 text-white border-white/40'
               }`}
             >
               <Moon className="w-3.5 h-3.5" />
-              <span>{rDict?.shiftToNight || 'Shift to Night'}</span>
+              <span className="break-words">{rDict?.shiftToNight || 'Shift to Night'}</span>
             </button>
           </div>
         </div>
@@ -194,7 +194,7 @@ export function EveningRitualView() {
           <h1 className="text-2xl sm:text-3xl font-serif font-bold text-white">
             {user ? `Peaceful evening, ${user.name.split(' ')[0]}.` : 'Peaceful evening.'}
           </h1>
-          <p className="text-sm text-indigo-200/80 mt-1 max-w-xl">
+          <p className="text-sm text-slate-100 mt-1 max-w-xl">
             {rDict?.eveningSubtitle ||
               'Gently release today, quiet your mind, and prepare for restorative slumber.'}
           </p>
