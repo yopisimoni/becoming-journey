@@ -71,6 +71,16 @@ export function Navbar() {
     setThemeMode(themeMode === 'twilight' ? 'light' : 'twilight');
   };
 
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const oldOverflow = document.body.style.overflow;
+    const trigger = mobileTriggerRef.current;
+    document.body.style.overflow = 'hidden';
+    const firstControl = mobileMenuRef.current?.querySelector<HTMLButtonElement>('button');
+    firstControl?.focus();
+    return () => { document.body.style.overflow = oldOverflow; trigger?.focus(); };
+  }, [isMobileMenuOpen]);
+
   // Close dropdown and mobile menu on outside click or Escape
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -373,12 +383,13 @@ export function Navbar() {
         <div
           ref={mobileMenuRef}
           id="mobile-sanctuary-menu"
-          className="sm:hidden fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-50 px-4 pt-4 pb-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-2xl max-h-[min(80dvh,650px)] overflow-y-auto overscroll-contain"
-          role="region"
+          className="sm:hidden fixed inset-0 z-50 bg-[#FAF7F2] dark:bg-slate-950 overflow-y-auto overscroll-contain px-5 pt-[max(1.5rem,env(safe-area-inset-top))] pb-[max(2rem,env(safe-area-inset-bottom))]"
+          role="dialog"
+          aria-modal="true"
           aria-label="Sanctuary controls"
         >
           <div className="flex items-center justify-between mb-4"><span className="text-base font-semibold text-slate-900 dark:text-white">Sanctuary controls</span><button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close sanctuary controls" className="min-w-11 min-h-11 rounded-xl flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white"><X className="w-5 h-5" /></button></div>
-          <div className="flex flex-wrap gap-3 items-center mb-4 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800"><AtmosphereSwitcher /><SoundscapeControlPill /></div>
+          <div className="flex flex-wrap gap-3 items-center mb-4 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-stone-200 dark:border-slate-700"><AtmosphereSwitcher /><SoundscapeControlPill /></div>
           <div className="grid grid-cols-2 gap-3 mb-3">
             <button id="mobile-twilight-toggle" type="button" onClick={toggleTheme} className="min-h-12 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-2 text-slate-800 dark:text-white">{themeMode === 'twilight' ? <Sun className="w-5 h-5"/> : <Moon className="w-5 h-5"/>}<span>{themeMode === 'twilight' ? 'Light' : 'Twilight'}</span></button>
             <button id="mobile-navbar-settings" type="button" onClick={() => {setActiveTab('settings'); setMobileMenuOpen(false);}} className="min-h-12 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-2 text-slate-800 dark:text-white"><Settings className="w-5 h-5" />{dict.nav.settingsTab || 'Settings'}</button>

@@ -18,7 +18,7 @@ async function openSettings(page: import('@playwright/test').Page) {
   await openHeaderControls(page);
   const desktopSettings = page.locator('#navbar-settings-button');
   if (await desktopSettings.isVisible()) await desktopSettings.click();
-  else await page.getByRole('region', { name: 'Sanctuary controls' }).getByRole('button', { name: /settings/i }).click();
+  else await page.getByRole('dialog', { name: 'Sanctuary controls' }).getByRole('button', { name: /settings/i }).click();
 }
 
 test.beforeEach(async ({ context }, testInfo) => {
@@ -342,7 +342,7 @@ test.describe('Sanctuary Overhaul v0.3: Floating Dock & Local-First Auth', () =>
       await page.locator('#profile-sign-out-button').click();
     } else {
       await openHeaderControls(page);
-      await page.getByRole('region', { name: 'Sanctuary controls' }).getByRole('button', { name: /sign out/i }).click();
+      await page.getByRole('dialog', { name: 'Sanctuary controls' }).getByRole('button', { name: /sign out/i }).click();
     }
 
     // Header returns to "Sign In" button (desktop header or mobile controls menu)
@@ -351,7 +351,7 @@ test.describe('Sanctuary Overhaul v0.3: Floating Dock & Local-First Auth', () =>
       await expect(desktopSignIn).toBeVisible();
     } else {
       await openHeaderControls(page);
-      await expect(page.getByRole('region', { name: 'Sanctuary controls' }).getByRole('button', { name: /sign in/i })).toBeVisible();
+      await expect(page.getByRole('dialog', { name: 'Sanctuary controls' }).getByRole('button', { name: /sign in/i })).toBeVisible();
     }
   });
 });

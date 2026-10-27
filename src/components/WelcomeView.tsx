@@ -175,20 +175,20 @@ export function WelcomeView() {
               </AnimatePresence>
 
               {/* Optional journey guide: user chooses the stage, never an imposed streak. */}
-              <section aria-label={journeyCopy.eyebrow} className="relative z-10 text-start rounded-2xl border border-indigo-200 dark:border-indigo-900 bg-indigo-50/90 dark:bg-slate-800 p-4 sm:p-5 space-y-3">
-                <p className="text-xs uppercase tracking-wider font-semibold text-indigo-600 dark:text-indigo-300">{journeyCopy.eyebrow}</p>
+              <section aria-label={journeyCopy.eyebrow} className="relative z-10 text-start rounded-2xl border border-stone-200 dark:border-slate-700 bg-[#F8F2EA] dark:bg-slate-800 p-4 sm:p-5 space-y-3">
+                <p className="text-xs uppercase tracking-wider font-semibold text-amber-800 dark:text-amber-300">{journeyCopy.eyebrow}</p>
                 <h2 className="text-xl font-serif font-bold text-slate-900 dark:text-white">{journeyCopy.title}</h2>
                 <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">{journeyCopy.subtitle}</p>
                 <div className="grid grid-cols-5 gap-1.5" role="group" aria-label={journeyCopy.eyebrow}>
                   {journeyCopy.phases.map((phase, i) => (
-                    <button key={phase} type="button" onClick={() => changeJourneyPhase(i)} aria-pressed={journeyPhase === i} aria-label={`${i + 1}. ${phase}`} className={`min-h-12 rounded-lg p-1 flex flex-col justify-center items-center gap-1 focus-visible:ring-2 focus-visible:ring-indigo-500 ${journeyPhase === i ? 'bg-indigo-700 text-white' : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-white border border-indigo-100 dark:border-slate-600'}`}>
-                      {i < journeyPhase ? <CheckCircle2 className="w-4 h-4" /> : <span className="text-xs font-bold">{i + 1}</span>}
+                    <button key={phase} type="button" onClick={() => changeJourneyPhase(i)} aria-pressed={journeyPhase === i} aria-label={`${i + 1}. ${phase}`} className={`min-h-12 rounded-lg p-1 flex flex-col justify-center items-center gap-1 focus-visible:ring-2 focus-visible:ring-indigo-500 ${journeyPhase === i ? 'bg-slate-900 text-white dark:bg-amber-200 dark:text-slate-900' : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-white border border-stone-200 dark:border-slate-600'}`}>
+                      {<span className="text-xs font-bold">{i + 1}</span>}
                       <span className="text-[10px] leading-tight break-words text-center">{phase}</span>
                     </button>
                   ))}
                 </div>
                 <p aria-live="polite" className="text-sm font-medium text-slate-800 dark:text-slate-100">{journeyCopy.descriptions[journeyPhase]}</p>
-                <button type="button" onClick={startJourneyPhase} className="w-full min-h-12 inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 dark:bg-indigo-300 text-white dark:text-slate-950 font-semibold text-sm focus-visible:ring-2 focus-visible:ring-indigo-500">
+                <button type="button" onClick={startJourneyPhase} className="w-full min-h-12 inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 dark:bg-amber-200 text-white dark:text-slate-950 font-semibold text-sm focus-visible:ring-2 focus-visible:ring-indigo-500">
                   {journeyCopy.action} <ArrowRight className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} />
                 </button>
                 <p className="text-xs text-slate-500 dark:text-slate-400">{journeyCopy.progress}</p>
@@ -265,12 +265,12 @@ export function WelcomeView() {
               <div className="pt-2 flex items-center justify-center gap-4 text-[11px] text-stone-600 dark:text-slate-400 border-t border-stone-100 dark:border-slate-800/80">
                 <span className="flex items-center gap-1">
                   <Shield className="w-3 h-3 text-emerald-500" />
-                  <span>Zero Cloud AI</span>
+                  <span>No AI needed to reflect</span>
                 </span>
                 <span className="text-stone-300 dark:text-slate-700">•</span>
                 <span className="flex items-center gap-1">
                   <Eye className="w-3 h-3 text-amber-500" />
-                  <span>100% Private to Device</span>
+                  <span>Reflections saved on this device</span>
                 </span>
               </div>
             </div>
