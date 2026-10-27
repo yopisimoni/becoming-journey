@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" fill="none">
+  <!-- Mobile Splash Screen Composition: 1080x1920 Cosmic Midnight -->
+  <defs>
+    <radialGradient id="splashBgGlow" cx="50%" cy="45%" r="45%">
+      <stop offset="0%" stop-color="#141E47" />
+      <stop offset="40%" stop-color="#0E1638" />
+      <stop offset="100%" stop-color="#080F29" />
+    </radialGradient>
+    <linearGradient id="spCyanBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#42C8FF" />
+      <stop offset="100%" stop-color="#488CFF" />
+    </linearGradient>
+    <linearGradient id="spLavViolet" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#BCA6FF" />
+      <stop offset="100%" stop-color="#9667F4" />
+    </linearGradient>
+    <linearGradient id="spPeachChamp" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFB6A0" />
+      <stop offset="100%" stop-color="#FFE0B5" />
+    </linearGradient>
+    <radialGradient id="spCoreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFF4D6" />
+      <stop offset="55%" stop-color="#FFE0B5" />
+      <stop offset="100%" stop-color="#FFB6A0" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Deep Cosmic Background -->
+  <rect width="1080" height="1920" fill="url(#splashBgGlow)" />
+
+  <!-- Ambient Light Aura -->
+  <circle cx="540" cy="840" r="380" fill="#42C8FF" opacity="0.08" />
+  <circle cx="540" cy="840" r="280" fill="#BCA6FF" opacity="0.12" />
+
+  <!-- Centered Living Light Symbol (scaled from 240x240 to 480x480 at cx=540, cy=840) -->
+  <g transform="translate(300, 600) scale(2)">
+    <!-- Outer Halo Ring -->
+    <circle cx="120" cy="120" r="98" stroke="url(#spCyanBlue)" stroke-width="3" opacity="0.45" />
+
+    <!-- Ribbon 1: Electric Cyan to Ocean Blue -->
+    <path
+      d="M 120 28 C 72 28 32 68 32 120 C 32 165 68 204 116 208 C 88 178 80 140 95 104 C 104 80 120 54 120 28 Z"
+      fill="url(#spCyanBlue)"
+      opacity="0.95"
+    />
+
+    <!-- Ribbon 2: Soft Lavender to Violet -->
+    <path
+      d="M 120 28 C 168 28 208 68 208 120 C 208 165 172 204 124 208 C 152 178 160 140 145 104 C 136 80 120 54 120 28 Z"
+      fill="url(#spLavViolet)"
+      opacity="0.9"
+    />
+
+    <!-- Ribbon 3: Warm Peach to Champagne -->
+    <path
+      d="M 52 102 C 80 72 160 72 188 102 C 166 130 136 142 120 142 C 104 142 74 130 52 102 Z"
+      fill="url(#spPeachChamp)"
+      opacity="0.92"
+    />
+
+    <!-- Central Luminous Core -->
+    <circle cx="120" cy="120" r="32" fill="url(#spCoreGlow)" opacity="0.8" />
+    <circle cx="120" cy="120" r="14" fill="#FFF4D6" />
+    <circle cx="120" cy="120" r="6" fill="#FFFFFF" />
+  </g>
+
+  <!-- Typography: BECOMING -->
+  <text
+    x="540"
+    y="1200"
+    text-anchor="middle"
+    fill="#FFFFFF"
+    font-family="serif"
+    font-size="64"
+    font-weight="bold"
+    letter-spacing="18"
+  >
+    BECOMING
+  </text>
+
+  <!-- Tagline: A more you. -->
+  <text
+    x="540"
+    y="1260"
+    text-anchor="middle"
+    fill="#FDE68A"
+    font-family="monospace"
+    font-size="24"
+    font-weight="normal"
+    letter-spacing="8"
+  >
+    A MORE YOU.
+  </text>
+
+  <!-- Footer Philosophy -->
+  <text
+    x="540"
+    y="1780"
+    text-anchor="middle"
+    fill="#94A3B8"
+    font-family="sans-serif"
+    font-size="20"
+    opacity="0.7"
+    letter-spacing="2"
+  >
+    100% PRIVATE • LOCAL-FIRST SANCTUARY
+  </text>
+</svg>

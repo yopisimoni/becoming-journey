@@ -223,6 +223,8 @@ export interface TranslationDictionary {
       badge: string;
       title: string;
       subtitle: string;
+      tagline?: string;
+      description?: string;
       beginButton: string;
       skipButton: string;
     };

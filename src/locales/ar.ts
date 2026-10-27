@@ -227,10 +227,12 @@ export const ar: TranslationDictionary = {
     prevButton: 'السابق',
     closeTour: 'إغلاق الجولة',
     intro: {
-      badge: 'مرحباً • بداية جديدة',
+      badge: 'النور الحي • فجر جديد',
       title: 'BECOMING',
       subtitle: 'مساحة هادئة لفهم نفسك',
-      beginButton: 'متابعة',
+      tagline: 'أنت... بأعمق معنى.',
+      description: 'مساحة هادئة لتفهم نفسك، وتتأمل بوضوح، وتمضي قدماً بوتيرتك الخاصة.',
+      beginButton: 'ابدأ رحلتك',
       skipButton: 'تخطي المقدمة',
     },
     languageSelect: {

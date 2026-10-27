@@ -228,10 +228,12 @@ export const fr: TranslationDictionary = {
     prevButton: 'Précédent',
     closeTour: 'Fermer la visite',
     intro: {
-      badge: 'Bienvenue • Un nouveau départ',
+      badge: 'Lumière Vivante • Nouveau Départ',
       title: 'BECOMING',
       subtitle: 'Un espace calme pour mieux vous comprendre',
-      beginButton: 'Continuer',
+      tagline: 'Un être plus vrai.',
+      description: 'Un espace paisible pour vous comprendre, réfléchir et avancer à votre propre rythme.',
+      beginButton: 'Commencer votre voyage',
       skipButton: 'Passer l’introduction',
     },
     languageSelect: {

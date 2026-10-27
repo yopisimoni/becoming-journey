@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- BECOMING Living Light App Icon Vector Source -->
+  <defs>
+    <linearGradient id="iconCyanBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#42C8FF" />
+      <stop offset="100%" stop-color="#488CFF" />
+    </linearGradient>
+    <linearGradient id="iconLavViolet" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#BCA6FF" />
+      <stop offset="100%" stop-color="#9667F4" />
+    </linearGradient>
+    <linearGradient id="iconPeachChamp" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFB6A0" />
+      <stop offset="100%" stop-color="#FFE0B5" />
+    </linearGradient>
+    <radialGradient id="iconCoreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFF4D6" />
+      <stop offset="55%" stop-color="#FFE0B5" />
+      <stop offset="100%" stop-color="#FFB6A0" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Outer Halo Ring -->
+  <circle cx="50" cy="50" r="42" stroke="url(#iconCyanBlue)" stroke-width="2.5" opacity="0.45" />
+
+  <!-- Ribbon 1: Electric Cyan to Ocean Blue -->
+  <path
+    d="M 50 14 C 28 14 14 32 14 50 C 14 68 32 86 50 86 C 36 74 30 58 38 42 C 44 30 50 20 50 14 Z"
+    fill="url(#iconCyanBlue)"
+    opacity="0.95"
+  />
+
+  <!-- Ribbon 2: Soft Lavender to Violet -->
+  <path
+    d="M 50 14 C 72 14 86 32 86 50 C 86 68 68 86 50 86 C 64 74 70 58 62 42 C 56 30 50 20 50 14 Z"
+    fill="url(#iconLavViolet)"
+    opacity="0.9"
+  />
+
+  <!-- Ribbon 3: Warm Peach to Champagne -->
+  <path
+    d="M 22 50 C 34 36 66 36 78 50 C 66 64 34 64 22 50 Z"
+    fill="url(#iconPeachChamp)"
+    opacity="0.92"
+  />
+
+  <!-- Central Luminous Core -->
+  <circle cx="50" cy="50" r="14" fill="url(#iconCoreGlow)" />
+  <circle cx="50" cy="50" r="5" fill="#FFF4D6" />
+  <circle cx="50" cy="50" r="2.5" fill="#FFFFFF" />
+</svg>

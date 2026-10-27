@@ -29,6 +29,7 @@ import { SoundscapeControlPill } from './SoundscapeControlPill';
 import { AtmosphereSwitcher } from './AtmosphereSwitcher';
 import { AiBridgeSettingsModal } from './AiBridgeSettingsModal';
 import { AuthModal } from './AuthModal';
+import { LivingLightIdentity } from '@/components/motion';
 
 export function Navbar() {
   const {
@@ -102,8 +103,8 @@ export function Navbar() {
                 onClick={handleLogoClick}
                 className="flex items-center gap-2.5 text-start focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-xl"
               >
-                <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-indigo-500/20">
-                  B
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center shadow-md shadow-cyan-500/15 overflow-hidden">
+                  <LivingLightIdentity size={32} simplified={true} interactive={false} ariaLabel="BECOMING Brand Logo" />
                 </div>
                 <div>
                   <span className="text-base font-bold tracking-tight text-slate-900 dark:text-white">

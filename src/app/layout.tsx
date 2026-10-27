@@ -9,9 +9,14 @@ import { OnboardingWelcomeModal } from '@/components/OnboardingWelcomeModal';
 import { AtmosphereBackground } from '@/components/AtmosphereBackground';
 
 export const metadata: Metadata = {
-  title: 'BECOMING — The Sanctuary Upgrade',
+  title: 'BECOMING — The Living Light Sanctuary',
   description:
     'A calm, deeply peaceful digital sanctuary for self-directed reflection and mindful micro-steps. Local-first, private, and zero cloud AI.',
+  icons: {
+    icon: '/icon.svg',
+    shortcut: '/becoming-living-light-icon.svg',
+    apple: '/becoming-living-light-icon.svg',
+  },
 };
 
 export const viewport: Viewport = {

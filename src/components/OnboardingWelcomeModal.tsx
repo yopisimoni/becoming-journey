@@ -26,7 +26,7 @@ import {
   Shield,
   HelpCircle,
 } from 'lucide-react';
-import { AtmosphericOrb, LivingIdentity3D } from '@/components/motion';
+import { AtmosphericOrb, LivingLightIdentity } from '@/components/motion';
 
 export function OnboardingWelcomeModal() {
   const {
@@ -213,7 +213,7 @@ export function OnboardingWelcomeModal() {
         <div className="p-6 sm:p-8 min-h-[380px] flex flex-col justify-between">
           <AnimatePresence custom={direction} mode="wait">
             {/* ============================================================== */}
-            {/* STEP 1: CINEMATIC MOTION INTRO */}
+            {/* STEP 1: CINEMATIC MOTION INTRO & LIVING LIGHT IDENTITY         */}
             {/* ============================================================== */}
             {currentStep === 0 && (
               <motion.div
@@ -223,46 +223,89 @@ export function OnboardingWelcomeModal() {
                 initial="enter"
                 animate="center"
                 exit="exit"
-                className="space-y-6 text-center py-4"
+                className="space-y-5 text-center py-2 sm:py-4"
               >
-                {/* Luminous 3D Living Identity Sculpture */}
-                <div className="relative mx-auto w-56 h-56 sm:w-64 sm:h-64 flex items-center justify-center">
-                  <LivingIdentity3D
-                    currentStep={currentStep}
-                    size={260}
+                {/* Luminous Living Light Symbol */}
+                <div className="relative mx-auto w-52 h-52 sm:w-64 sm:h-64 flex items-center justify-center">
+                  <LivingLightIdentity
+                    size={240}
+                    currentStep={0}
                     interactive={true}
                     reducedMotion={shouldReduceMotion ?? false}
+                    ariaLabel="BECOMING Living Light Identity"
                   />
+                  {/* Subtle cosmic aura */}
                   <div
                     aria-hidden="true"
-                    className="absolute inset-4 rounded-full bg-amber-400/15 dark:bg-purple-500/20 blur-3xl pointer-events-none -z-10 animate-pulse"
+                    className="absolute inset-4 rounded-full bg-gradient-to-tr from-cyan-500/15 via-purple-500/15 to-amber-400/15 blur-3xl pointer-events-none -z-10 animate-pulse"
                   />
                 </div>
 
+                {/* Typography Reveal */}
                 <div className="space-y-2">
-                  <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-                    {t?.intro?.badge || 'First Steps • Celestial Awakening'}
-                  </span>
-                  <h1
+                  <motion.div
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: shouldReduceMotion ? 0 : 0.4 }}
+                  >
+                    <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-cyan-300 border border-indigo-200/60 dark:border-cyan-800/60">
+                      {t?.intro?.badge || 'Living Light • A New Dawn'}
+                    </span>
+                  </motion.div>
+
+                  <motion.h1
                     id="onboarding-title"
-                    className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-stone-900 dark:text-white tracking-widest"
+                    initial={{ opacity: 0, letterSpacing: '0.35em' }}
+                    animate={{ opacity: 1, letterSpacing: '0.2em' }}
+                    transition={{ duration: 0.8, delay: shouldReduceMotion ? 0 : 0.6 }}
+                    className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-stone-900 dark:text-white"
                   >
                     {t?.intro?.title || 'BECOMING'}
-                  </h1>
-                  <h2 className="text-sm sm:text-base font-serif font-medium text-stone-600 dark:text-stone-300 max-w-md mx-auto leading-relaxed">
-                    {t?.intro?.subtitle ||
-                      'A calm space to understand yourself'}
-                  </h2>
+                  </motion.h1>
+
+                  {t?.intro?.tagline && (
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.6, delay: shouldReduceMotion ? 0 : 0.8 }}
+                      className="text-xs sm:text-sm font-mono tracking-widest text-amber-700 dark:text-amber-300/90 uppercase font-medium"
+                    >
+                      {t.intro.tagline}
+                    </motion.p>
+                  )}
+
+                  <motion.h2
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: shouldReduceMotion ? 0 : 1.0 }}
+                    className="text-sm sm:text-base font-serif font-medium text-stone-600 dark:text-stone-300 max-w-md mx-auto leading-relaxed"
+                  >
+                    {t?.intro?.subtitle || 'A calm space to understand yourself'}
+                  </motion.h2>
                 </div>
 
-                <p className="text-xs sm:text-sm text-stone-500 dark:text-slate-400 max-w-lg mx-auto leading-relaxed">
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: shouldReduceMotion ? 0 : 1.2 }}
+                  className="text-xs sm:text-sm text-stone-500 dark:text-slate-400 max-w-lg mx-auto leading-relaxed"
+                >
                   Step into an unhurried digital sanctuary built for clarity, self-compassion, and deep rest.
-                  Zero cost forever, 100% private to your device, and zero surveillance.
-                </p>
+                  {t?.intro?.description && (
+                    <span className="block mt-1 text-stone-400 dark:text-slate-500 text-xs">
+                      {t.intro.description}
+                    </span>
+                  )}
+                </motion.p>
 
-                <div className="pt-1 flex flex-wrap items-center justify-center gap-3 text-xs text-stone-500 dark:text-slate-400">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: shouldReduceMotion ? 0 : 1.4 }}
+                  className="pt-1 flex flex-wrap items-center justify-center gap-3 text-xs text-stone-500 dark:text-slate-400"
+                >
                   <span className="flex items-center gap-1.5">
-                    <Shield className="w-3.5 h-3.5 text-emerald-500" />
+                    <Shield className="w-3.5 h-3.5 text-cyan-500" />
                     <span>Zero Cloud AI</span>
                   </span>
                   <span className="text-stone-300 dark:text-slate-700">•</span>
@@ -275,7 +318,7 @@ export function OnboardingWelcomeModal() {
                     <Heart className="w-3.5 h-3.5 text-rose-500" />
                     <span>Non-Judgmental</span>
                   </span>
-                </div>
+                </motion.div>
               </motion.div>
             )}
 
@@ -293,12 +336,13 @@ export function OnboardingWelcomeModal() {
                 className="space-y-5"
               >
                 <div className="flex items-center gap-3.5 sm:gap-4">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center rounded-2xl bg-slate-900/40 border border-white/5 shadow-inner overflow-hidden">
-                    <LivingIdentity3D
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center rounded-2xl bg-[#080F29]/60 border border-white/5 shadow-inner overflow-hidden">
+                    <LivingLightIdentity
                       currentStep={1}
-                      size={80}
+                      size={72}
                       interactive={true}
                       reducedMotion={shouldReduceMotion ?? false}
+                      ariaLabel="BECOMING Living Light Companion"
                     />
                   </div>
                   <div className="space-y-1 flex-1">
@@ -376,12 +420,13 @@ export function OnboardingWelcomeModal() {
                 className="space-y-5"
               >
                 <div className="flex items-center gap-3.5 sm:gap-4">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center rounded-2xl bg-slate-900/40 border border-white/5 shadow-inner overflow-hidden">
-                    <LivingIdentity3D
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center rounded-2xl bg-[#080F29]/60 border border-white/5 shadow-inner overflow-hidden">
+                    <LivingLightIdentity
                       currentStep={2}
-                      size={80}
+                      size={72}
                       interactive={true}
                       reducedMotion={shouldReduceMotion ?? false}
+                      ariaLabel="BECOMING Living Light Companion"
                     />
                   </div>
                   <div className="space-y-1 flex-1">
@@ -492,12 +537,13 @@ export function OnboardingWelcomeModal() {
                 className="space-y-4"
               >
                 <div className="flex items-center gap-3.5 sm:gap-4">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center rounded-2xl bg-slate-900/40 border border-white/5 shadow-inner overflow-hidden">
-                    <LivingIdentity3D
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center rounded-2xl bg-[#080F29]/60 border border-white/5 shadow-inner overflow-hidden">
+                    <LivingLightIdentity
                       currentStep={3}
-                      size={80}
+                      size={72}
                       interactive={true}
                       reducedMotion={shouldReduceMotion ?? false}
+                      ariaLabel="BECOMING Living Light Companion"
                     />
                   </div>
                   <div className="space-y-1 flex-1">
@@ -578,12 +624,13 @@ export function OnboardingWelcomeModal() {
                 className="space-y-4"
               >
                 <div className="flex items-center gap-3.5 sm:gap-4">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center rounded-2xl bg-slate-900/40 border border-white/5 shadow-inner overflow-hidden">
-                    <LivingIdentity3D
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center rounded-2xl bg-[#080F29]/60 border border-white/5 shadow-inner overflow-hidden">
+                    <LivingLightIdentity
                       currentStep={4}
-                      size={80}
+                      size={72}
                       interactive={true}
                       reducedMotion={shouldReduceMotion ?? false}
+                      ariaLabel="BECOMING Living Light Companion"
                     />
                   </div>
                   <div className="space-y-1 flex-1">
@@ -648,6 +695,7 @@ export function OnboardingWelcomeModal() {
               ) : (
                 <button
                   type="button"
+                  id="onboarding-skip-btn"
                   onClick={handleSkipIntro}
                   className="text-xs text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 font-medium py-1"
                 >
@@ -666,7 +714,7 @@ export function OnboardingWelcomeModal() {
                 >
                   <span>
                     {currentStep === 0
-                      ? t?.intro?.beginButton || 'Step into the Sanctuary'
+                      ? t?.intro?.beginButton || 'Begin Your Journey'
                       : t?.nextButton || 'Next'}
                   </span>
                   <ArrowRight className={`w-3.5 h-3.5 ${isRtl ? 'rotate-180' : ''}`} />
