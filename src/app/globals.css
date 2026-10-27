@@ -164,3 +164,11 @@ body {
   html { scroll-padding-bottom: calc(8rem + env(safe-area-inset-bottom)); }
   button, a, select { -webkit-tap-highlight-color: transparent; }
 }
+
+/* Mobile layout: avoid costly full-page repaints and keep content above the dock. */
+@media (max-width: 639px) {
+  html, body { overscroll-behavior-x: none; scroll-behavior: auto; }
+  html { transition: none; }
+  body { transition: none; padding-bottom: calc(8rem + env(safe-area-inset-bottom)); }
+  main { min-width: 0; }
+}

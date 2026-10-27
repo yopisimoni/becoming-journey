@@ -39,7 +39,7 @@ export default function RootLayout({
           <AtmosphereBackground />
           <DisclaimerBanner />
           <Navbar />
-          <main className="flex-1 w-full max-w-7xl mx-auto px-4">{children}</main>
+          <main id="main-content" className="flex-1 w-full min-w-0 max-w-7xl mx-auto px-2 sm:px-4">{children}</main>
           <FloatingDock />
           <footer className="border-t border-slate-200/80 dark:border-white/10 py-6 text-center text-xs text-slate-500 dark:text-slate-400 space-y-1 bg-white/40 dark:bg-slate-900/40 backdrop-blur-md transition-colors duration-1000 ease-in-out">
             <p className="font-medium text-slate-700 dark:text-slate-300">BECOMING • The Living Experience (v0.9)</p>
