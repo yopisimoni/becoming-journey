@@ -131,8 +131,8 @@ export function Navbar() {
                 onClick={handleLogoClick}
                 className="flex items-center gap-2.5 text-start focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-xl"
               >
-                <div className="w-9 h-9 rounded-xl bg-slate-900 dark:bg-white flex items-center justify-center shrink-0" aria-hidden="true">
-                  <span className="font-serif text-2xl font-semibold text-white dark:text-slate-900 leading-none">B</span>
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 overflow-hidden" aria-hidden="true">
+                  <LivingLightIdentity size={36} simplified interactive={false} />
                 </div>
                 <div>
                   <span className="text-base font-bold tracking-tight text-slate-900 dark:text-white">
