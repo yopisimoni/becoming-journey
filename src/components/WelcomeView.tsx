@@ -28,6 +28,7 @@ export function WelcomeView() {
     reducedMotion,
     isRtl,
     user,
+    journalEntries,
   } = useApp();
 
   const [showHorizon, setShowHorizon] = useState(false);
@@ -72,8 +73,8 @@ export function WelcomeView() {
   };
 
   const startJourneyPhase = () => {
-    if (journeyPhase === 0 || journeyPhase === 2) { setSanctuaryStep(1); return; }
-    if (journeyPhase === 1) { setActiveMode('journal'); return; }
+    if (journeyPhase === 0 || journeyPhase === 2) { setActiveTab('home'); setActiveMode('guided'); setSanctuaryStep(1); return; }
+    if (journeyPhase === 1) { setActiveTab('home'); setActiveMode('journal'); return; }
     if (journeyPhase === 3) { setActiveTab('morning'); return; }
     setActiveTab('map');
   };
@@ -104,6 +105,7 @@ export function WelcomeView() {
     : { type: 'spring', stiffness: 120, damping: 20 };
 
   const isSoundPlaying = soundPreset !== 'none';
+  const suggestedPhase = journalEntries.length > 0 ? 4 : 0;
 
   return (
     <div className="relative max-w-4xl mx-auto px-4 py-8 sm:py-12 min-h-[calc(100vh-10rem)] flex flex-col justify-center">
@@ -179,15 +181,17 @@ export function WelcomeView() {
                 <p className="text-xs uppercase tracking-wider font-semibold text-amber-800 dark:text-amber-300">{journeyCopy.eyebrow}</p>
                 <h2 className="text-xl font-serif font-bold text-slate-900 dark:text-white">{journeyCopy.title}</h2>
                 <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">{journeyCopy.subtitle}</p>
-                <div className="grid grid-cols-5 gap-1.5" role="group" aria-label={journeyCopy.eyebrow}>
+                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2" role="group" aria-label={journeyCopy.eyebrow}>
                   {journeyCopy.phases.map((phase, i) => (
-                    <button key={phase} type="button" onClick={() => changeJourneyPhase(i)} aria-pressed={journeyPhase === i} aria-label={`${i + 1}. ${phase}`} className={`min-h-12 rounded-lg p-1 flex flex-col justify-center items-center gap-1 focus-visible:ring-2 focus-visible:ring-indigo-500 ${journeyPhase === i ? 'bg-slate-900 text-white dark:bg-amber-200 dark:text-slate-900' : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-white border border-stone-200 dark:border-slate-600'}`}>
+                    <button key={phase} type="button" onClick={() => changeJourneyPhase(i)} aria-pressed={journeyPhase === i} aria-label={`${i + 1}. ${phase}`} className={`min-h-14 min-w-0 rounded-xl px-1.5 py-2 flex flex-col justify-center items-center gap-1 focus-visible:ring-2 focus-visible:ring-indigo-500 ${journeyPhase === i ? 'bg-slate-900 text-white dark:bg-amber-200 dark:text-slate-900' : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-white border border-stone-200 dark:border-slate-600'}`}>
                       {<span className="text-xs font-bold">{i + 1}</span>}
-                      <span className="text-[10px] leading-tight break-words text-center">{phase}</span>
+                      <span className="text-[11px] leading-snug break-words text-center w-full">{phase}</span>
                     </button>
                   ))}
                 </div>
                 <p aria-live="polite" className="text-sm font-medium text-slate-800 dark:text-slate-100">{journeyCopy.descriptions[journeyPhase]}</p>
+                {journalEntries.length > 0 && <p className="text-xs text-slate-600 dark:text-slate-300">{locale === 'ar' ? `لديك ${journalEntries.length} تدوينة محفوظة. يمكنك مراجعتها في رحلتك.` : `${journalEntries.length} saved reflection${journalEntries.length === 1 ? '' : 's'}. Your Journey Map can help you look back.`}</p>}
+                {journeyPhase !== suggestedPhase && <button type="button" onClick={() => changeJourneyPhase(suggestedPhase)} className="text-xs font-semibold underline underline-offset-4 text-start text-amber-800 dark:text-amber-200">{locale === 'ar' ? 'الخطوة المقترحة' : 'Suggested next step'}: {journeyCopy.phases[suggestedPhase]}</button>}
                 <button type="button" onClick={startJourneyPhase} className="w-full min-h-12 inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 dark:bg-amber-200 text-white dark:text-slate-950 font-semibold text-sm focus-visible:ring-2 focus-visible:ring-indigo-500">
                   {journeyCopy.action} <ArrowRight className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} />
                 </button>
