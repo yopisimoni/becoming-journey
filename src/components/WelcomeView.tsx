@@ -6,14 +6,13 @@ import { useApp } from '@/context/AppContext';
 import { EntryIntent, InteractionMode } from '@/types';
 import { motion, AnimatePresence, type Transition } from 'framer-motion';
 import {
-  SanctuaryLotusOrbArt,
   LostCompassMistArt,
   GoalMountainSunriseArt,
   StruggleWaterShelterArt,
   GrowBotanicalLeavesArt,
 } from '@/components/illustrations/AtmosphereArt';
 import { Volume2, VolumeX, ArrowLeft, Feather, Sparkles, Compass, Shield, Eye, Sun, Moon, Wind, CheckCircle2, ArrowRight } from 'lucide-react';
-import { TheBecomingHorizon, AtmosphericOrb, CinematicReveal } from '@/components/motion';
+import { TheBecomingHorizon, AtmosphericOrb, CinematicReveal, LivingLightIdentity } from '@/components/motion';
 
 export function WelcomeView() {
   const {
@@ -212,7 +211,7 @@ export function WelcomeView() {
               <JourneyActionLoop />
               {/* Centerpiece Sacred Orb Art */}
               <div className="flex flex-col items-center justify-center relative">
-                <SanctuaryLotusOrbArt size="hero" />
+                <LivingLightIdentity size={220} reducedMotion={reducedMotion} interactive={false} ariaLabel="BECOMING flowing light orb" />
 
                 {/* Animated sound wave bars indicator when audio is active */}
                 {isSoundPlaying && !reducedMotion && (

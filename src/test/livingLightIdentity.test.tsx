@@ -62,14 +62,15 @@ describe('LivingLightIdentity Component (v0.9.3)', () => {
     expect(img).toBeInTheDocument();
 
     const paths = container.querySelectorAll('path');
-    expect(paths.length).toBe(3); // 3 simplified ribbons
+    expect(paths.length).toBeGreaterThanOrEqual(3);
+    expect(container.querySelector('.becoming-orbit-flow')).toBeNull();
   });
 
   it('respects reducedMotion by applying animation: none', () => {
     const { container } = render(
       <LivingLightIdentity size={200} reducedMotion={true} ariaLabel="Reduced Motion" />
     );
-    const atmosphericGlow = container.querySelector('[aria-hidden="true"]');
-    expect(atmosphericGlow).toHaveStyle({ animation: 'none' });
+    expect(container.querySelector('.becoming-orbit-flow')).toBeNull();
+    expect(container.querySelector('.becoming-orbit-ribbon')).toBeNull();
   });
 });

@@ -142,7 +142,7 @@ export function Navbar() {
                 className="flex items-center gap-2.5 text-start focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-xl"
               >
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 overflow-hidden" aria-hidden="true">
-                  <LivingLightIdentity size={36} simplified interactive={false} />
+                  <LivingLightIdentity size={36} simplified interactive={false} ariaLabel="BECOMING light orb" />
                 </div>
                 <div>
                   <span className="text-base font-bold tracking-tight text-slate-900 dark:text-white">
