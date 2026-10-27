@@ -469,14 +469,14 @@ test.describe('BECOMING v0.9.1: Cinematic 5-Step Onboarding Portal, Mandatory Co
     // Verify Onboarding Modal is visible
     const modal = page.getByRole('dialog');
     await expect(modal).toBeVisible();
-    await expect(page.getByRole('heading', { name: /A Quiet Human Sanctuary in a Loud Digital World/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /A calm space to understand yourself/i })).toBeVisible();
 
     const nextBtn = page.locator('#onboarding-next-btn');
     await expect(nextBtn).toBeVisible();
 
     // Step 1 -> Step 2 (Language Selection)
     await nextBtn.click();
-    await expect(page.getByRole('heading', { name: /Choose Your Sanctuary Language/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Choose your language/i })).toBeVisible();
     await expect(page.getByTestId('onboarding-language-ar')).toBeVisible();
 
     // Step 2 -> Step 3 (Gender / Addressing Selection)
@@ -485,12 +485,12 @@ test.describe('BECOMING v0.9.1: Cinematic 5-Step Onboarding Portal, Mandatory Co
 
     // Step 3 -> Step 4 (About the App)
     await nextBtn.click();
-    await expect(page.getByRole('heading', { name: /Tools Designed to Mirror Your Mind, Not Boss It/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Tools to help you find your own way/i })).toBeVisible();
     await expect(page.getByText(/Breathing & Somatic Studio/i)).toBeVisible();
 
     // Step 4 -> Step 5 (Mandatory Consent Gate)
     await nextBtn.click();
-    await expect(page.getByRole('heading', { name: /Life is Short\. You Are Not an Angel\. You Are Free\./i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Your choices remain yours/i })).toBeVisible();
 
     // Verify Agree button is disabled prior to checking consent
     const agreeBtn = page.locator('#onboarding-agree-btn');
@@ -539,7 +539,7 @@ test.describe('BECOMING v0.9.1: Cinematic 5-Step Onboarding Portal, Mandatory Co
     // Verify Onboarding Modal re-opens with Step 1
     const modal = page.getByRole('dialog');
     await expect(modal).toBeVisible();
-    await expect(page.getByRole('heading', { name: /A Quiet Human Sanctuary in a Loud Digital World/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /A calm space to understand yourself/i })).toBeVisible();
   });
 });
 

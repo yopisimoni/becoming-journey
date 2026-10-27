@@ -118,13 +118,19 @@ export function OnboardingWelcomeModal() {
     }),
   };
 
-  const stepsList = [
-    { id: 0, label: 'Intro' },
-    { id: 1, label: 'Language' },
-    { id: 2, label: 'Addressing' },
-    { id: 3, label: 'About' },
-    { id: 4, label: 'Agreement' },
-  ];
+  const progressLabels: Record<string, string[]> = {
+    en: ['Intro', 'Language', 'Addressing', 'About', 'Agreement'],
+    ar: ['المقدمة', 'اللغة', 'طريقة المخاطبة', 'عن التطبيق', 'الموافقة'],
+    fr: ['Introduction', 'Langue', 'Formule d’adresse', 'Présentation', 'Accord'],
+    es: ['Introducción', 'Idioma', 'Tratamiento', 'Acerca de', 'Consentimiento'],
+    it: ['Introduzione', 'Lingua', 'Come rivolgerci a te', 'Presentazione', 'Consenso'],
+  };
+  const stepsList = (progressLabels[locale] ?? progressLabels.en).map((label, id) => ({ id, label }));
+  const stepIndicator = (n: number) =>
+    locale === 'ar' ? `الخطوة ${n} من 5` :
+    locale === 'fr' ? `Étape ${n} sur 5` :
+    locale === 'es' ? `Paso ${n} de 5` :
+    locale === 'it' ? `Passaggio ${n} di 5` : `Step ${n} of 5`;
 
   return (
     <div
@@ -157,10 +163,10 @@ export function OnboardingWelcomeModal() {
             </div>
             <div>
               <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
-                BECOMING • Personal Sanctuary
+                BECOMING
               </span>
               <h2 id="onboarding-step-indicator" className="text-xs sm:text-sm font-semibold text-stone-700 dark:text-stone-300">
-                Step {currentStep + 1} of 5 • {stepsList[currentStep].label}
+                {stepIndicator(currentStep + 1)} • {stepsList[currentStep].label}
               </h2>
             </div>
           </div>
@@ -472,13 +478,13 @@ export function OnboardingWelcomeModal() {
               >
                 <div className="space-y-1">
                   <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-                    Step 4 of 5 • What is BECOMING?
+                    {stepIndicator(4)} • BECOMING
                   </span>
                   <h3 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 dark:text-white leading-tight">
-                    Tools Designed to Mirror Your Mind, Not Boss It
+                    {t?.card2?.title ?? "About BECOMING"}
                   </h3>
                   <p className="text-xs sm:text-sm font-medium text-amber-700 dark:text-amber-400">
-                    Gentle support for your day from morning to night.
+                    {t?.card2?.subtitle ?? "Explore at your own pace."}
                   </p>
                 </div>
 
@@ -486,40 +492,40 @@ export function OnboardingWelcomeModal() {
                   <div className="p-3.5 rounded-2xl bg-stone-50 dark:bg-slate-800/60 border border-stone-200 dark:border-slate-700 space-y-1">
                     <div className="flex items-center gap-2 font-bold text-xs text-stone-900 dark:text-white">
                       <Wind className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                      <span>Breathing &amp; Somatic Studio</span>
+                      <span>{t?.card2?.tools?.[0]?.title ?? "Explore"}</span>
                     </div>
                     <p className="text-[11px] text-stone-600 dark:text-slate-400 leading-snug">
-                      Apple-caliber coherent breathing, Lotus visualizer, and guided tension release for jaw and shoulders.
+                      {t?.card2?.tools?.[0]?.desc ?? ""}
                     </p>
                   </div>
 
                   <div className="p-3.5 rounded-2xl bg-stone-50 dark:bg-slate-800/60 border border-stone-200 dark:border-slate-700 space-y-1">
                     <div className="flex items-center gap-2 font-bold text-xs text-stone-900 dark:text-white">
                       <Compass className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                      <span>Daily Living Compass &amp; Rituals</span>
+                      <span>{t?.card2?.tools?.[1]?.title ?? "Explore"}</span>
                     </div>
                     <p className="text-[11px] text-stone-600 dark:text-slate-400 leading-snug">
-                      Morning intentions, evening somatic release, 3 sparks of gratitude, and the 4 pillars of living right.
+                      {t?.card2?.tools?.[1]?.desc ?? ""}
                     </p>
                   </div>
 
                   <div className="p-3.5 rounded-2xl bg-stone-50 dark:bg-slate-800/60 border border-stone-200 dark:border-slate-700 space-y-1">
                     <div className="flex items-center gap-2 font-bold text-xs text-stone-900 dark:text-white">
                       <Feather className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                      <span>Self-Discovery &amp; Habit Seeds</span>
+                      <span>{t?.card2?.tools?.[2]?.title ?? "Explore"}</span>
                     </div>
                     <p className="text-[11px] text-stone-600 dark:text-slate-400 leading-snug">
-                      5 scientific personality frameworks, habit liberation ledger, and zero judgmental streaks.
+                      {t?.card2?.tools?.[2]?.desc ?? ""}
                     </p>
                   </div>
 
                   <div className="p-3.5 rounded-2xl bg-stone-50 dark:bg-slate-800/60 border border-stone-200 dark:border-slate-700 space-y-1">
                     <div className="flex items-center gap-2 font-bold text-xs text-stone-900 dark:text-white">
                       <Lock className="w-4 h-4 text-violet-600 dark:text-violet-400" />
-                      <span>The Mind Vault &amp; Dissolution</span>
+                      <span>{t?.card2?.tools?.[3]?.title ?? "Explore"}</span>
                     </div>
                     <p className="text-[11px] text-stone-600 dark:text-slate-400 leading-snug">
-                      A secure private vault for burdens and worries, dissolving thoughts into particles when you choose.
+                      {t?.card2?.tools?.[3]?.desc ?? ""}
                     </p>
                   </div>
                 </div>
@@ -548,22 +554,22 @@ export function OnboardingWelcomeModal() {
               >
                 <div className="space-y-1.5">
                   <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-                    Step 5 of 5 • Sovereign Agreement
+                    {stepIndicator(5)} • {stepsList[4].label}
                   </span>
                   <h3 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 dark:text-white leading-tight">
-                    Life is Short. You Are Not an Angel. You Are Free.
+                    {t?.card3?.title ?? "Your choices matter"}
                   </h3>
                   <p className="text-xs sm:text-sm font-medium text-stone-600 dark:text-stone-400">
-                    Growth happens through patience, responsibility, and self-compassion.
+                    {t?.card3?.subtitle ?? "Take your time."}
                   </p>
                 </div>
 
                 <div className="space-y-2 text-xs sm:text-sm text-stone-700 dark:text-stone-300 leading-relaxed font-normal">
                   <p>
-                    You do not need to be perfect to be worthy of peace. You will make mistakes, stumble, and have days where you just want to rest. That is an honorable part of the human journey.
+                    {t?.card3?.paragraphs?.[0] ?? "Your journey is yours."}
                   </p>
                   <p>
-                    BECOMING will never tell you what to do. You are the sole, sovereign creator of your decisions.
+                    {t?.card3?.paragraphs?.[1] ?? "Choose your own path."}
                   </p>
                 </div>
 
@@ -571,7 +577,7 @@ export function OnboardingWelcomeModal() {
                 <div className="p-4 rounded-2xl bg-amber-50/90 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 space-y-3">
                   <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-300">
                     <ShieldCheck className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
-                    <span>Mandatory Agreement &amp; Sanctuary Consent Gate</span>
+                    <span>{locale === "ar" ? "الموافقة على المتابعة" : locale === "fr" ? "Consentement" : locale === "es" ? "Consentimiento" : locale === "it" ? "Consenso" : "Consent to continue"}</span>
                   </div>
 
                   <label className="flex items-start gap-3 cursor-pointer group">
@@ -583,7 +589,7 @@ export function OnboardingWelcomeModal() {
                       className="w-5 h-5 mt-0.5 rounded-lg border-amber-400 text-amber-600 focus:ring-amber-500 accent-amber-600 cursor-pointer shrink-0"
                     />
                     <span className="text-xs sm:text-sm text-amber-950 dark:text-amber-200 font-serif leading-relaxed">
-                      I understand that BECOMING is a personal self-reflection and wellness sanctuary, not medical care, therapy, or professional coaching. I am in 100% control of my own life, choices, and peace.
+                      {t?.consentCheckbox ?? "I understand and agree to continue."}
                     </span>
                   </label>
                 </div>

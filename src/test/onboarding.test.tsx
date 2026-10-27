@@ -33,7 +33,7 @@ describe('v0.9.1: Cinematic 5-Step First-Time Onboarding Experience', () => {
     expect(screen.getByRole('heading', { name: /BECOMING/i })).toBeInTheDocument();
     expect(
       screen.getByRole('heading', {
-        name: /A Quiet Human Sanctuary in a Loud Digital World/i,
+        name: /A calm space to understand yourself/i,
       })
     ).toBeInTheDocument();
     expect(
@@ -55,7 +55,7 @@ describe('v0.9.1: Cinematic 5-Step First-Time Onboarding Experience', () => {
     fireEvent.click(document.getElementById('onboarding-next-btn')!);
 
     expect(
-      screen.getByRole('heading', { name: /Choose Your Sanctuary Language/i })
+      screen.getByRole('heading', { name: /Choose your language/i })
     ).toBeInTheDocument();
     expect(screen.getByText('English')).toBeInTheDocument();
     expect(screen.getByText('العربية')).toBeInTheDocument();
@@ -126,12 +126,12 @@ describe('v0.9.1: Cinematic 5-Step First-Time Onboarding Experience', () => {
 
     expect(
       screen.getByRole('heading', {
-        name: /Tools Designed to Mirror Your Mind, Not Boss It/i,
+        name: /Tools to help you find your own way/i,
       })
     ).toBeInTheDocument();
     expect(screen.getByText(/Breathing & Somatic Studio/i)).toBeInTheDocument();
-    expect(screen.getByText(/Daily Living Compass & Rituals/i)).toBeInTheDocument();
-    expect(screen.getByText(/Self-Discovery & Habit Seeds/i)).toBeInTheDocument();
+    expect(screen.getByText(/The Balance Ledger & The Shift/i)).toBeInTheDocument();
+    expect(screen.getByText(/Inner Compass Quizzes/i)).toBeInTheDocument();
     expect(screen.getByText(/The Mind Vault & Dissolution/i)).toBeInTheDocument();
   });
 
@@ -150,13 +150,13 @@ describe('v0.9.1: Cinematic 5-Step First-Time Onboarding Experience', () => {
 
     expect(
       screen.getByRole('heading', {
-        name: /Life is Short\. You Are Not an Angel\. You Are Free\./i,
+        name: /Your choices remain yours/i,
       })
     ).toBeInTheDocument();
 
     const agreeBtn = screen.getByRole('button', { name: /Agree & Enter Sanctuary/i });
     const checkbox = screen.getByRole('checkbox', {
-      name: /I understand that BECOMING is a personal self-reflection and wellness sanctuary/i,
+      name: /I understand that BECOMING is for personal reflection/i,
     });
 
     // Initially disabled
