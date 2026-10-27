@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useApp } from '@/context/AppContext';
-import { MessageCircle, Wind, Target, Moon, Sparkles, Compass } from 'lucide-react';
+import { Sparkles, Compass } from 'lucide-react';
 
 type Topic = 'calm' | 'habits' | 'care' | 'move' | 'learn' | 'create' | 'connect' | 'inspire' | 'reflect' | 'rest';
 type Activity = { id: string; topic: Topic; title: string; idea: string; minutes: number };
@@ -51,12 +51,14 @@ function readIds(key:string): string[] {
   try { const value: unknown = JSON.parse(localStorage.getItem(key) || '[]'); return Array.isArray(value) ? value.filter((v):v is string=>typeof v==='string').slice(-100) : []; } catch { return []; }
 }
 export function TodayNeeds() {
-  const {locale, setActiveTab, setActiveMode} = useApp();
+  const {locale, setActiveTab, setActiveMode, addMoment} = useApp();
   const [topic,setTopic] = useState<Topic>('calm');
   const [seen,setSeen] = useState<string[]>([]);
   const [tried,setTried] = useState<string[]>([]);
   const [selected,setSelected] = useState<string | null>(null);
   const [offset,setOffset] = useState(0);
+  const [reviewing,setReviewing] = useState<Activity | null>(null);
+  const [reflection,setReflection] = useState('');
   useEffect(()=>{setSeen(readIds(SEEN_KEY));setTried(readIds(TRIED_KEY));},[]);
   const ordered = useMemo(()=> {
     const byTopic = activities.filter(a=>a.topic===topic);
@@ -69,6 +71,7 @@ export function TodayNeeds() {
     try {localStorage.setItem(key,JSON.stringify(next));} catch { /* optional activity history */ }
   };
   const another = () => { if(suggestion) mark(SEEN_KEY,seen,suggestion.id,setSeen); setSelected(null);setOffset(n=>n+1); };
+  const finishReview = () => { if (reflection.trim()) addMoment(reflection.trim()); setReflection('');setReviewing(null);another(); };
   return (
     <section aria-labelledby="becoming-today-needs" className="relative z-10 rounded-2xl bg-white dark:bg-slate-900 border border-stone-200 dark:border-slate-700 p-4 sm:p-5 text-start space-y-3">
       <h2 id="becoming-today-needs" className="font-serif font-bold text-xl text-slate-900 dark:text-white">{locale==='ar'?'اكتشف شيئاً مفيداً لك اليوم':'Discover something good for today'}</h2>
@@ -88,10 +91,20 @@ export function TodayNeeds() {
         {selected===suggestion.id && <div className="border-t border-stone-200 dark:border-slate-600 pt-3 space-y-2" aria-live="polite">
           <p className="text-sm text-slate-700 dark:text-slate-200">{locale==='ar'?'يمكنك ترك الشاشة والتجربة. عند العودة، اختر ما يناسبك.':'You can put your phone away and try this. When you return, choose what fits.'}</p>
           <div className="grid grid-cols-2 gap-2">
-            <button type="button" onClick={()=>{mark(TRIED_KEY,tried,suggestion.id,setTried);another();}} className="min-h-11 bg-emerald-800 text-white rounded-xl px-2 text-sm font-semibold">{locale==='ar'?'جربتها':'I tried it'}</button>
+            <button type="button" onClick={()=>{mark(TRIED_KEY,tried,suggestion.id,setTried);setReviewing(suggestion);setSelected(null);}} className="min-h-11 bg-emerald-800 text-white rounded-xl px-2 text-sm font-semibold">{locale==='ar'?'جربتها':'I tried it'}</button>
             <button type="button" onClick={another} className="min-h-11 border border-stone-300 dark:border-slate-600 text-slate-800 dark:text-white rounded-xl px-2 text-sm">{locale==='ar'?'ليس مناسباً لي':'Not for me'}</button>
           </div>
         </div>}
+      </div>}
+      {reviewing && <div className="rounded-xl border border-emerald-700/40 bg-emerald-50 dark:bg-slate-800 p-3 space-y-2" aria-live="polite">
+        <h3 className="font-semibold text-slate-900 dark:text-white">{locale==='ar'?'جرّبت نشاطاً، ماذا بعد؟':'You gave it a try. What next?'}</h3>
+        <p className="text-sm text-slate-700 dark:text-slate-200">{reviewing.title}. {locale==='ar'?'يمكنك تدوين ما لاحظته، أو تخطي ذلك.':'You can note what you noticed, or skip this.'}</p>
+        <label htmlFor="activity-reflection" className="block text-sm text-slate-700 dark:text-slate-200">{locale==='ar'?'ملاحظة اختيارية':'Optional reflection'}</label>
+        <textarea id="activity-reflection" rows={2} maxLength={500} value={reflection} onChange={e=>setReflection(e.target.value)} className="w-full rounded-xl p-3 border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white" />
+        <div className="grid grid-cols-2 gap-2">
+          <button type="button" onClick={finishReview} className="min-h-11 rounded-xl bg-slate-900 text-white text-sm font-semibold">{locale==='ar'?'متابعة':'Continue'}</button>
+          <button type="button" onClick={()=>{setReflection('');setReviewing(null);}} className="min-h-11 rounded-xl border border-stone-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm">{locale==='ar'?'إنهاء الجلسة':'Finish for now'}</button>
+        </div>
       </div>}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-xs text-slate-500 dark:text-slate-300">{locale==='ar'? `أنشطة جرّبتها: ${tried.length}` : `Activities you chose to try: ${tried.length}`}</p>
