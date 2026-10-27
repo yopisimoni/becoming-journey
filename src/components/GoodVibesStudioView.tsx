@@ -19,6 +19,7 @@ import {
   ShieldAlert,
 } from 'lucide-react';
 import { getSessionQuote } from '@/lib/quotes/quoteEngine';
+import { AtmosphericOrb } from '@/components/motion';
 
 interface TemplateConfig {
   id: GoodVibesTemplateId;
@@ -297,8 +298,14 @@ export function GoodVibesStudioView() {
   return (
     <div
       data-testid="good-vibes-view"
-      className="max-w-4xl mx-auto px-4 py-8 sm:py-12 space-y-10 animate-in fade-in duration-500"
+      className="relative max-w-4xl mx-auto px-4 py-8 sm:py-12 space-y-10 animate-in fade-in duration-500 overflow-hidden"
     >
+      <AtmosphericOrb
+        color="rgba(129, 140, 248, 0.16)"
+        size={400}
+        blur={90}
+        className="-top-12 -end-12"
+      />
       {/* Hidden canvas for high-resolution PNG generation */}
       <canvas ref={canvasRef} className="hidden" aria-hidden="true" />
 

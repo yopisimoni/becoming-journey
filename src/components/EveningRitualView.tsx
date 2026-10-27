@@ -18,6 +18,7 @@ import {
   Volume2,
   VolumeX,
 } from 'lucide-react';
+import { AtmosphericOrb } from '@/components/motion';
 
 const STORAGE_KEY_EVENING = 'becoming_evening_ritual_v1';
 
@@ -138,8 +139,14 @@ export function EveningRitualView() {
   return (
     <div
       data-testid="evening-ritual-view"
-      className="max-w-3xl mx-auto px-4 py-8 sm:py-12 space-y-8 animate-in fade-in duration-500"
+      className="relative max-w-3xl mx-auto px-4 py-8 sm:py-12 space-y-8 animate-in fade-in duration-500 overflow-hidden"
     >
+      <AtmosphericOrb
+        color="rgba(129, 140, 248, 0.22)"
+        size={380}
+        blur={90}
+        className="-top-12 -start-12"
+      />
       {/* Header Banner with Night Atmosphere */}
       <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-indigo-950/40 via-purple-950/20 to-slate-900/60 border border-indigo-900/40 dark:border-indigo-800/50 shadow-2xl space-y-4">
         <div className="flex items-center justify-between">

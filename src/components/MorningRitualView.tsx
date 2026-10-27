@@ -20,6 +20,7 @@ import {
   Coffee,
 } from 'lucide-react';
 import { getSessionQuote } from '@/lib/quotes/quoteEngine';
+import { AtmosphericOrb } from '@/components/motion';
 
 const STORAGE_KEY_MORNING = 'becoming_morning_ritual_v1';
 
@@ -157,8 +158,14 @@ export function MorningRitualView() {
   return (
     <div
       data-testid="morning-ritual-view"
-      className="max-w-3xl mx-auto px-4 py-8 sm:py-12 space-y-8 animate-in fade-in duration-500"
+      className="relative max-w-3xl mx-auto px-4 py-8 sm:py-12 space-y-8 animate-in fade-in duration-500 overflow-hidden"
     >
+      <AtmosphericOrb
+        color="rgba(217, 119, 54, 0.22)"
+        size={360}
+        blur={80}
+        className="-top-12 -end-12"
+      />
       {/* Header Banner */}
       <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-amber-500/15 via-orange-500/5 to-transparent border border-amber-200/80 dark:border-amber-900/40 shadow-xl space-y-3">
         <div className="flex items-center gap-2">

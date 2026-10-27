@@ -10,6 +10,7 @@ import {
   WisdomQuote,
 } from '@/lib/quotes/quoteEngine';
 import { AtmosphereSwitcher } from './AtmosphereSwitcher';
+import { TheBecomingHorizon } from '@/components/motion';
 import {
   Compass,
   Wind,
@@ -155,6 +156,9 @@ export function DashboardView() {
           <AtmosphereSwitcher variant="dashboard" />
         </div>
       </div>
+
+      {/* The Becoming Horizon — Circadian Atmospheric Arc */}
+      <TheBecomingHorizon />
 
       {/* Zero to Hero Evolution System Card */}
       <div className="p-7 sm:p-8 rounded-3xl bg-white/95 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xl space-y-6">
