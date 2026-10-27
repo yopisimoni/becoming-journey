@@ -76,13 +76,13 @@ export function TodayNeeds() {
     const byTopic = activities.filter(a=>a.topic===topic);
     return [...byTopic.filter(a=>!seen.includes(a.id)),...byTopic.filter(a=>seen.includes(a.id))];
   },[topic,seen]);
-  const suggestion = ordered[offset % Math.max(ordered.length,1)];
+  const suggestion = ordered[Math.min(offset,Math.max(ordered.length-1,0))];
   const mark = (key:string, current:string[], id:string, update:(v:string[])=>void) => {
     const next = Array.from(new Set([...current,id])).slice(-100);
     update(next);
     try {localStorage.setItem(key,JSON.stringify(next));} catch { /* optional activity history */ }
   };
-  const another = () => { if(suggestion) mark(SEEN_KEY,seen,suggestion.id,setSeen); setSelected(null);setOffset(n=>n+1); };
+  const another = () => { if(suggestion) mark(SEEN_KEY,seen,suggestion.id,setSeen); setSelected(null);setOffset(0); };
   const finishReview = () => { if (reviewing) storeJourney(reviewing,reflection); if (reflection.trim()) addMoment(reflection.trim()); setReflection('');setReviewing(null);another(); };
   const completedActivity = () => {if(!suggestion) return;mark(TRIED_KEY,tried,suggestion.id,setTried);storeJourney(suggestion);setReviewing(suggestion);setSelected(null);};
   return (
@@ -90,7 +90,7 @@ export function TodayNeeds() {
       <h2 id="becoming-today-needs" className="font-serif font-bold text-xl text-slate-900 dark:text-white">{locale==='ar'?'اكتشف شيئاً مفيداً لك اليوم':'Discover something good for today'}</h2>
       <p className="text-sm text-slate-600 dark:text-slate-300">{locale==='ar'?'اختر مجالاً يثير اهتمامك، أو جرّب شيئاً جديداً. لا ضغط ولا نقاط إلزامية.':'Explore an activity that interests you. No pressure, streaks or mandatory points.'}</p>
       <label htmlFor="activity-topic" className="block text-sm font-semibold text-slate-800 dark:text-white">{locale==='ar'?'ماذا تريد أن تستكشف؟':'What would you like to explore?'}</label>
-      <select id="activity-topic" value={topic} onChange={e=>{setTopic(e.target.value as Topic);setOffset(0);setSelected(null);}} className="w-full min-h-12 rounded-xl border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-3 text-sm">
+      <select id="activity-topic" value={topic} onChange={e=>{setTopic(e.target.value as Topic);setOffset(0);setSelected(null);setReviewing(null);setReflection('');}} className="w-full min-h-12 rounded-xl border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-3 text-sm">
         {topics.map(t=><option value={t.id} key={t.id}>{t.label}</option>)}
       </select>
       {suggestion && <div className="rounded-xl bg-stone-50 dark:bg-slate-800 border border-stone-200 dark:border-slate-700 p-3 space-y-2">
@@ -121,7 +121,7 @@ export function TodayNeeds() {
       </div>}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-xs text-slate-500 dark:text-slate-300">{locale==='ar'? `أنشطة جرّبتها: ${tried.length}` : `Activities you chose to try: ${tried.length}`}</p>
-        <button type="button" onClick={()=>{setTopic(topics[(topics.findIndex(t=>t.id===topic)+1)%topics.length].id);setOffset(0);setSelected(null);}} className="text-xs font-semibold underline text-amber-800 dark:text-amber-300 flex items-center gap-1"><Compass className="w-4 h-4"/>{locale==='ar'?'فاجئني بمجال آخر':'Surprise me'}</button>
+        <button type="button" onClick={()=>{setTopic(topics[(topics.findIndex(t=>t.id===topic)+1)%topics.length].id);setOffset(0);setSelected(null);setReviewing(null);setReflection('');}} className="text-xs font-semibold underline text-amber-800 dark:text-amber-300 flex items-center gap-1"><Compass className="w-4 h-4"/>{locale==='ar'?'فاجئني بمجال آخر':'Surprise me'}</button>
       </div>
       <p className="text-xs text-slate-500 dark:text-slate-400">{locale==='ar'?'محفوظ محلياً على الجهاز. لا نستنتج حالتك الصحية أو النفسية.':'Activity history stays on this device. We do not infer your mental or medical state.'}</p>
       <button type="button" onClick={()=>{setActiveTab('home');setActiveMode('journal');}} className="text-xs underline text-slate-600 dark:text-slate-300">{locale==='ar'?'أفضل الكتابة الآن':'I would rather journal'}</button>
