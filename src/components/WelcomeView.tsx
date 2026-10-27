@@ -1,4 +1,5 @@
 'use client';
+import { JourneyActionLoop } from "@/components/JourneyActionLoop";
 
 import React, { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
@@ -208,6 +209,7 @@ export function WelcomeView() {
                 <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">{locale === 'ar' ? 'علامات الإنجاز تشير فقط إلى وجود نشاط محفوظ، ولا تقيس التحسن الشخصي.' : 'Checkmarks mean saved activity exists, not that personal growth has been measured.'}</p>
               </section>
 
+              <JourneyActionLoop />
               {/* Centerpiece Sacred Orb Art */}
               <div className="flex flex-col items-center justify-center relative">
                 <SanctuaryLotusOrbArt size="hero" />
