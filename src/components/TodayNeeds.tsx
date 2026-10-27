@@ -47,6 +47,18 @@ const topics: {id:Topic; label:string}[] = [
 ];
 const SEEN_KEY = 'becoming_activity_seen_v1';
 const TRIED_KEY = 'becoming_activity_tried_v1';
+const JOURNEY_KEY = 'becoming_activity_journey_v1';
+type JourneyRecord = { id:string; title:string; date:string; reflection?:string };
+function storeJourney(activity:Activity, reflection?:string) {
+  try {
+    const raw:unknown = JSON.parse(localStorage.getItem(JOURNEY_KEY)||'[]');
+    const existing:JourneyRecord[] = Array.isArray(raw) ? raw.filter((v):v is JourneyRecord => typeof v==='object'&&v!==null&&typeof v.id==='string'&&typeof v.title==='string') : [];
+    const entry:JourneyRecord = {id:activity.id,title:activity.title,date:new Date().toISOString(),...(reflection?.trim()?{reflection:reflection.trim()}:{})};
+    const next=[entry,...existing.filter(v=>v.id!==activity.id)].slice(0,100);
+    localStorage.setItem(JOURNEY_KEY,JSON.stringify(next));
+    window.dispatchEvent(new Event('becoming-activity-journey-updated'));
+  } catch { /* private browsing may not persist */ }
+}
 function readIds(key:string): string[] {
   try { const value: unknown = JSON.parse(localStorage.getItem(key) || '[]'); return Array.isArray(value) ? value.filter((v):v is string=>typeof v==='string').slice(-100) : []; } catch { return []; }
 }
@@ -71,7 +83,8 @@ export function TodayNeeds() {
     try {localStorage.setItem(key,JSON.stringify(next));} catch { /* optional activity history */ }
   };
   const another = () => { if(suggestion) mark(SEEN_KEY,seen,suggestion.id,setSeen); setSelected(null);setOffset(n=>n+1); };
-  const finishReview = () => { if (reflection.trim()) addMoment(reflection.trim()); setReflection('');setReviewing(null);another(); };
+  const finishReview = () => { if (reviewing) storeJourney(reviewing,reflection); if (reflection.trim()) addMoment(reflection.trim()); setReflection('');setReviewing(null);another(); };
+  const completedActivity = () => {if(!suggestion) return;mark(TRIED_KEY,tried,suggestion.id,setTried);storeJourney(suggestion);setReviewing(suggestion);setSelected(null);};
   return (
     <section aria-labelledby="becoming-today-needs" className="relative z-10 rounded-2xl bg-white dark:bg-slate-900 border border-stone-200 dark:border-slate-700 p-4 sm:p-5 text-start space-y-3">
       <h2 id="becoming-today-needs" className="font-serif font-bold text-xl text-slate-900 dark:text-white">{locale==='ar'?'اكتشف شيئاً مفيداً لك اليوم':'Discover something good for today'}</h2>
@@ -91,7 +104,7 @@ export function TodayNeeds() {
         {selected===suggestion.id && <div className="border-t border-stone-200 dark:border-slate-600 pt-3 space-y-2" aria-live="polite">
           <p className="text-sm text-slate-700 dark:text-slate-200">{locale==='ar'?'يمكنك ترك الشاشة والتجربة. عند العودة، اختر ما يناسبك.':'You can put your phone away and try this. When you return, choose what fits.'}</p>
           <div className="grid grid-cols-2 gap-2">
-            <button type="button" onClick={()=>{mark(TRIED_KEY,tried,suggestion.id,setTried);setReviewing(suggestion);setSelected(null);}} className="min-h-11 bg-emerald-800 text-white rounded-xl px-2 text-sm font-semibold">{locale==='ar'?'جربتها':'I tried it'}</button>
+            <button type="button" onClick={completedActivity} className="min-h-11 bg-emerald-800 text-white rounded-xl px-2 text-sm font-semibold">{locale==='ar'?'جربتها':'I tried it'}</button>
             <button type="button" onClick={another} className="min-h-11 border border-stone-300 dark:border-slate-600 text-slate-800 dark:text-white rounded-xl px-2 text-sm">{locale==='ar'?'ليس مناسباً لي':'Not for me'}</button>
           </div>
         </div>}
