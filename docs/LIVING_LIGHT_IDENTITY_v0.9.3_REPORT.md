@@ -98,6 +98,8 @@ Original vector SVG assets have been added to the project:
 | `public/becoming-living-light-icon.svg` | New | PWA vector app icon. |
 | `public/becoming-adaptive-icon-foreground.svg` | New | Android adaptive icon foreground vector. |
 | `public/becoming-splash-screen.svg` | New | Mobile splash screen vector composition. |
+| `public/manifest.json` | New | Static PWA web manifest. |
+| `src/test/livingLightIdentity.test.tsx` | New | Comprehensive unit test suite for unique IDs, keyboard accessibility, reduced motion, and simplified icon mode. |
 | `src/locales/types.ts` | Modified | Added optional `tagline` and `description` to `onboarding.intro`. |
 | `src/locales/en.ts` | Modified | Added English copy: "A more you.", "Begin Your Journey". |
 | `src/locales/ar.ts` | Modified | Added Arabic RTL copy: "أنت... بأعمق معنى.", "ابدأ رحلتك". |
@@ -113,7 +115,7 @@ Original vector SVG assets have been added to the project:
 | :--- | :--- | :--- |
 | **TypeScript Typecheck** | **PASSED** | `npm run typecheck` — 0 errors |
 | **ESLint** | **PASSED** | `npm run lint` — 0 warnings, 0 errors |
-| **Vitest Unit Tests** | **PASSED** | `npm run test` — 21 test files, 121 tests passed (100% green) |
+| **Vitest Unit Tests** | **PASSED** | `npm run test` — 22 test files, 126 tests passed (100% green) |
 | **Static Production Build** | **PASSED** | `npm run build` — 6/6 static pages generated (`output: export`) |
 | **Playwright E2E Suite** | **PASSED** | `npx playwright test` — 100/100 tests passed across all 4 responsive viewports (320px, 375px, 768px, 1440px) |
 

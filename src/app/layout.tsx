@@ -17,6 +17,7 @@ export const metadata: Metadata = {
     shortcut: '/becoming-living-light-icon.svg',
     apple: '/becoming-living-light-icon.svg',
   },
+  manifest: '/manifest.json',
 };
 
 export const viewport: Viewport = {

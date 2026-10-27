@@ -76,3 +76,84 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* BECOMING Living Light GPU Keyframe Animations */
+@keyframes becomingHaloSpin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.015);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes becomingRibbon1 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  50% {
+    transform: translate(2px, 1.5px) scale(1.02);
+  }
+}
+
+@keyframes becomingRibbon2 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  50% {
+    transform: translate(-2px, -1.5px) scale(1.025);
+  }
+}
+
+@keyframes becomingRibbon3 {
+  0%, 100% {
+    transform: translate(0px, 0px) scaleY(1);
+  }
+  50% {
+    transform: translate(-1.5px, 2px) scaleY(1.03);
+  }
+}
+
+@keyframes becomingRibbon4 {
+  0%, 100% {
+    transform: translate(0px, 0px) scaleY(1);
+  }
+  50% {
+    transform: translate(1.5px, -1.5px) scaleY(1.025);
+  }
+}
+
+@keyframes becomingRibbon5 {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(4deg) scale(1.02);
+  }
+}
+
+@keyframes becomingCorePulse {
+  0%, 100% {
+    transform: scale(0.96);
+    opacity: 0.92;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+}
+
+@keyframes becomingAtmosphericGlow {
+  0%, 100% {
+    transform: scale(0.95);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.85;
+  }
+}
+
