@@ -76,13 +76,14 @@ export function TodayNeeds() {
     const byTopic = activities.filter(a=>a.topic===topic);
     return [...byTopic.filter(a=>!seen.includes(a.id)),...byTopic.filter(a=>seen.includes(a.id))];
   },[topic,seen]);
-  const suggestion = ordered[Math.min(offset,Math.max(ordered.length-1,0))];
+  const suggestion = ordered[offset % Math.max(ordered.length,1)];
+  const topicExhausted = activities.filter(a=>a.topic===topic).every(a=>seen.includes(a.id));
   const mark = (key:string, current:string[], id:string, update:(v:string[])=>void) => {
     const next = Array.from(new Set([...current,id])).slice(-100);
     update(next);
     try {localStorage.setItem(key,JSON.stringify(next));} catch { /* optional activity history */ }
   };
-  const another = () => { if(suggestion) mark(SEEN_KEY,seen,suggestion.id,setSeen); setSelected(null);setOffset(0); };
+  const another = () => { if(suggestion) mark(SEEN_KEY,seen,suggestion.id,setSeen); setSelected(null);setOffset(n=>topicExhausted?n+1:0); };
   const finishReview = () => { if (reviewing) storeJourney(reviewing,reflection); if (reflection.trim()) addMoment(reflection.trim()); setReflection('');setReviewing(null);another(); };
   const completedActivity = () => {if(!suggestion) return;mark(TRIED_KEY,tried,suggestion.id,setTried);storeJourney(suggestion);setReviewing(suggestion);setSelected(null);};
   return (
