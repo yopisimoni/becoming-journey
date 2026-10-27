@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { ActivityJourneyHistory } from '@/components/ActivityJourneyHistory';
 import { useApp } from '@/context/AppContext';
 import { Map, Trash2, CheckCircle2, Compass, Plus } from 'lucide-react';
 
@@ -46,6 +47,7 @@ export function JourneyMapView() {
         </button>
       </div>
 
+      <ActivityJourneyHistory />
       {/* Cards List or Empty State */}
       {cards.length === 0 ? (
         <div className="p-8 sm:p-12 text-center rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4 shadow-xl">
