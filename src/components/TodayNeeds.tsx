@@ -66,7 +66,7 @@ export function TodayNeeds() {
   },[topic,seen]);
   const suggestion = ordered[offset % Math.max(ordered.length,1)];
   const mark = (key:string, current:string[], id:string, update:(v:string[])=>void) => {
-    const next = [...new Set([...current,id])].slice(-100);
+    const next = Array.from(new Set([...current,id])).slice(-100);
     update(next);
     try {localStorage.setItem(key,JSON.stringify(next));} catch { /* optional activity history */ }
   };
