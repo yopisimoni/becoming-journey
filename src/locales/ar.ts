@@ -226,6 +226,29 @@ export const ar: TranslationDictionary = {
     nextButton: 'التالي',
     prevButton: 'السابق',
     closeTour: 'إغلاق الجولة',
+    intro: {
+      badge: 'الخطوات الأولى • الصحوة الكونية',
+      title: 'BECOMING',
+      subtitle: 'ملاذ إنساني هادئ في عالم رقمي صاخب',
+      beginButton: 'ادخل إلى الملاذ',
+      skipButton: 'تخطي المقدمة',
+    },
+    languageSelect: {
+      badge: 'الخطوة 2 • لغة الملاذ',
+      title: 'اختر لغة ملاذك الهادئ',
+      subtitle: 'اختر اللغة الأقرب إلى وجدانك وتأملاتك الداخلية.',
+    },
+    genderSelect: {
+      badge: 'الخطوة 3 • أسلوب الخطاب والاحترام',
+      title: 'كيف تفضل أن نخاطبك؟',
+      subtitle: 'هذا الخيار اختياري ويساعدنا على ضبط صياغة التأملات والضمائر باحترام ودفء.',
+      helper: 'يُحفظ بخصوصية تامة على جهازك فقط. يمكنك تعديل ذلك في أي وقت عبر الإعدادات.',
+      options: {
+        man: 'رجل',
+        woman: 'امرأة',
+        preferNotToSay: 'أفضل عدم التحديد',
+      },
+    },
   },
   atmosphere: {
     switcherTitle: 'لوحة الأجواء المحيطة',

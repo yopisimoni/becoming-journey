@@ -11,6 +11,7 @@ import {
   MomentOfLight,
   UserProfile,
   AvatarId,
+  AddressingPreference,
   LifeGoal,
   HabitItem,
   VaultSecret,
@@ -161,11 +162,14 @@ interface AppContextValue {
   isSafetyModalOpen: boolean;
   setSafetyModalOpen: (open: boolean) => void;
 
-  // Onboarding & Consent Gate (v0.6)
+  // Onboarding & Consent Gate (v0.6 / v0.9.1)
   isOnboardingOpen: boolean;
   setOnboardingOpen: (open: boolean) => void;
   hasConsented: boolean;
   completeOnboarding: () => void;
+  resetOnboarding: () => void;
+  addressingPreference: AddressingPreference;
+  setAddressingPreference: (pref: AddressingPreference) => void;
 }
 
 const STORAGE_KEY_CARDS = 'becoming_journey_cards_v1';
@@ -186,6 +190,7 @@ const STORAGE_KEY_REGISTERED_USERS = 'becoming_registered_users_v1';
 const STORAGE_KEY_ACTIVE_USER = 'becoming_active_user_v1';
 const STORAGE_KEY_ONBOARDED = 'becoming_onboarded';
 const STORAGE_KEY_CONSENT = 'becoming_consent_agreed';
+const STORAGE_KEY_ADDRESSING = 'becoming_addressing_preference';
 const STORAGE_KEY_ATMOSPHERE = 'becoming_atmosphere_mode';
 const STORAGE_KEY_AUTO_ATMOSPHERE = 'becoming_auto_atmosphere';
 const STORAGE_KEY_MORNING = 'becoming_morning_ritual_v1';
@@ -230,6 +235,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [isSafetyModalOpen, setSafetyModalOpen] = useState(false);
   const [isOnboardingOpen, setOnboardingOpen] = useState(false);
   const [hasConsented, setHasConsented] = useState(false);
+  const [addressingPreference, setAddressingPreferenceState] =
+    useState<AddressingPreference>('unspecified');
 
   // App Data
   const [cards, setCards] = useState<JourneyMapCard[]>([]);
@@ -413,6 +420,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       try {
         const onboarded = localStorage.getItem(STORAGE_KEY_ONBOARDED);
         const consented = localStorage.getItem(STORAGE_KEY_CONSENT);
+        const savedAddressing = localStorage.getItem(
+          STORAGE_KEY_ADDRESSING
+        ) as AddressingPreference | null;
+        if (savedAddressing) {
+          setAddressingPreferenceState(savedAddressing);
+        }
         if (onboarded === 'true' && consented === 'true') {
           setHasConsented(true);
         } else {
@@ -540,6 +553,26 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setHasConsented(true);
     setOnboardingOpen(false);
     playSingingBowl();
+  };
+
+  const resetOnboarding = () => {
+    try {
+      localStorage.removeItem(STORAGE_KEY_ONBOARDED);
+      localStorage.removeItem(STORAGE_KEY_CONSENT);
+    } catch {
+      // ignore
+    }
+    setHasConsented(false);
+    setOnboardingOpen(true);
+  };
+
+  const setAddressingPreference = (pref: AddressingPreference) => {
+    setAddressingPreferenceState(pref);
+    try {
+      localStorage.setItem(STORAGE_KEY_ADDRESSING, pref);
+    } catch {
+      // ignore
+    }
   };
 
   const setAiSettings = (newSettings: AISettings) => {
@@ -1323,11 +1356,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     isSafetyModalOpen,
     setSafetyModalOpen,
 
-    // v0.6 Onboarding & Consent
+    // v0.6 / v0.9.1 Onboarding & Consent
     isOnboardingOpen,
     setOnboardingOpen,
     hasConsented,
     completeOnboarding,
+    resetOnboarding,
+    addressingPreference,
+    setAddressingPreference,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence, type Variants } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence, type Variants, useReducedMotion } from 'framer-motion';
 import { useApp } from '@/context/AppContext';
+import { Locale, AddressingPreference } from '@/types';
+import { supportedLocales } from '@/locales';
 import {
   Sparkles,
   ShieldCheck,
@@ -13,25 +15,63 @@ import {
   Heart,
   Wind,
   Lock,
-  Layers,
   CheckCircle2,
   X,
   Feather,
+  Globe,
+  User,
+  Sun,
+  Moon,
+  Eye,
+  Shield,
+  HelpCircle,
 } from 'lucide-react';
+import { AtmosphericOrb } from '@/components/motion';
 
 export function OnboardingWelcomeModal() {
-  const { isOnboardingOpen, setOnboardingOpen, hasConsented, completeOnboarding, dict, isRtl } =
-    useApp();
+  const {
+    isOnboardingOpen,
+    setOnboardingOpen,
+    hasConsented,
+    completeOnboarding,
+    dict,
+    isRtl,
+    locale,
+    setLocale,
+    addressingPreference,
+    setAddressingPreference,
+  } = useApp();
+
+  const shouldReduceMotion = useReducedMotion();
+
+  // Steps:
+  // 0: Cinematic Motion Intro
+  // 1: Language Selection
+  // 2: Gender / Addressing Preference
+  // 3: About the App
+  // 4: Understand & Agree (Mandatory Consent Gate)
   const [currentStep, setCurrentStep] = useState(0);
   const [direction, setDirection] = useState(1);
   const [hasAgreedConsent, setHasAgreedConsent] = useState(false);
+  const [introAutoPassed, setIntroAutoPassed] = useState(false);
 
   const t = dict.onboarding;
+
+  // Auto-advance intro after 4.5s if user hasn't advanced and not reduced motion
+  useEffect(() => {
+    if (currentStep === 0 && !introAutoPassed && !shouldReduceMotion) {
+      const timer = setTimeout(() => {
+        // We do not force advance if user is inactive, but give a gentle indication
+        setIntroAutoPassed(true);
+      }, 4500);
+      return () => clearTimeout(timer);
+    }
+  }, [currentStep, introAutoPassed, shouldReduceMotion]);
 
   if (!isOnboardingOpen) return null;
 
   const handleNext = () => {
-    if (currentStep < 2) {
+    if (currentStep < 4) {
       setDirection(1);
       setCurrentStep((prev) => prev + 1);
     }
@@ -44,6 +84,11 @@ export function OnboardingWelcomeModal() {
     }
   };
 
+  const handleSkipIntro = () => {
+    setDirection(1);
+    setCurrentStep(1);
+  };
+
   const handleComplete = () => {
     if (!hasAgreedConsent) return;
     completeOnboarding();
@@ -51,7 +96,7 @@ export function OnboardingWelcomeModal() {
 
   const variants: Variants = {
     enter: (dir: number) => ({
-      x: dir > 0 ? (isRtl ? -60 : 60) : (isRtl ? 60 : -60),
+      x: dir > 0 ? (isRtl ? -40 : 40) : isRtl ? 40 : -40,
       opacity: 0,
       scale: 0.98,
     }),
@@ -59,20 +104,26 @@ export function OnboardingWelcomeModal() {
       x: 0,
       opacity: 1,
       scale: 1,
-      transition: { duration: 0.35, ease: 'easeOut' },
+      transition: shouldReduceMotion
+        ? { duration: 0 }
+        : { duration: 0.35, ease: [0.16, 1, 0.3, 1] },
     },
     exit: (dir: number) => ({
-      x: dir > 0 ? (isRtl ? 60 : -60) : (isRtl ? -60 : 60),
+      x: dir > 0 ? (isRtl ? 40 : -40) : isRtl ? -40 : 40,
       opacity: 0,
       scale: 0.98,
-      transition: { duration: 0.25, ease: 'easeIn' },
+      transition: shouldReduceMotion
+        ? { duration: 0 }
+        : { duration: 0.25, ease: 'easeIn' },
     }),
   };
 
-  const steps = [
-    { label: t?.card1.badge.split('•')[1]?.trim() || 'Who We Are', id: 0 },
-    { label: t?.card2.badge.split('•')[1]?.trim() || 'How We Help', id: 1 },
-    { label: t?.card3.badge.split('•')[1]?.trim() || 'Sovereign Consent', id: 2 },
+  const stepsList = [
+    { id: 0, label: 'Intro' },
+    { id: 1, label: 'Language' },
+    { id: 2, label: 'Addressing' },
+    { id: 3, label: 'About' },
+    { id: 4, label: 'Agreement' },
   ];
 
   return (
@@ -80,21 +131,36 @@ export function OnboardingWelcomeModal() {
       role="dialog"
       aria-modal="true"
       aria-labelledby="onboarding-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-950/70 backdrop-blur-md overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-950/80 backdrop-blur-2xl overflow-y-auto"
     >
-      <div className="relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden my-auto">
+      {/* Background ambient celestial orbs */}
+      <AtmosphericOrb
+        color="rgba(217, 119, 54, 0.2)"
+        size={460}
+        blur={110}
+        className="-top-24 -start-24"
+      />
+      <AtmosphericOrb
+        color="rgba(129, 140, 248, 0.2)"
+        size={440}
+        blur={100}
+        delay={2}
+        className="-bottom-20 -end-20"
+      />
+
+      <div className="relative w-full max-w-2xl bg-white/95 dark:bg-[#0B0F19]/95 border border-stone-200/90 dark:border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden my-auto backdrop-blur-xl">
         {/* Top Header & Step Progress Bar */}
-        <div className="p-5 sm:p-6 pb-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <div className="p-5 sm:p-6 pb-3 border-b border-stone-100 dark:border-slate-800/80 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-xs">
+            <div className="w-9 h-9 rounded-2xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800/60 flex items-center justify-center text-amber-700 dark:text-amber-300 shadow-xs">
               <Sparkles className="w-5 h-5 animate-pulse" />
             </div>
             <div>
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-                BECOMING Sanctuary
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                BECOMING • Personal Sanctuary
               </span>
-              <h2 id="onboarding-title" className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
-                First Steps &amp; Sovereign Welcome
+              <h2 id="onboarding-step-indicator" className="text-xs sm:text-sm font-semibold text-stone-700 dark:text-stone-300">
+                Step {currentStep + 1} of 5 • {stepsList[currentStep].label}
               </h2>
             </div>
           </div>
@@ -105,16 +171,16 @@ export function OnboardingWelcomeModal() {
               type="button"
               onClick={() => setOnboardingOpen(false)}
               aria-label="Close tour"
-              className="p-1.5 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="p-1.5 rounded-xl text-stone-400 hover:text-stone-800 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
           )}
         </div>
 
-        {/* 3 Step Indicator Pills */}
-        <div className="px-6 pt-4 flex items-center justify-center gap-2">
-          {steps.map((s, idx) => (
+        {/* 5 Step Indicator Pills */}
+        <div className="px-6 pt-3 flex items-center justify-center gap-1.5 sm:gap-2">
+          {stepsList.map((s, idx) => (
             <button
               key={s.id}
               type="button"
@@ -122,79 +188,102 @@ export function OnboardingWelcomeModal() {
                 setDirection(idx > currentStep ? 1 : -1);
                 setCurrentStep(idx);
               }}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all ${
                 currentStep === idx
-                  ? 'bg-indigo-600 text-white shadow-xs'
+                  ? 'bg-stone-900 dark:bg-white text-white dark:text-stone-900 shadow-sm'
                   : currentStep > idx
-                  ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-300'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                  ? 'bg-amber-100/70 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300'
+                  : 'bg-stone-100 dark:bg-slate-800 text-stone-500 dark:text-slate-400'
               }`}
             >
-              <span>{idx + 1}.</span>
+              <span>{idx + 1}</span>
               <span className="hidden sm:inline">{s.label}</span>
-              {currentStep > idx && <Check className="w-3 h-3" />}
+              {currentStep > idx && <Check className="w-3 h-3 text-amber-600 dark:text-amber-400" />}
             </button>
           ))}
         </div>
 
-        {/* Card Body with Animated Carousel */}
+        {/* Card Body with Animated Transitions */}
         <div className="p-6 sm:p-8 min-h-[380px] flex flex-col justify-between">
           <AnimatePresence custom={direction} mode="wait">
             {/* ============================================================== */}
-            {/* CARD 1: WHO WE ARE & WHY WE'RE HERE */}
+            {/* STEP 1: CINEMATIC MOTION INTRO */}
             {/* ============================================================== */}
             {currentStep === 0 && (
               <motion.div
-                key="card-1"
+                key="step-intro"
                 custom={direction}
                 variants={variants}
                 initial="enter"
                 animate="center"
                 exit="exit"
-                className="space-y-5"
+                className="space-y-6 text-center py-4"
               >
-                <div className="flex items-center justify-between">
-                  <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
-                    Card 1 of 3 • Who We Are &amp; Why We&apos;re Here
-                  </span>
+                {/* Floating Cosmic Centerpiece */}
+                <div className="relative mx-auto w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center">
+                  <motion.div
+                    animate={
+                      shouldReduceMotion
+                        ? { scale: 1 }
+                        : { scale: [0.95, 1.08, 0.95], rotate: [0, 5, -5, 0] }
+                    }
+                    transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-tr from-amber-500 via-rose-500 to-indigo-600 shadow-xl shadow-amber-500/25 flex items-center justify-center text-white text-3xl sm:text-4xl font-serif font-bold"
+                  >
+                    B
+                  </motion.div>
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 rounded-full bg-amber-400/20 blur-2xl animate-pulse pointer-events-none"
+                  />
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 dark:text-white leading-tight">
-                    A Quiet Human Sanctuary in a Loud Digital World
-                  </h3>
-                  <p className="text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-400">
-                    Not a corporation. Not a clinical algorithm. A safe harbor for your mind.
-                  </p>
+                  <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                    {t?.intro?.badge || 'First Steps • Celestial Awakening'}
+                  </span>
+                  <h1
+                    id="onboarding-title"
+                    className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-stone-900 dark:text-white tracking-tight"
+                  >
+                    {t?.intro?.title || 'BECOMING'}
+                  </h1>
+                  <h2 className="text-sm sm:text-base font-serif font-medium text-stone-600 dark:text-stone-300 max-w-md mx-auto leading-relaxed">
+                    {t?.intro?.subtitle ||
+                      'A Quiet Human Sanctuary in a Loud Digital World'}
+                  </h2>
                 </div>
 
-                <div className="space-y-3.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
-                  <p>
-                    <strong>BECOMING</strong> was created out of a simple observation: modern digital life is hurried, extractive, and noisy. Every app wants your attention, streaks, and data.
-                  </p>
-                  <p>
-                    This sanctuary was built with an opposite philosophy: <strong>Zero Cost Forever, 100% Local Privacy, and Unhurried Presence</strong>. There are no algorithmic feeds, no tracking pixels, and no remote databases harvesting your private journals.
-                  </p>
-                  <p>
-                    Everything you type, explore, or feel exists strictly in your device&apos;s browser memory. When you are here, you are safe to pause, unclench, and be honest with yourself.
-                  </p>
-                </div>
+                <p className="text-xs sm:text-sm text-stone-500 dark:text-slate-400 max-w-lg mx-auto leading-relaxed">
+                  Step into an unhurried digital sanctuary built for clarity, self-compassion, and deep rest.
+                  Zero cost forever, 100% private to your device, and zero surveillance.
+                </p>
 
-                <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center gap-3 text-xs text-slate-700 dark:text-slate-300">
-                  <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                  <span>
-                    <strong>100% Private &amp; Local:</strong> No external AI API calls unless you explicitly configure your own private key in Settings.
+                <div className="pt-2 flex flex-wrap items-center justify-center gap-3 text-xs text-stone-500 dark:text-slate-400">
+                  <span className="flex items-center gap-1.5">
+                    <Shield className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>Zero Cloud AI</span>
+                  </span>
+                  <span className="text-stone-300 dark:text-slate-700">•</span>
+                  <span className="flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Local-First Memory</span>
+                  </span>
+                  <span className="text-stone-300 dark:text-slate-700">•</span>
+                  <span className="flex items-center gap-1.5">
+                    <Heart className="w-3.5 h-3.5 text-rose-500" />
+                    <span>Non-Judgmental</span>
                   </span>
                 </div>
               </motion.div>
             )}
 
             {/* ============================================================== */}
-            {/* CARD 2: HOW WE HELP YOU */}
+            {/* STEP 2: LANGUAGE SELECTION */}
             {/* ============================================================== */}
             {currentStep === 1 && (
               <motion.div
-                key="card-2"
+                key="step-language"
                 custom={direction}
                 variants={variants}
                 initial="enter"
@@ -202,71 +291,178 @@ export function OnboardingWelcomeModal() {
                 exit="exit"
                 className="space-y-5"
               >
-                <div className="flex items-center justify-between">
-                  <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
-                    Card 2 of 3 • How We Help You
+                <div className="space-y-1">
+                  <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                    {t?.languageSelect?.badge || 'Step 2 • Sanctuary Language'}
                   </span>
-                </div>
-
-                <div className="space-y-2">
-                  <h3 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 dark:text-white leading-tight">
-                    Tools Designed to Mirror Your Mind, Not Boss It
+                  <h3 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 dark:text-white leading-tight">
+                    {t?.languageSelect?.title || 'Choose Your Sanctuary Language'}
                   </h3>
-                  <p className="text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-400">
-                    You choose the tool that speaks to your current energy.
+                  <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400">
+                    {t?.languageSelect?.subtitle ||
+                      'Select the language that speaks most intimately to your mind and reflections.'}
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                  <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-1">
-                    <div className="flex items-center gap-2 font-bold text-xs text-slate-900 dark:text-white">
-                      <Wind className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                      <span>Breathing &amp; Somatic Studio</span>
-                    </div>
-                    <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-snug">
-                      10 procedural Web Audio soundscapes and guided tension releases for jaw, eyes, and shoulders.
-                    </p>
-                  </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                  {supportedLocales.map((loc) => {
+                    const isSelected = locale === loc.code;
+                    return (
+                      <button
+                        key={loc.code}
+                        type="button"
+                        data-testid={`onboarding-language-${loc.code}`}
+                        onClick={() => setLocale(loc.code as Locale)}
+                        className={`p-4 rounded-2xl border text-start flex items-center justify-between transition-all ${
+                          isSelected
+                            ? 'border-amber-500 bg-amber-50/70 dark:bg-amber-950/50 ring-2 ring-amber-500/30 shadow-sm'
+                            : 'border-stone-200 dark:border-slate-800 hover:border-stone-300 dark:hover:border-slate-700 bg-stone-50/60 dark:bg-slate-800/40'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold ${
+                              isSelected
+                                ? 'bg-amber-500 text-white'
+                                : 'bg-stone-200 dark:bg-slate-700 text-stone-700 dark:text-slate-300'
+                            }`}
+                          >
+                            <Globe className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <div className="font-bold text-sm text-stone-900 dark:text-white">
+                              {loc.name}
+                            </div>
+                            <div className="text-xs text-stone-500 dark:text-slate-400">
+                              {loc.isRtl ? 'Arabic • RTL' : loc.code.toUpperCase()}
+                            </div>
+                          </div>
+                        </div>
 
-                  <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-1">
-                    <div className="flex items-center gap-2 font-bold text-xs text-slate-900 dark:text-white">
-                      <Compass className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                      <span>Inner Compass Quizzes</span>
-                    </div>
-                    <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-snug">
-                      Exploratory questionnaires inspired by 5 personality frameworks across Work, Life, and Soul.
-                    </p>
-                  </div>
-
-                  <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-1">
-                    <div className="flex items-center gap-2 font-bold text-xs text-slate-900 dark:text-white">
-                      <Feather className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                      <span>The Balance Ledger &amp; The Shift</span>
-                    </div>
-                    <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-snug">
-                      Plant seeds of light and tenderly release habits you outgrew, with 60-second impulse resets.
-                    </p>
-                  </div>
-
-                  <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-1">
-                    <div className="flex items-center gap-2 font-bold text-xs text-slate-900 dark:text-white">
-                      <Lock className="w-4 h-4 text-violet-600 dark:text-violet-400" />
-                      <span>The Mind Vault &amp; Dissolution</span>
-                    </div>
-                    <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-snug">
-                      A PIN-protected lockbox or disappearing chamber to let burdens vanish into the void.
-                    </p>
-                  </div>
+                        {isSelected && (
+                          <div className="w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center">
+                            <Check className="w-4 h-4" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </motion.div>
             )}
 
             {/* ============================================================== */}
-            {/* CARD 3: YOUR SOVEREIGN BOUNDARIES & MANDATORY CONSENT GATE */}
+            {/* STEP 3: GENDER / ADDRESSING PREFERENCE */}
             {/* ============================================================== */}
             {currentStep === 2 && (
               <motion.div
-                key="card-3"
+                key="step-addressing"
+                custom={direction}
+                variants={variants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                className="space-y-5"
+              >
+                <div className="space-y-1">
+                  <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                    {t?.genderSelect?.badge || 'Step 3 • Respectful Addressing'}
+                  </span>
+                  <h3 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 dark:text-white leading-tight">
+                    {t?.genderSelect?.title || 'How Would You Like Us to Address You?'}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400">
+                    {t?.genderSelect?.subtitle ||
+                      'This is optional and helps us personalize grammar and reflections respectfully.'}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 pt-2">
+                  {[
+                    {
+                      id: 'man' as AddressingPreference,
+                      label: t?.genderSelect?.options?.man || 'Man',
+                      subtext: 'Personalize reflections with masculine phrasing where applicable',
+                      icon: User,
+                    },
+                    {
+                      id: 'woman' as AddressingPreference,
+                      label: t?.genderSelect?.options?.woman || 'Woman',
+                      subtext: 'Personalize reflections with feminine phrasing where applicable',
+                      icon: User,
+                    },
+                    {
+                      id: 'unspecified' as AddressingPreference,
+                      label: t?.genderSelect?.options?.preferNotToSay || 'Prefer not to say',
+                      subtext: 'Use neutral, universal phrasing across all reflection modules',
+                      icon: Heart,
+                    },
+                  ].map((opt) => {
+                    const isSelected = addressingPreference === opt.id;
+                    const Icon = opt.icon;
+
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        data-testid={`onboarding-gender-${opt.id}`}
+                        onClick={() => setAddressingPreference(opt.id)}
+                        className={`p-4 rounded-2xl border text-start flex items-center justify-between transition-all ${
+                          isSelected
+                            ? 'border-amber-500 bg-amber-50/70 dark:bg-amber-950/50 ring-2 ring-amber-500/30 shadow-sm'
+                            : 'border-stone-200 dark:border-slate-800 hover:border-stone-300 dark:hover:border-slate-700 bg-stone-50/60 dark:bg-slate-800/40'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold ${
+                              isSelected
+                                ? 'bg-amber-500 text-white'
+                                : 'bg-stone-200 dark:bg-slate-700 text-stone-700 dark:text-slate-300'
+                            }`}
+                          >
+                            <Icon className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <div className="font-bold text-sm text-stone-900 dark:text-white">
+                              {opt.label}
+                            </div>
+                            <div className="text-xs text-stone-500 dark:text-slate-400">
+                              {opt.subtext}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div
+                          className={`w-5 h-5 rounded-full border flex items-center justify-center ${
+                            isSelected
+                              ? 'border-amber-500 bg-amber-500 text-white'
+                              : 'border-stone-300 dark:border-slate-600'
+                          }`}
+                        >
+                          {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-stone-50 dark:bg-slate-800/60 border border-stone-200 dark:border-slate-700 flex items-center gap-2.5 text-xs text-stone-600 dark:text-slate-300">
+                  <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <span>
+                    {t?.genderSelect?.helper ||
+                      'Stored privately on this device only. You may change this anytime in Settings.'}
+                  </span>
+                </div>
+              </motion.div>
+            )}
+
+            {/* ============================================================== */}
+            {/* STEP 4: ABOUT THE APP */}
+            {/* ============================================================== */}
+            {currentStep === 3 && (
+              <motion.div
+                key="step-about"
                 custom={direction}
                 variants={variants}
                 initial="enter"
@@ -274,22 +470,95 @@ export function OnboardingWelcomeModal() {
                 exit="exit"
                 className="space-y-4"
               >
-                <div className="flex items-center justify-between">
+                <div className="space-y-1">
                   <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-                    Card 3 of 3 • Your Sovereign Boundaries
+                    Step 4 of 5 • What is BECOMING?
                   </span>
+                  <h3 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 dark:text-white leading-tight">
+                    Tools Designed to Mirror Your Mind, Not Boss It
+                  </h3>
+                  <p className="text-xs sm:text-sm font-medium text-amber-700 dark:text-amber-400">
+                    Gentle support for your day from morning to night.
+                  </p>
                 </div>
 
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                  <div className="p-3.5 rounded-2xl bg-stone-50 dark:bg-slate-800/60 border border-stone-200 dark:border-slate-700 space-y-1">
+                    <div className="flex items-center gap-2 font-bold text-xs text-stone-900 dark:text-white">
+                      <Wind className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                      <span>Breathing &amp; Somatic Studio</span>
+                    </div>
+                    <p className="text-[11px] text-stone-600 dark:text-slate-400 leading-snug">
+                      Apple-caliber coherent breathing, Lotus visualizer, and guided tension release for jaw and shoulders.
+                    </p>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-stone-50 dark:bg-slate-800/60 border border-stone-200 dark:border-slate-700 space-y-1">
+                    <div className="flex items-center gap-2 font-bold text-xs text-stone-900 dark:text-white">
+                      <Compass className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                      <span>Daily Living Compass &amp; Rituals</span>
+                    </div>
+                    <p className="text-[11px] text-stone-600 dark:text-slate-400 leading-snug">
+                      Morning intentions, evening somatic release, 3 sparks of gratitude, and the 4 pillars of living right.
+                    </p>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-stone-50 dark:bg-slate-800/60 border border-stone-200 dark:border-slate-700 space-y-1">
+                    <div className="flex items-center gap-2 font-bold text-xs text-stone-900 dark:text-white">
+                      <Feather className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                      <span>Self-Discovery &amp; Habit Seeds</span>
+                    </div>
+                    <p className="text-[11px] text-stone-600 dark:text-slate-400 leading-snug">
+                      5 scientific personality frameworks, habit liberation ledger, and zero judgmental streaks.
+                    </p>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-stone-50 dark:bg-slate-800/60 border border-stone-200 dark:border-slate-700 space-y-1">
+                    <div className="flex items-center gap-2 font-bold text-xs text-stone-900 dark:text-white">
+                      <Lock className="w-4 h-4 text-violet-600 dark:text-violet-400" />
+                      <span>The Mind Vault &amp; Dissolution</span>
+                    </div>
+                    <p className="text-[11px] text-stone-600 dark:text-slate-400 leading-snug">
+                      A secure private vault for burdens and worries, dissolving thoughts into particles when you choose.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-2xl bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-900/50 flex items-center gap-2.5 text-xs text-amber-900 dark:text-amber-200">
+                  <ShieldCheck className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                  <span>
+                    <strong>Not a doctor, therapist, or coach:</strong> BECOMING provides quiet self-reflection tools without unsolicited advice or clinical claims.
+                  </span>
+                </div>
+              </motion.div>
+            )}
+
+            {/* ============================================================== */}
+            {/* STEP 5: UNDERSTAND & AGREE (MANDATORY CONSENT GATE) */}
+            {/* ============================================================== */}
+            {currentStep === 4 && (
+              <motion.div
+                key="step-agreement"
+                custom={direction}
+                variants={variants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                className="space-y-4"
+              >
                 <div className="space-y-1.5">
-                  <h3 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 dark:text-white leading-tight">
+                  <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                    Step 5 of 5 • Sovereign Agreement
+                  </span>
+                  <h3 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 dark:text-white leading-tight">
                     Life is Short. You Are Not an Angel. You Are Free.
                   </h3>
-                  <p className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400">
+                  <p className="text-xs sm:text-sm font-medium text-stone-600 dark:text-stone-400">
                     Growth happens through patience, responsibility, and self-compassion.
                   </p>
                 </div>
 
-                <div className="space-y-2 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+                <div className="space-y-2 text-xs sm:text-sm text-stone-700 dark:text-stone-300 leading-relaxed font-normal">
                   <p>
                     You do not need to be perfect to be worthy of peace. You will make mistakes, stumble, and have days where you just want to rest. That is an honorable part of the human journey.
                   </p>
@@ -311,7 +580,7 @@ export function OnboardingWelcomeModal() {
                       id="onboarding-consent-checkbox"
                       checked={hasAgreedConsent}
                       onChange={(e) => setHasAgreedConsent(e.target.checked)}
-                      className="w-5 h-5 mt-0.5 rounded-lg border-amber-400 text-indigo-600 focus:ring-indigo-500 accent-indigo-600 cursor-pointer shrink-0"
+                      className="w-5 h-5 mt-0.5 rounded-lg border-amber-400 text-amber-600 focus:ring-amber-500 accent-amber-600 cursor-pointer shrink-0"
                     />
                     <span className="text-xs sm:text-sm text-amber-950 dark:text-amber-200 font-serif leading-relaxed">
                       I understand that BECOMING is a personal self-reflection and wellness sanctuary, not medical care, therapy, or professional coaching. I am in 100% control of my own life, choices, and peace.
@@ -323,34 +592,42 @@ export function OnboardingWelcomeModal() {
           </AnimatePresence>
 
           {/* Bottom Navigation Toolbar */}
-          <div className="pt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 mt-4">
+          <div className="pt-6 border-t border-stone-100 dark:border-slate-800 flex items-center justify-between gap-3 mt-4">
             <div>
               {currentStep > 0 ? (
                 <button
                   type="button"
                   id="onboarding-prev-btn"
                   onClick={handlePrev}
-                  className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-1.5 transition-colors"
+                  className="px-4 py-2 rounded-xl border border-stone-200 dark:border-slate-700 text-xs font-bold text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-slate-800 flex items-center gap-1.5 transition-colors"
                 >
                   <ArrowLeft className={`w-3.5 h-3.5 ${isRtl ? 'rotate-180' : ''}`} />
-                  <span>Previous</span>
+                  <span>{t?.prevButton || 'Previous'}</span>
                 </button>
               ) : (
-                <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">
-                  Welcome to BECOMING
-                </span>
+                <button
+                  type="button"
+                  onClick={handleSkipIntro}
+                  className="text-xs text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 font-medium py-1"
+                >
+                  {t?.intro?.skipButton || 'Skip Intro'}
+                </button>
               )}
             </div>
 
             <div className="flex items-center gap-2">
-              {currentStep < 2 ? (
+              {currentStep < 4 ? (
                 <button
                   type="button"
                   id="onboarding-next-btn"
                   onClick={handleNext}
-                  className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-500/25 flex items-center gap-1.5 transition-all hover:scale-105"
+                  className="px-6 py-2.5 rounded-xl bg-stone-900 dark:bg-white hover:bg-stone-800 dark:hover:bg-stone-100 text-white dark:text-stone-900 text-xs font-bold shadow-lg shadow-stone-900/15 flex items-center gap-2 transition-all hover:scale-105"
                 >
-                  <span>{currentStep === 0 ? 'How We Help' : 'Sovereign Boundaries'}</span>
+                  <span>
+                    {currentStep === 0
+                      ? t?.intro?.beginButton || 'Step into the Sanctuary'
+                      : t?.nextButton || 'Next'}
+                  </span>
                   <ArrowRight className={`w-3.5 h-3.5 ${isRtl ? 'rotate-180' : ''}`} />
                 </button>
               ) : (
@@ -362,11 +639,11 @@ export function OnboardingWelcomeModal() {
                   className={`px-6 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg transition-all ${
                     hasAgreedConsent
                       ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/25 hover:scale-105 cursor-pointer animate-pulse'
-                      : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed shadow-none'
+                      : 'bg-stone-200 dark:bg-slate-800 text-stone-400 dark:text-slate-600 cursor-not-allowed shadow-none'
                   }`}
                 >
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>Agree &amp; Enter Sanctuary</span>
+                  <span>{t?.agreeButton || 'Agree & Enter Sanctuary'}</span>
                 </button>
               )}
             </div>

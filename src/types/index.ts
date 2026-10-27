@@ -71,6 +71,8 @@ export interface MomentOfLight {
 
 export type AvatarId = 'lotus' | 'mountain' | 'wave' | 'leaf' | 'star';
 
+export type AddressingPreference = 'man' | 'woman' | 'unspecified';
+
 export interface UserProfile {
   id: string;
   name: string;
@@ -80,6 +82,7 @@ export interface UserProfile {
   isGuest?: boolean;
   emailVerified?: boolean;
   authProvider?: 'firebase' | 'local';
+  addressingPreference?: AddressingPreference;
 }
 
 export interface UserSessionData {

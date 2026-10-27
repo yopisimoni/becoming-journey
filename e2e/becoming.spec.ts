@@ -462,7 +462,7 @@ test.describe('BECOMING v0.5: Human Awakening, Scientific Frameworks, Zero-to-He
   });
 });
 
-test.describe('BECOMING v0.6: Cinematic Onboarding Portal, Mandatory Consent Gate & Dynamic Quotes', () => {
+test.describe('BECOMING v0.9.1: Cinematic 5-Step Onboarding Portal, Mandatory Consent Gate & Dynamic Quotes', () => {
   test('triggers Onboarding Welcome Modal on first visit, cycles cards, requires consent, and unlocks app', async ({ page }) => {
     await page.goto('/');
 
@@ -471,15 +471,24 @@ test.describe('BECOMING v0.6: Cinematic Onboarding Portal, Mandatory Consent Gat
     await expect(modal).toBeVisible();
     await expect(page.getByRole('heading', { name: /A Quiet Human Sanctuary in a Loud Digital World/i })).toBeVisible();
 
-    // Navigate to Card 2
     const nextBtn = page.locator('#onboarding-next-btn');
     await expect(nextBtn).toBeVisible();
-    await nextBtn.click();
 
+    // Step 1 -> Step 2 (Language Selection)
+    await nextBtn.click();
+    await expect(page.getByRole('heading', { name: /Choose Your Sanctuary Language/i })).toBeVisible();
+    await expect(page.getByTestId('onboarding-language-ar')).toBeVisible();
+
+    // Step 2 -> Step 3 (Gender / Addressing Selection)
+    await nextBtn.click();
+    await expect(page.getByRole('heading', { name: /How Would You Like Us to Address You\?/i })).toBeVisible();
+
+    // Step 3 -> Step 4 (About the App)
+    await nextBtn.click();
     await expect(page.getByRole('heading', { name: /Tools Designed to Mirror Your Mind, Not Boss It/i })).toBeVisible();
     await expect(page.getByText(/Breathing & Somatic Studio/i)).toBeVisible();
 
-    // Navigate to Card 3
+    // Step 4 -> Step 5 (Mandatory Consent Gate)
     await nextBtn.click();
     await expect(page.getByRole('heading', { name: /Life is Short\. You Are Not an Angel\. You Are Free\./i })).toBeVisible();
 
@@ -515,6 +524,22 @@ test.describe('BECOMING v0.6: Cinematic Onboarding Portal, Mandatory Consent Gat
     await expect(drawAnotherBtn).toBeVisible();
     await drawAnotherBtn.click();
     await expect(page.getByText(/Philosophical Library/i)).toBeVisible();
+  });
+
+  test('allows resetting onboarding from Settings & About view to re-experience the flow', async ({ page }) => {
+    await page.goto('/');
+    // User is already onboarded, open settings
+    await page.locator('#floating-dock-tab-studios').click();
+    await page.locator('#dock-studio-settings').click();
+
+    const resetBtn = page.locator('#reset-onboarding-btn');
+    await expect(resetBtn).toBeVisible();
+    await resetBtn.click();
+
+    // Verify Onboarding Modal re-opens with Step 1
+    const modal = page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+    await expect(page.getByRole('heading', { name: /A Quiet Human Sanctuary in a Loud Digital World/i })).toBeVisible();
   });
 });
 

@@ -16,13 +16,13 @@ function OnboardingHarness({ autoOpen = true }: { autoOpen?: boolean }) {
   return <OnboardingWelcomeModal />;
 }
 
-describe('v0.6: Cinematic Onboarding Welcome Modal & Mandatory Consent Gate', () => {
+describe('v0.9.1: Cinematic 5-Step First-Time Onboarding Experience', () => {
   beforeEach(() => {
     localStorage.clear();
     sessionStorage.clear();
   });
 
-  it('renders Card 1 with sanctuary philosophy on opening', () => {
+  it('renders Step 1 (Cinematic Motion Intro) on first opening', () => {
     render(
       <AppProvider>
         <OnboardingHarness autoOpen={true} />
@@ -30,46 +30,129 @@ describe('v0.6: Cinematic Onboarding Welcome Modal & Mandatory Consent Gate', ()
     );
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /A Quiet Human Sanctuary in a Loud Digital World/i })).toBeInTheDocument();
-    expect(screen.getAllByText(/Who We Are & Why We're Here/i).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText(/Zero Cost Forever, 100% Local Privacy, and Unhurried Presence/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /BECOMING/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', {
+        name: /A Quiet Human Sanctuary in a Loud Digital World/i,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Step into an unhurried digital sanctuary/i)
+    ).toBeInTheDocument();
+
+    const nextBtn = document.getElementById('onboarding-next-btn');
+    expect(nextBtn).toBeInTheDocument();
   });
 
-  it('cycles through motion cards: Card 1 -> Card 2 -> Card 3', () => {
+  it('progresses to Step 2 (Language Selection) and updates locale & RTL immediately', () => {
     render(
       <AppProvider>
         <OnboardingHarness autoOpen={true} />
       </AppProvider>
     );
 
-    // Card 1 -> Card 2
-    const nextBtn1 = document.getElementById('onboarding-next-btn')!;
-    expect(nextBtn1).toBeTruthy();
-    fireEvent.click(nextBtn1);
+    // Advance to Step 2
+    fireEvent.click(document.getElementById('onboarding-next-btn')!);
 
-    expect(screen.getByRole('heading', { name: /Tools Designed to Mirror Your Mind, Not Boss It/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /Choose Your Sanctuary Language/i })
+    ).toBeInTheDocument();
+    expect(screen.getByText('English')).toBeInTheDocument();
+    expect(screen.getByText('العربية')).toBeInTheDocument();
+    expect(screen.getByText('Français')).toBeInTheDocument();
+    expect(screen.getByText('Español')).toBeInTheDocument();
+    expect(screen.getByText('Italiano')).toBeInTheDocument();
+
+    // Select Arabic
+    const arabicBtn = screen.getByTestId('onboarding-language-ar');
+    fireEvent.click(arabicBtn);
+
+    // Document element should be RTL
+    expect(document.documentElement.getAttribute('dir')).toBe('rtl');
+    expect(document.documentElement.getAttribute('lang')).toBe('ar');
+
+    // Switch back to English
+    const englishBtn = screen.getByTestId('onboarding-language-en');
+    fireEvent.click(englishBtn);
+    expect(document.documentElement.getAttribute('dir')).toBe('ltr');
+  });
+
+  it('progresses to Step 3 (Gender / Addressing Preference) and persists choice locally', () => {
+    render(
+      <AppProvider>
+        <OnboardingHarness autoOpen={true} />
+      </AppProvider>
+    );
+
+    // Step 1 -> Step 2
+    fireEvent.click(document.getElementById('onboarding-next-btn')!);
+    // Step 2 -> Step 3
+    fireEvent.click(document.getElementById('onboarding-next-btn')!);
+
+    expect(
+      screen.getByRole('heading', {
+        name: /How Would You Like Us to Address You\?/i,
+      })
+    ).toBeInTheDocument();
+
+    const manOption = screen.getByTestId('onboarding-gender-man');
+    const womanOption = screen.getByTestId('onboarding-gender-woman');
+    const neutralOption = screen.getByTestId('onboarding-gender-unspecified');
+
+    expect(manOption).toBeInTheDocument();
+    expect(womanOption).toBeInTheDocument();
+    expect(neutralOption).toBeInTheDocument();
+
+    // Select woman
+    fireEvent.click(womanOption);
+    expect(localStorage.getItem('becoming_addressing_preference')).toBe('woman');
+
+    // Select neutral
+    fireEvent.click(neutralOption);
+    expect(localStorage.getItem('becoming_addressing_preference')).toBe('unspecified');
+  });
+
+  it('progresses to Step 4 (About the App) explaining gentle morning-to-night support', () => {
+    render(
+      <AppProvider>
+        <OnboardingHarness autoOpen={true} />
+      </AppProvider>
+    );
+
+    // Step 1 -> 2 -> 3 -> 4
+    fireEvent.click(document.getElementById('onboarding-next-btn')!);
+    fireEvent.click(document.getElementById('onboarding-next-btn')!);
+    fireEvent.click(document.getElementById('onboarding-next-btn')!);
+
+    expect(
+      screen.getByRole('heading', {
+        name: /Tools Designed to Mirror Your Mind, Not Boss It/i,
+      })
+    ).toBeInTheDocument();
     expect(screen.getByText(/Breathing & Somatic Studio/i)).toBeInTheDocument();
+    expect(screen.getByText(/Daily Living Compass & Rituals/i)).toBeInTheDocument();
+    expect(screen.getByText(/Self-Discovery & Habit Seeds/i)).toBeInTheDocument();
     expect(screen.getByText(/The Mind Vault & Dissolution/i)).toBeInTheDocument();
-
-    // Card 2 -> Card 3
-    const nextBtn2 = document.getElementById('onboarding-next-btn')!;
-    expect(nextBtn2).toBeTruthy();
-    fireEvent.click(nextBtn2);
-
-    expect(screen.getByRole('heading', { name: /Life is Short\. You Are Not an Angel\. You Are Free\./i })).toBeInTheDocument();
-    expect(screen.getByText(/Mandatory Agreement & Sanctuary Consent Gate/i)).toBeInTheDocument();
   });
 
-  it('enforces mandatory consent gate before unlocking the Agree & Enter button', () => {
+  it('enforces mandatory consent gate on Step 5 before unlocking Agree & Enter button', () => {
     render(
       <AppProvider>
         <OnboardingHarness autoOpen={true} />
       </AppProvider>
     );
 
-    // Navigate to Card 3
+    // Step 1 -> 2 -> 3 -> 4 -> 5
     fireEvent.click(document.getElementById('onboarding-next-btn')!);
     fireEvent.click(document.getElementById('onboarding-next-btn')!);
+    fireEvent.click(document.getElementById('onboarding-next-btn')!);
+    fireEvent.click(document.getElementById('onboarding-next-btn')!);
+
+    expect(
+      screen.getByRole('heading', {
+        name: /Life is Short\. You Are Not an Angel\. You Are Free\./i,
+      })
+    ).toBeInTheDocument();
 
     const agreeBtn = screen.getByRole('button', { name: /Agree & Enter Sanctuary/i });
     const checkbox = screen.getByRole('checkbox', {

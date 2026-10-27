@@ -219,6 +219,29 @@ export interface TranslationDictionary {
     nextButton: string;
     prevButton: string;
     closeTour: string;
+    intro?: {
+      badge: string;
+      title: string;
+      subtitle: string;
+      beginButton: string;
+      skipButton: string;
+    };
+    languageSelect?: {
+      badge: string;
+      title: string;
+      subtitle: string;
+    };
+    genderSelect?: {
+      badge: string;
+      title: string;
+      subtitle: string;
+      helper: string;
+      options: {
+        man: string;
+        woman: string;
+        preferNotToSay: string;
+      };
+    };
   };
   atmosphere?: {
     switcherTitle: string;

@@ -227,6 +227,29 @@ export const es: TranslationDictionary = {
     nextButton: 'Siguiente',
     prevButton: 'Anterior',
     closeTour: 'Cerrar recorrido',
+    intro: {
+      badge: 'Primeros Pasos • Despertar Celestial',
+      title: 'BECOMING',
+      subtitle: 'Un santuario humano y sereno en un mundo digital ruidoso',
+      beginButton: 'Entrar al Santuario',
+      skipButton: 'Saltar Introducción',
+    },
+    languageSelect: {
+      badge: 'Paso 2 • Idioma del Santuario',
+      title: 'Elige tu idioma de reflexión',
+      subtitle: 'Selecciona el idioma que resuene más íntimamente con tus pensamientos.',
+    },
+    genderSelect: {
+      badge: 'Paso 3 • Tratamiento Respetuoso',
+      title: '¿Cómo te gustaría que nos dirijamos a ti?',
+      subtitle: 'Esto es opcional y nos ayuda a personalizar la redacción con respeto y calidez.',
+      helper: 'Se almacena únicamente en este dispositivo. Puedes cambiarlo en Ajustes en cualquier momento.',
+      options: {
+        man: 'Hombre',
+        woman: 'Mujer',
+        preferNotToSay: 'Prefiero no decir',
+      },
+    },
   },
   atmosphere: {
     switcherTitle: 'Lienzo Atmosférico',

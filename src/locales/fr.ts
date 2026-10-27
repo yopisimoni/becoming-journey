@@ -227,6 +227,29 @@ export const fr: TranslationDictionary = {
     nextButton: 'Suivant',
     prevButton: 'Précédent',
     closeTour: 'Fermer la visite',
+    intro: {
+      badge: 'Premiers Pas • Éveil Céleste',
+      title: 'BECOMING',
+      subtitle: 'Un sanctuaire humain et paisible dans un monde numérique bruyant',
+      beginButton: 'Entrer dans le Sanctuaire',
+      skipButton: 'Passer l’introduction',
+    },
+    languageSelect: {
+      badge: 'Étape 2 • Langue du Sanctuaire',
+      title: 'Choisissez votre langue de recueillement',
+      subtitle: 'Sélectionnez la langue qui résonne le plus intimement avec votre esprit.',
+    },
+    genderSelect: {
+      badge: 'Étape 3 • Formule de politesse',
+      title: 'Comment souhaitez-vous que nous nous adressions à vous ?',
+      subtitle: 'Ceci est facultatif et permet d’adapter respectueusement les tournures de phrase.',
+      helper: 'Conservé uniquement sur cet appareil. Modifiable à tout moment dans les Paramètres.',
+      options: {
+        man: 'Homme',
+        woman: 'Femme',
+        preferNotToSay: 'Préfère ne pas préciser',
+      },
+    },
   },
   atmosphere: {
     switcherTitle: 'Toile Atmosphérique',

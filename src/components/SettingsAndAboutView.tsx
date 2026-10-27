@@ -30,6 +30,7 @@ import {
   Wand2,
   HardDrive,
   Cloud,
+  RotateCcw,
 } from 'lucide-react';
 
 export function SettingsAndAboutView() {
@@ -57,6 +58,9 @@ export function SettingsAndAboutView() {
     importDataJson,
     wipeAllData,
     setOnboardingOpen,
+    resetOnboarding,
+    addressingPreference,
+    setAddressingPreference,
     user,
     deleteAccount,
   } = useApp();
@@ -383,6 +387,35 @@ export function SettingsAndAboutView() {
             </div>
           </div>
 
+          {/* Addressing Preference */}
+          <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-600 dark:text-slate-400">
+              Personal Addressing Preference
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {[
+                { id: 'man' as const, label: 'Man' },
+                { id: 'woman' as const, label: 'Woman' },
+                { id: 'unspecified' as const, label: 'Prefer not to say' },
+              ].map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  data-testid={`settings-addressing-${opt.id}`}
+                  onClick={() => setAddressingPreference(opt.id)}
+                  className={`p-3 rounded-2xl border text-center transition-all ${
+                    addressingPreference === opt.id
+                      ? 'bg-amber-50 border-amber-300 text-amber-800 dark:bg-amber-950/60 dark:border-amber-800 dark:text-amber-200 font-bold ring-2 ring-amber-500'
+                      : 'border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300'
+                  }`}
+                >
+                  <div className="text-sm font-bold">{opt.label}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Default Audio & Volume */}
           <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
             <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-600 dark:text-slate-400">
@@ -643,6 +676,27 @@ export function SettingsAndAboutView() {
               )}
             </div>
           </div>
+
+          {/* Onboarding Tour Controls */}
+          <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-600 dark:text-slate-400">
+              Sanctuary Onboarding Experience
+            </h2>
+            <p className="text-xs text-slate-500">
+              Re-experience the cinematic universe introduction, language setup, and sovereign consent gate.
+            </p>
+            <div className="pt-1 flex flex-wrap gap-2.5">
+              <button
+                type="button"
+                id="reset-onboarding-btn"
+                onClick={() => resetOnboarding()}
+                className="px-4 py-2 rounded-xl border border-stone-200 dark:border-slate-700 bg-stone-50 dark:bg-slate-800 text-xs font-semibold text-stone-700 dark:text-slate-300 hover:bg-stone-100 dark:hover:bg-slate-700 flex items-center gap-2 transition-colors"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Reset Onboarding Experience</span>
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -696,14 +750,25 @@ export function SettingsAndAboutView() {
               </div>
             </div>
 
-            <div className="pt-2 flex justify-start">
+            <div className="pt-2 flex flex-wrap gap-2.5 justify-start">
               <button
                 type="button"
+                id="review-onboarding-btn"
                 onClick={() => setOnboardingOpen(true)}
                 className="px-4 py-2 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50/80 dark:bg-indigo-950/40 text-xs font-bold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 flex items-center gap-2 transition-colors"
               >
                 <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                 <span>Review Onboarding &amp; Sovereign Boundaries</span>
+              </button>
+
+              <button
+                type="button"
+                id="reset-onboarding-btn"
+                onClick={() => resetOnboarding()}
+                className="px-4 py-2 rounded-xl border border-stone-200 dark:border-slate-700 bg-stone-50 dark:bg-slate-800 text-xs font-semibold text-stone-700 dark:text-slate-300 hover:bg-stone-100 dark:hover:bg-slate-700 flex items-center gap-2 transition-colors"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Reset Onboarding Experience</span>
               </button>
             </div>
           </div>

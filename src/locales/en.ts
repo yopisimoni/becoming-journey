@@ -226,6 +226,29 @@ export const en: TranslationDictionary = {
     nextButton: 'Next',
     prevButton: 'Previous',
     closeTour: 'Close Tour',
+    intro: {
+      badge: 'First Steps • Celestial Awakening',
+      title: 'BECOMING',
+      subtitle: 'A Quiet Human Sanctuary in a Loud Digital World',
+      beginButton: 'Step into the Sanctuary',
+      skipButton: 'Skip Intro',
+    },
+    languageSelect: {
+      badge: 'Step 2 • Sanctuary Language',
+      title: 'Choose Your Sanctuary Language',
+      subtitle: 'Select the language that speaks most intimately to your mind and reflections.',
+    },
+    genderSelect: {
+      badge: 'Step 3 • Respectful Addressing',
+      title: 'How Would You Like Us to Address You?',
+      subtitle: 'This is optional and helps us personalize grammar and reflections respectfully.',
+      helper: 'Stored privately on this device only. You may change this anytime in Settings.',
+      options: {
+        man: 'Man',
+        woman: 'Woman',
+        preferNotToSay: 'Prefer not to say',
+      },
+    },
   },
   atmosphere: {
     switcherTitle: 'Atmosphere Canvas',
