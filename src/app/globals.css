@@ -157,3 +157,10 @@ body {
   }
 }
 
+
+/* Keep content clear of the floating navigation and iPhone home indicator. */
+@media (max-width: 639px) {
+  body { padding-bottom: calc(8rem + env(safe-area-inset-bottom)); }
+  html { scroll-padding-bottom: calc(8rem + env(safe-area-inset-bottom)); }
+  button, a, select { -webkit-tap-highlight-color: transparent; }
+}

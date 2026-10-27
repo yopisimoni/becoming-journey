@@ -121,7 +121,7 @@ export function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border-b border-slate-200/80 dark:border-white/10 transition-colors">
+      <header className="sticky top-0 z-40 bg-white dark:bg-slate-900 sm:bg-white/80 sm:dark:bg-slate-900/80 sm:backdrop-blur-xl border-b border-slate-200/80 dark:border-white/10 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 gap-2 min-w-0">
             {/* Start: Brand Logo & Prototype Badge */}
@@ -131,8 +131,8 @@ export function Navbar() {
                 onClick={handleLogoClick}
                 className="flex items-center gap-2.5 text-start focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-xl"
               >
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center shadow-md shadow-cyan-500/15 overflow-hidden">
-                  <LivingLightIdentity size={32} simplified={true} interactive={false} ariaLabel="BECOMING Brand Logo" />
+                <div className="w-9 h-9 rounded-xl bg-slate-900 dark:bg-white flex items-center justify-center shrink-0" aria-hidden="true">
+                  <span className="font-serif text-2xl font-semibold text-white dark:text-slate-900 leading-none">B</span>
                 </div>
                 <div>
                   <span className="text-base font-bold tracking-tight text-slate-900 dark:text-white">
@@ -368,13 +368,16 @@ export function Navbar() {
       </header>
 
       {isMobileMenuOpen && (
+        <>
+        <button type="button" aria-label="Dismiss sanctuary controls" className="sm:hidden fixed inset-0 z-40 bg-slate-950/45" onClick={() => setMobileMenuOpen(false)} />
         <div
           ref={mobileMenuRef}
           id="mobile-sanctuary-menu"
-          className="sm:hidden fixed top-16 inset-x-0 z-50 p-4 bg-white/98 dark:bg-slate-900/98 border-b border-slate-200 dark:border-slate-700 shadow-xl max-h-[calc(100dvh-4.5rem)] overflow-y-auto"
+          className="sm:hidden fixed top-16 inset-x-0 z-50 p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 shadow-2xl max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-contain"
           role="region"
           aria-label="Sanctuary controls"
         >
+          <div className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">Sanctuary controls</div>
           <div className="flex flex-wrap gap-3 items-center mb-4"><AtmosphereSwitcher /><SoundscapeControlPill /></div>
           <div className="grid grid-cols-2 gap-3 mb-3">
             <button id="mobile-twilight-toggle" type="button" onClick={toggleTheme} className="min-h-12 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-2 text-slate-800 dark:text-white">{themeMode === 'twilight' ? <Sun className="w-5 h-5"/> : <Moon className="w-5 h-5"/>}<span>{themeMode === 'twilight' ? 'Light' : 'Twilight'}</span></button>
@@ -388,6 +391,7 @@ export function Navbar() {
           </div>
           <button type="button" onClick={() => setMobileMenuOpen(false)} className="mt-3 w-full min-h-11 text-sm font-medium rounded-xl border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition-colors">{dict.disclaimer?.close || 'Close'}</button>
         </div>
+        </>
       )}
       {/* Modals */}
       <AuthModal />
