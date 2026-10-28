@@ -41,6 +41,7 @@ import {
 export function DashboardView() {
   const {
     dict,
+    locale,
     user,
     cards,
     journalEntries,
@@ -59,6 +60,14 @@ export function DashboardView() {
     aiSettings,
   } = useApp();
 
+  const quoteUi: Record<string, string[]> = {
+    en: ['Daily Wisdom','AI Sanctuary Greeting','Draw another wisdom quote','Draw Another','Live Companion','Philosophical Library'],
+    ar: ['حكمة اليوم','رسالة من المساعد','عرض حكمة أخرى','حكمة أخرى','المساعد المباشر','مكتبة التأملات'],
+    fr: ['Sagesse du jour','Message du compagnon IA','Découvrir une autre citation','Autre citation','Compagnon en direct','Bibliothèque philosophique'],
+    es: ['Sabiduría del día','Mensaje del compañero IA','Ver otra cita','Otra cita','Compañero en directo','Biblioteca filosófica'],
+    it: ['Saggezza del giorno','Messaggio del compagno IA','Mostra un’altra citazione','Altra citazione','Compagno in diretta','Biblioteca filosofica'],
+  };
+  const q = quoteUi[locale] || quoteUi.en;
   const [savedQuoteToMoments, setSavedQuoteToMoments] = useState(false);
   const [editingPillars, setEditingPillars] = useState(false);
   const [pillarInputs, setPillarInputs] = useState({
@@ -348,7 +357,7 @@ export function DashboardView() {
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
             <Quote className="w-4 h-4" />
             <span>
-              {sessionQuote.isAiGenerated ? 'AI Sanctuary Greeting' : 'Daily Wisdom'} • {sessionQuote.theme}
+              {sessionQuote.isAiGenerated ? q[1] : q[0]} • {sessionQuote.theme}
             </span>
           </div>
 
@@ -356,15 +365,15 @@ export function DashboardView() {
             <button
               type="button"
               onClick={handleRotateQuote}
-              title="Draw another wisdom quote"
-              aria-label="Draw another wisdom quote"
+              title={q[2]}
+              aria-label={q[2]}
               className="p-1.5 rounded-xl text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white/80 dark:hover:bg-slate-800 transition-all flex items-center gap-1 text-[11px] font-semibold"
             >
               <RefreshCw className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Draw Another</span>
+              <span className="hidden sm:inline">{q[3]}</span>
             </button>
             <span className="text-[11px] font-mono text-slate-600 dark:text-slate-400">
-              {sessionQuote.isAiGenerated ? 'Live Companion' : 'Philosophical Library'}
+              {sessionQuote.isAiGenerated ? q[4] : q[5]}
             </span>
           </div>
         </div>

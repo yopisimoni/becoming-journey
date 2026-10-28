@@ -65,6 +65,14 @@ export function SettingsAndAboutView() {
     deleteAccount,
   } = useApp();
 
+  const sectionLabels: Record<string, string[]> = {
+    en: ['Language & Locale (5 Supported)','Stored on This Device','Never Shared Anywhere','Local storage does not sync automatically across devices or browsers. On shared devices, use test data and clear it afterwards.','Terms of Use & Non-Clinical Boundaries','Safety & Compassionate Self-Direction'],
+    ar: ['اللغة والإعدادات المحلية (5 لغات)','محفوظ على هذا الجهاز','لا يُشارك مع جهات خارجية','لا تتزامن البيانات المحلية تلقائياً بين الأجهزة أو المتصفحات. على الأجهزة المشتركة استخدم بيانات تجريبية وامسحها بعد الانتهاء.','شروط الاستخدام وحدود الخدمة غير الطبية','السلامة والتوجيه الذاتي'],
+    fr: ['Langue et région (5 langues)','Stocké sur cet appareil','Aucun partage externe','Les données locales ne se synchronisent pas automatiquement entre appareils ou navigateurs. Sur un appareil partagé, utilisez des données fictives et effacez-les après usage.','Conditions d’utilisation et limites non médicales','Sécurité et autonomie'],
+    es: ['Idioma y región (5 idiomas)','Guardado en este dispositivo','Sin compartir con terceros','Los datos locales no se sincronizan automáticamente entre dispositivos o navegadores. En un dispositivo compartido, usa datos ficticios y bórralos al terminar.','Condiciones de uso y límites no clínicos','Seguridad y autonomía'],
+    it: ['Lingua e impostazioni locali (5 lingue)','Memorizzato su questo dispositivo','Nessuna condivisione esterna','I dati locali non vengono sincronizzati automaticamente tra dispositivi o browser. Sui dispositivi condivisi usa dati di prova e cancellali dopo.','Condizioni d’uso e limiti non clinici','Sicurezza e autonomia'],
+  };
+  const labels = sectionLabels[locale] || sectionLabels.en;
   const [activeTab, setActiveTab] = useState<'preferences' | 'about' | 'privacy' | 'terms'>('preferences');
   const [showWipeConfirm, setShowWipeConfirm] = useState(false);
   const [importStatus, setImportStatus] = useState<{ success: boolean; message: string } | null>(null);
@@ -365,7 +373,7 @@ export function SettingsAndAboutView() {
           {/* Language Selection */}
           <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
             <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-600 dark:text-slate-400">
-              Language & Locale (5 Supported)
+              {labels[0]}
             </h2>
 
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -822,14 +830,14 @@ export function SettingsAndAboutView() {
                 <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 space-y-2">
                   <div className="flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-indigo-400">
                     <HardDrive className="w-4 h-4" />
-                    <span>Stored on This Device</span>
+                    <span>{labels[1]}</span>
                   </div>
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                     {dict.privacyData?.whatIsStoredLocally ||
                       'All reflections, Mind Vault secrets, audio preferences, and micro-goals reside exclusively on your browser storage.'}
                   </p>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed pt-1.5 border-t border-slate-200/60 dark:border-slate-700/60">
-                    Local storage notice: Data does not auto-sync across different devices or browsers. On shared computers, remember to export periodic backups and wipe data when finished.
+                    {labels[3]}
                   </p>
                 </div>
 
@@ -849,7 +857,7 @@ export function SettingsAndAboutView() {
                 <div className="p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/60 space-y-2">
                   <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 dark:text-emerald-300">
                     <ShieldCheck className="w-4 h-4" />
-                    <span>Never Shared Anywhere</span>
+                    <span>{labels[2]}</span>
                   </div>
                   <p className="text-xs text-emerald-800 dark:text-emerald-300 leading-relaxed">
                     {dict.privacyData?.whatIsNeverShared ||
@@ -871,9 +879,9 @@ export function SettingsAndAboutView() {
             </div>
             <div>
               <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-white">
-                Terms of Use & Non-Clinical Boundaries
+                {labels[4]}
               </h2>
-              <p className="text-xs text-slate-500">Safety & Compassionate Self-Direction</p>
+              <p className="text-xs text-slate-500">{labels[5]}</p>
             </div>
           </div>
 
