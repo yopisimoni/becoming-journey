@@ -206,6 +206,13 @@ const hashPassword = (pwd: string) => {
   return `hash_${hash}`;
 };
 
+// Explicit local-data cleanup for every browser storage used by the account.
+const clearActivityData = (store: Storage, userId?: string) => {
+  for (const key of ['becoming_activity_seen_v1', 'becoming_activity_tried_v1', 'becoming_activity_journey_v1']) {
+    store.removeItem(userId ? `${key}_${userId}` : key);
+  }
+};
+
 const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
@@ -738,14 +745,27 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       } else if (user) {
         const usersStr = localStorage.getItem(STORAGE_KEY_REGISTERED_USERS);
         const registered: StoredAccount[] = usersStr ? JSON.parse(usersStr) : [];
+        const account = registered.find((u) => u.id === user.id);
+        if (!account || account.passwordHash !== hashPassword(passwordConfirm)) {
+          return { success: false, error: 'Incorrect password.' };
+        }
         const filtered = registered.filter((u) => u.id !== user.id);
         localStorage.setItem(STORAGE_KEY_REGISTERED_USERS, JSON.stringify(filtered));
       }
 
+      if (user?.id) {
+        for (const store of [localStorage, sessionStorage]) {
+          for (const type of ['cards','journal','moments','goals','habits','vault','evolution','pillars','dream']) {
+            store.removeItem(`becoming_${user.id}_${type}_v1`);
+          }
+          clearActivityData(store, user.id);
+        }
+      }
       localStorage.removeItem(STORAGE_KEY_ACTIVE_USER);
       setUser(null);
       const store = storageMode === 'local' ? localStorage : sessionStorage;
       loadUserData(null, store);
+      window.dispatchEvent(new Event('becoming-activity-journey-updated'));
       return { success: true };
     } catch {
       return { success: false, error: 'Failed to delete account.' };
@@ -1084,6 +1104,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       store.removeItem(getUserScopedKey('evolution'));
       store.removeItem(getUserScopedKey('pillars'));
       store.removeItem(getUserScopedKey('dream'));
+      clearActivityData(store, user?.id);
+      window.dispatchEvent(new Event('becoming-activity-journey-updated'));
       localStorage.removeItem('becoming_vault_pin_v1');
       if (!user) {
         localStorage.clear();
