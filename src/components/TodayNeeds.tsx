@@ -54,7 +54,8 @@ function storeJourney(activity:Activity, store: Storage, reflection?:string) {
     const raw:unknown = JSON.parse(store.getItem(JOURNEY_KEY)||'[]');
     const existing:JourneyRecord[] = Array.isArray(raw) ? raw.filter((v):v is JourneyRecord => typeof v==='object'&&v!==null&&typeof v.id==='string'&&typeof v.title==='string') : [];
     const entry:JourneyRecord = {id:activity.id,title:activity.title,date:new Date().toISOString(),...(reflection?.trim()?{reflection:reflection.trim()}:{})};
-    const next=[entry,...existing].slice(0,100);
+    const latestIndex = reflection !== undefined ? existing.findIndex(v => v.id === activity.id && !v.reflection) : -1;
+    const next = latestIndex >= 0 ? existing.map((v,i) => i === latestIndex ? {...v,reflection:reflection?.trim() || undefined} : v) : [entry,...existing].slice(0,100);
     store.setItem(JOURNEY_KEY,JSON.stringify(next));
     window.dispatchEvent(new Event('becoming-activity-journey-updated'));
   } catch { /* private browsing may not persist */ }
@@ -86,7 +87,7 @@ export function TodayNeeds() {
   };
   const another = () => { if(suggestion) mark(SEEN_KEY,seen,suggestion.id,setSeen); setSelected(null);setOffset(n=>topicExhausted?n+1:0); };
   const finishReview = () => { if (reviewing) storeJourney(reviewing,getStore(),reflection); if (reflection.trim()) addMoment(reflection.trim()); setReflection('');setReviewing(null);another(); };
-  const completedActivity = () => {if(!suggestion) return;mark(TRIED_KEY,tried,suggestion.id,setTried);storeJourney(suggestion,getStore());setReviewing(suggestion);setSelected(null);};
+  const completedActivity = () => {if(!suggestion) return;mark(TRIED_KEY,tried,suggestion.id,setTried);mark(SEEN_KEY,seen,suggestion.id,setSeen);storeJourney(suggestion,getStore());setReviewing(suggestion);setSelected(null);};
   return (
     <section aria-labelledby="becoming-today-needs" className="relative z-10 rounded-2xl bg-white dark:bg-slate-900 border border-stone-200 dark:border-slate-700 p-4 sm:p-5 text-start space-y-3">
       <h2 id="becoming-today-needs" className="font-serif font-bold text-xl text-slate-900 dark:text-white">{locale==='ar'?'اكتشف شيئاً مفيداً لك اليوم':'Discover something good for today'}</h2>
@@ -100,7 +101,7 @@ export function TodayNeeds() {
         <h3 className="font-semibold text-base text-slate-900 dark:text-white">{suggestion.title}</h3>
         <p className="text-sm text-slate-700 dark:text-slate-200">{suggestion.idea}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <button type="button" onClick={()=>{mark(SEEN_KEY,seen,suggestion.id,setSeen);setSelected(suggestion.id);}} className="min-h-11 rounded-xl bg-slate-900 text-white text-sm font-semibold px-3">{locale==='ar'?'سأجربها':'Try it offline'}</button>
+          <button type="button" onClick={()=>{setSelected(suggestion.id);}} className="min-h-11 rounded-xl bg-slate-900 text-white text-sm font-semibold px-3">{locale==='ar'?'سأجربها':'Try it offline'}</button>
           <button type="button" onClick={another} className="min-h-11 rounded-xl border border-stone-300 dark:border-slate-600 text-slate-800 dark:text-white text-sm font-semibold px-3 flex items-center justify-center gap-2"><Sparkles className="w-4 h-4"/>{locale==='ar'?'اقتراح آخر':'Another idea'}</button>
         </div>
         {selected===suggestion.id && <div className="border-t border-stone-200 dark:border-slate-600 pt-3 space-y-2" aria-live="polite">
