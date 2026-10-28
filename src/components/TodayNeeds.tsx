@@ -74,7 +74,15 @@ export function TodayNeeds() {
   const [offset,setOffset] = useState(0);
   const [reviewing,setReviewing] = useState<Activity | null>(null);
   const [reflection,setReflection] = useState('');
-  useEffect(()=>{const store = storageMode === 'local' ? localStorage : sessionStorage; setSeen(readIds(user?.id ? `${SEEN_KEY}_${user.id}` : SEEN_KEY,store));setTried(readIds(user?.id ? `${TRIED_KEY}_${user.id}` : TRIED_KEY,store));},[storageMode,user?.id]);
+  useEffect(()=>{
+    const store = storageMode === 'local' ? localStorage : sessionStorage;
+    setSeen(readIds(user?.id ? `${SEEN_KEY}_${user.id}` : SEEN_KEY,store));
+    setTried(readIds(user?.id ? `${TRIED_KEY}_${user.id}` : TRIED_KEY,store));
+    setSelected(null);
+    setReviewing(null);
+    setReflection('');
+    setOffset(0);
+  },[storageMode,user?.id]);
   const ordered = useMemo(()=> {
     const byTopic = activities.filter(a=>a.topic===topic);
     return [...byTopic.filter(a=>!seen.includes(a.id)),...byTopic.filter(a=>seen.includes(a.id))];
