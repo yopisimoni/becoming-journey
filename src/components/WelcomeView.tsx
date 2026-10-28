@@ -58,7 +58,7 @@ export function WelcomeView() {
   const isSoundPlaying = soundPreset !== 'none';
 
   return (
-    <div className="relative max-w-4xl mx-auto px-4 py-8 sm:py-12 min-h-[calc(100vh-10rem)] flex flex-col justify-center">
+    <div className="relative max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-12 min-h-[calc(100vh-10rem)] flex flex-col justify-center">
       {/* Ambient background glow orbs */}
       <AtmosphericOrb
         color="rgba(217, 119, 54, 0.18)"
@@ -85,7 +85,7 @@ export function WelcomeView() {
             transition={springTransition}
             className="w-full max-w-2xl mx-auto"
           >
-            <div className="p-4 sm:p-12 rounded-[2.5rem] bg-white/95 dark:bg-slate-900/90 backdrop-blur-2xl border border-stone-200/80 dark:border-slate-800 shadow-2xl text-center space-y-8 relative overflow-hidden">
+            <div className="p-4 sm:p-12 rounded-3xl sm:rounded-[2.5rem] bg-white/95 dark:bg-slate-900/90 backdrop-blur-2xl border border-stone-200/80 dark:border-slate-800 shadow-2xl text-center space-y-5 sm:space-y-8 relative overflow-hidden">
               {/* Radial gradient sheen */}
               <div
                 aria-hidden="true"
@@ -126,10 +126,11 @@ export function WelcomeView() {
                 )}
               </AnimatePresence>
 
-              <TodayNeeds />
               {/* Centerpiece Sacred Orb Art */}
               <div className="flex flex-col items-center justify-center relative">
-                <LivingLightIdentity size={220} reducedMotion={reducedMotion} interactive={false} ariaLabel="BECOMING flowing light orb" />
+                <div className="scale-75 sm:scale-100 -my-6 sm:my-0" aria-hidden="true">
+                  <LivingLightIdentity size={180} reducedMotion={reducedMotion} interactive={false} ariaLabel="BECOMING flowing light orb" />
+                </div>
 
                 {/* Animated sound wave bars indicator when audio is active */}
                 {isSoundPlaying && !reducedMotion && (
@@ -173,6 +174,8 @@ export function WelcomeView() {
                   <span>{dict.sanctuary.beginSilence}</span>
                 </button>
               </div>
+
+              <TodayNeeds />
 
               {/* Context-Aware Daily Ritual Quick Access */}
               <div className="pt-2 flex flex-wrap items-center justify-center gap-2 relative z-10">
