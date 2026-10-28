@@ -103,9 +103,9 @@ export function AuthModal() {
       role="dialog"
       aria-modal="true"
       aria-labelledby="auth-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/75 backdrop-blur-md animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center overflow-y-auto p-3 sm:p-4 bg-slate-900/60 dark:bg-black/75 backdrop-blur-md animate-fadeIn"
     >
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl max-w-md w-full overflow-hidden text-slate-900 dark:text-white transition-all">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl max-w-md w-full max-h-[calc(100dvh-1.5rem)] overflow-y-auto overscroll-contain text-slate-900 dark:text-white transition-all">
         {/* Header Tabs */}
         <div className="flex items-center justify-between p-5 border-b border-slate-200/80 dark:border-slate-800">
           <div className="flex gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl text-xs font-semibold">
@@ -201,7 +201,7 @@ export function AuthModal() {
               </span>
             </div>
             <span className="font-semibold px-2 py-0.5 rounded-full bg-white dark:bg-slate-800 text-[10px] text-slate-700 dark:text-slate-300 border border-indigo-200/50">
-              100% Private
+              On-device storage
             </span>
           </div>
 
@@ -354,7 +354,7 @@ export function AuthModal() {
             >
               <span>{dict.auth.continueAsGuest || 'Continue as Guest'}</span>
               <span className="text-[10px] text-slate-400 font-normal">
-                (100% Local Device Isolation)
+                (Saved on this device)
               </span>
             </button>
           </div>
