@@ -30,6 +30,14 @@ export function WelcomeView() {
     user,
   } = useApp();
 
+  const welcomeCopy: Record<string, { greeting: string; hide: string; sky: string; noAi: string; saved: string }> = {
+    en: { greeting:'Welcome to BECOMING', hide:'Hide Sky', sky:'Living Horizon', noAi:'No AI needed to reflect', saved:'Reflections saved on this device' },
+    ar: { greeting:'مرحباً بك في BECOMING', hide:'إخفاء الأفق', sky:'الأفق الحي', noAi:'لا تحتاج إلى ذكاء اصطناعي للتأمل', saved:'تُحفظ الملاحظات على هذا الجهاز' },
+    fr: { greeting:'Bienvenue sur BECOMING', hide:'Masquer le ciel', sky:'Horizon vivant', noAi:'Aucune IA nécessaire pour réfléchir', saved:'Réflexions enregistrées sur cet appareil' },
+    es: { greeting:'Bienvenido a BECOMING', hide:'Ocultar el cielo', sky:'Horizonte vivo', noAi:'No necesitas IA para reflexionar', saved:'Reflexiones guardadas en este dispositivo' },
+    it: { greeting:'Benvenuto su BECOMING', hide:'Nascondi il cielo', sky:'Orizzonte vivente', noAi:'Non serve l’IA per riflettere', saved:'Riflessioni salvate su questo dispositivo' },
+  };
+  const copy = welcomeCopy[locale] || welcomeCopy.en;
   const [showHorizon, setShowHorizon] = useState(false);
   const handleBeginWithSound = () => {
     setSoundPreset('sanctuary');
@@ -107,7 +115,7 @@ export function WelcomeView() {
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-stone-100 hover:bg-stone-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-medium text-stone-700 dark:text-stone-300 transition-colors"
                 >
                   <Compass className="w-3.5 h-3.5 text-stone-500" />
-                  <span>{showHorizon ? 'Hide Sky' : 'Living Horizon'}</span>
+                  <span>{showHorizon ? copy.hide : copy.sky}</span>
                 </button>
               </div>
 
@@ -201,12 +209,12 @@ export function WelcomeView() {
               <div className="pt-2 flex items-center justify-center gap-4 text-[11px] text-stone-600 dark:text-slate-400 border-t border-stone-100 dark:border-slate-800/80">
                 <span className="flex items-center gap-1">
                   <Shield className="w-3 h-3 text-emerald-500" />
-                  <span>No AI needed to reflect</span>
+                  <span>{copy.noAi}</span>
                 </span>
                 <span className="text-stone-300 dark:text-slate-700">•</span>
                 <span className="flex items-center gap-1">
                   <Eye className="w-3 h-3 text-amber-500" />
-                  <span>Reflections saved on this device</span>
+                  <span>{copy.saved}</span>
                 </span>
               </div>
             </div>
