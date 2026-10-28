@@ -73,6 +73,14 @@ export function SettingsAndAboutView() {
     it: ['Lingua e impostazioni locali (5 lingue)','Memorizzato su questo dispositivo','Nessuna condivisione esterna','I dati locali non vengono sincronizzati automaticamente tra dispositivi o browser. Sui dispositivi condivisi usa dati di prova e cancellali dopo.','Condizioni d’uso e limiti non clinici','Sicurezza e autonomia'],
   };
   const labels = sectionLabels[locale] || sectionLabels.en;
+  const sectionUi: Record<string, string[]> = {
+    en: ["Preferences", "About BECOMING", "Privacy Manifesto", "Terms & Boundaries", "Sanctuary Theme & Atmosphere", "Appearance", "Daylight", "Twilight", "Reduced Motion", "Personal Addressing Preference", "Procedural Soundscape Studio", "Active Soundscape", "Mute (Silence)", "Master Volume", "Optional AI Bridge Configuration", "Configure API Bridge", "Data Sovereignty, Export & Deletion", "Export Reflections & Journal", "Choose Backup File", "Delete Account", "Wipe All Local Data", "Sanctuary Onboarding Experience", "Reset Onboarding Experience", "The Philosophy", "Why We Built BECOMING", "Privacy Manifesto & Local Sovereignty", "Sent to Firebase"],
+    ar: ["التفضيلات", "عن BECOMING", "بيان الخصوصية", "الشروط والحدود", "مظهر المساحة وأجواؤها", "المظهر", "النهار", "الغسق", "تقليل الحركة", "طريقة المخاطبة المفضلة", "استوديو الأصوات", "الصوت النشط", "كتم الصوت", "مستوى الصوت", "إعداد مساعد الذكاء الاصطناعي الاختياري", "إعداد الاتصال بالذكاء الاصطناعي", "التحكم بالبيانات وتصديرها وحذفها", "تصدير التأملات والمذكرات", "اختيار ملف النسخة الاحتياطية", "حذف الحساب", "مسح كل البيانات المحلية", "تجربة التعريف بالتطبيق", "إعادة تجربة التعريف", "الفلسفة", "لماذا أنشأنا BECOMING", "بيان الخصوصية والتحكم المحلي", "المرسل إلى Firebase"],
+    fr: ["Préférences", "À propos de BECOMING", "Charte de confidentialité", "Conditions et limites", "Thème et ambiance", "Apparence", "Jour", "Crépuscule", "Réduire les animations", "Préférence de formulation", "Ambiances sonores", "Ambiance active", "Muet (silence)", "Volume principal", "Configuration IA facultative", "Configurer la connexion IA", "Contrôle, export et suppression des données", "Exporter les réflexions et le journal", "Choisir une sauvegarde", "Supprimer le compte", "Effacer toutes les données locales", "Présentation de l’application", "Revoir la présentation", "Notre philosophie", "Pourquoi nous avons créé BECOMING", "Confidentialité et contrôle local", "Envoyé à Firebase"],
+    es: ["Preferencias", "Acerca de BECOMING", "Declaración de privacidad", "Condiciones y límites", "Tema y ambiente", "Apariencia", "Día", "Crepúsculo", "Reducir movimiento", "Preferencia de tratamiento", "Paisajes sonoros", "Sonido activo", "Silencio", "Volumen principal", "Configuración opcional de IA", "Configurar conexión de IA", "Control, exportación y eliminación de datos", "Exportar reflexiones y diario", "Elegir archivo de copia", "Eliminar cuenta", "Borrar todos los datos locales", "Presentación de la aplicación", "Reiniciar presentación", "La filosofía", "Por qué creamos BECOMING", "Privacidad y control local", "Enviado a Firebase"],
+    it: ["Preferenze", "Informazioni su BECOMING", "Informativa sulla privacy", "Termini e limiti", "Tema e atmosfera", "Aspetto", "Giorno", "Crepuscolo", "Riduci animazioni", "Preferenza di appellativo", "Paesaggi sonori", "Suono attivo", "Muto (silenzio)", "Volume principale", "Configurazione IA facoltativa", "Configura connessione IA", "Controllo, esportazione e cancellazione dati", "Esporta riflessioni e diario", "Scegli un file di backup", "Elimina account", "Cancella tutti i dati locali", "Introduzione all’app", "Ripeti introduzione", "La filosofia", "Perché abbiamo creato BECOMING", "Privacy e controllo locale", "Inviato a Firebase"]
+  };
+  const ui = (key: string) => { const i = sectionUi.en.indexOf(key); return i < 0 ? key : (sectionUi[locale] || sectionUi.en)[i]; };
   const [activeTab, setActiveTab] = useState<'preferences' | 'about' | 'privacy' | 'terms'>('preferences');
   const [showWipeConfirm, setShowWipeConfirm] = useState(false);
   const [importStatus, setImportStatus] = useState<{ success: boolean; message: string } | null>(null);
@@ -163,7 +171,7 @@ export function SettingsAndAboutView() {
           }`}
         >
           <Sliders className="w-3.5 h-3.5" />
-          <span>Preferences</span>
+          <span>{ui("Preferences")}</span>
         </button>
 
         <button
@@ -176,7 +184,7 @@ export function SettingsAndAboutView() {
           }`}
         >
           <Info className="w-3.5 h-3.5" />
-          <span>About BECOMING</span>
+          <span>{ui("About BECOMING")}</span>
         </button>
 
         <button
@@ -189,7 +197,7 @@ export function SettingsAndAboutView() {
           }`}
         >
           <Shield className="w-3.5 h-3.5" />
-          <span>Privacy Manifesto</span>
+          <span>{ui("Privacy Manifesto")}</span>
         </button>
 
         <button
@@ -202,7 +210,7 @@ export function SettingsAndAboutView() {
           }`}
         >
           <FileText className="w-3.5 h-3.5" />
-          <span>Terms & Boundaries</span>
+          <span>{ui("Terms & Boundaries")}</span>
         </button>
       </div>
 
@@ -212,12 +220,12 @@ export function SettingsAndAboutView() {
           {/* Theme & Display */}
           <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
             <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-600 dark:text-slate-400">
-              Sanctuary Theme & Atmosphere
+              {ui("Sanctuary Theme & Atmosphere")}
             </h2>
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <div className="font-bold text-sm text-slate-900 dark:text-white">Appearance</div>
+                <div className="font-bold text-sm text-slate-900 dark:text-white">{ui("Appearance")}</div>
                 <div className="text-xs text-slate-500">
                   Switch between Daylight Alabaster and Twilight Sanctuary Midnight.
                 </div>
@@ -233,7 +241,7 @@ export function SettingsAndAboutView() {
                   }`}
                 >
                   <Sun className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Daylight</span>
+                  <span>{ui("Daylight")}</span>
                 </button>
                 <button
                   type="button"
@@ -245,7 +253,7 @@ export function SettingsAndAboutView() {
                   }`}
                 >
                   <Moon className="w-3.5 h-3.5 text-indigo-400" />
-                  <span>Twilight</span>
+                  <span>{ui("Twilight")}</span>
                 </button>
               </div>
             </div>
@@ -358,7 +366,7 @@ export function SettingsAndAboutView() {
             {/* Reduced Motion */}
             <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
               <div>
-                <div className="font-bold text-sm text-slate-900 dark:text-white">Reduced Motion</div>
+                <div className="font-bold text-sm text-slate-900 dark:text-white">{ui("Reduced Motion")}</div>
                 <div className="text-xs text-slate-500">Minimize spring animations and background swells.</div>
               </div>
               <input
@@ -398,7 +406,7 @@ export function SettingsAndAboutView() {
           {/* Addressing Preference */}
           <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
             <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-600 dark:text-slate-400">
-              Personal Addressing Preference
+              {ui("Personal Addressing Preference")}
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -427,13 +435,13 @@ export function SettingsAndAboutView() {
           {/* Default Audio & Volume */}
           <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
             <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-600 dark:text-slate-400">
-              Procedural Soundscape Studio
+              {ui("Procedural Soundscape Studio")}
             </h2>
 
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="font-bold text-sm text-slate-900 dark:text-white">Active Soundscape</div>
+                  <div className="font-bold text-sm text-slate-900 dark:text-white">{ui("Active Soundscape")}</div>
                   <div className="text-xs text-slate-500">10 procedural ambient tracks available.</div>
                 </div>
                 <select
@@ -441,7 +449,7 @@ export function SettingsAndAboutView() {
                   onChange={(e) => setSoundPreset(e.target.value as SoundscapePreset)}
                   className="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-semibold text-slate-900 dark:text-white"
                 >
-                  <option value="none">Mute (Silence)</option>
+                  <option value="none">{ui("Mute (Silence)")}</option>
                   {SOUNDSCAPE_TRACKS.map((t) => (
                     <option key={t.id} value={t.id}>
                       {t.defaultLabel}
@@ -452,7 +460,7 @@ export function SettingsAndAboutView() {
 
               <div className="space-y-1.5 pt-2">
                 <div className="flex justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
-                  <span>Master Volume</span>
+                  <span>{ui("Master Volume")}</span>
                   <span className="font-mono">{Math.round(soundVolume * 100)}%</span>
                 </div>
                 <input
@@ -471,7 +479,7 @@ export function SettingsAndAboutView() {
           {/* AI Bridge & Privacy Settings */}
           <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
             <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-600 dark:text-slate-400">
-              Optional AI Bridge Configuration
+              {ui("Optional AI Bridge Configuration")}
             </h2>
 
             {/* Mirror, Never Boss Philosophy Banner */}
@@ -508,7 +516,7 @@ export function SettingsAndAboutView() {
                 onClick={() => setAiModalOpen(true)}
                 className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition-colors self-start sm:self-auto"
               >
-                Configure API Bridge
+                {ui("Configure API Bridge")}
               </button>
             </div>
           </div>
@@ -516,12 +524,12 @@ export function SettingsAndAboutView() {
           {/* Storage & Data Sovereignty */}
           <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-5">
             <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-600 dark:text-slate-400">
-              Data Sovereignty, Export & Deletion
+              {ui("Data Sovereignty, Export & Deletion")}
             </h2>
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <div className="font-bold text-sm text-slate-900 dark:text-white">Export Reflections & Journal</div>
+                <div className="font-bold text-sm text-slate-900 dark:text-white">{ui("Export Reflections & Journal")}</div>
                 <div className="text-xs text-slate-500">Download all your confirmed insights and notes.</div>
               </div>
               <div className="flex gap-2">
@@ -560,7 +568,7 @@ export function SettingsAndAboutView() {
                   className="px-3.5 py-1.5 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/40 text-xs font-bold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 cursor-pointer inline-flex items-center gap-1.5 transition-colors"
                 >
                   <Upload className="w-3.5 h-3.5" />
-                  <span>Choose Backup File</span>
+                  <span>{ui("Choose Backup File")}</span>
                 </label>
                 <input
                   id="import-backup-file"
@@ -650,7 +658,7 @@ export function SettingsAndAboutView() {
             {/* Wipe Data */}
             <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <div className="font-bold text-sm text-rose-600 dark:text-rose-400">Wipe All Local Data</div>
+                <div className="font-bold text-sm text-rose-600 dark:text-rose-400">{ui("Wipe All Local Data")}</div>
                 <div className="text-xs text-slate-500">Permanently erase cards, notes, moments, and goals.</div>
               </div>
               {!showWipeConfirm ? (
@@ -688,7 +696,7 @@ export function SettingsAndAboutView() {
           {/* Onboarding Tour Controls */}
           <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
             <h2 className="text-sm font-bold uppercase tracking-wider text-[11px] text-slate-600 dark:text-slate-400">
-              Sanctuary Onboarding Experience
+              {ui("Sanctuary Onboarding Experience")}
             </h2>
             <p className="text-xs text-slate-500">
               Re-experience the cinematic universe introduction, language setup, and sovereign consent gate.
@@ -701,7 +709,7 @@ export function SettingsAndAboutView() {
                 className="px-4 py-2 rounded-xl border border-stone-200 dark:border-slate-700 bg-stone-50 dark:bg-slate-800 text-xs font-semibold text-stone-700 dark:text-slate-300 hover:bg-stone-100 dark:hover:bg-slate-700 flex items-center gap-2 transition-colors"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
-                <span>Reset Onboarding Experience</span>
+                <span>{ui("Reset Onboarding Experience")}</span>
               </button>
             </div>
           </div>
@@ -713,10 +721,10 @@ export function SettingsAndAboutView() {
         <div className="p-8 sm:p-10 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl space-y-6">
           <div className="space-y-2">
             <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300">
-              The Philosophy
+              {ui("The Philosophy")}
             </span>
             <h2 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 dark:text-white">
-              Why We Built BECOMING
+              {ui("Why We Built BECOMING")}
             </h2>
           </div>
 
@@ -776,7 +784,7 @@ export function SettingsAndAboutView() {
                 className="px-4 py-2 rounded-xl border border-stone-200 dark:border-slate-700 bg-stone-50 dark:bg-slate-800 text-xs font-semibold text-stone-700 dark:text-slate-300 hover:bg-stone-100 dark:hover:bg-slate-700 flex items-center gap-2 transition-colors"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
-                <span>Reset Onboarding Experience</span>
+                <span>{ui("Reset Onboarding Experience")}</span>
               </button>
             </div>
           </div>
@@ -792,7 +800,7 @@ export function SettingsAndAboutView() {
             </div>
             <div>
               <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-white">
-                Privacy Manifesto & Local Sovereignty
+                {ui("Privacy Manifesto & Local Sovereignty")}
               </h2>
               <p className="text-xs text-slate-500">Effective Date: October 2026 • Lifetime Guarantee</p>
             </div>
@@ -845,7 +853,7 @@ export function SettingsAndAboutView() {
                 <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 space-y-2">
                   <div className="flex items-center gap-2 text-xs font-bold text-sky-600 dark:text-sky-400">
                     <Cloud className="w-4 h-4" />
-                    <span>Sent to Firebase</span>
+                    <span>{ui("Sent to Firebase")}</span>
                   </div>
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                     {dict.privacyData?.whatIsSentToFirebase ||
