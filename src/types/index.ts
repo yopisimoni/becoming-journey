@@ -344,6 +344,9 @@ export interface SanctuaryBackupPayload {
   habitLedger: HabitItem[];
   habits?: HabitItem[];
   vaultSecretsCount: number;
+  activityHistory?: { id: string; title: string; date: string; reflection?: string }[];
+  activitySeen?: string[];
+  activityTried?: string[];
   morningRituals?: MorningRitualEntry[];
   morningRitual?: MorningRitualEntry;
   eveningRituals?: EveningRitualEntry[];

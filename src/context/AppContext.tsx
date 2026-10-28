@@ -1116,6 +1116,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const readActivityBackup = (key: string) => {
+    try {
+      const store = storageMode === 'local' ? localStorage : sessionStorage;
+      const raw = store.getItem(user?.id ? `${key}_${user.id}` : key);
+      const parsed: unknown = JSON.parse(raw || '[]');
+      return Array.isArray(parsed) ? parsed.slice(0,100) : [];
+    } catch { return []; }
+  };
+
   const exportDataJson = () => {
     let morningData: MorningRitualEntry[] = [];
     let eveningData: EveningRitualEntry[] = [];
@@ -1148,6 +1157,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       habits,
       habitLedger: habits,
       vaultSecretsCount: vaultSecrets.length,
+      activityHistory: readActivityBackup('becoming_activity_journey_v1'),
+      activitySeen: readActivityBackup('becoming_activity_seen_v1'),
+      activityTried: readActivityBackup('becoming_activity_tried_v1'),
       morningRitual: morningData[0],
       morningRituals: morningData,
       eveningRitual: eveningData[0],
@@ -1212,6 +1224,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         store.setItem(getUserScopedKey('habits'), JSON.stringify(rawHabits));
         restoredCount += rawHabits.length;
       }
+
+      // Restore optional activity data. Old backups without these fields remain valid.
+      for (const [key, value] of [
+        ['becoming_activity_journey_v1', parsed.activityHistory],
+        ['becoming_activity_seen_v1', parsed.activitySeen],
+        ['becoming_activity_tried_v1', parsed.activityTried],
+      ] as const) {
+        if (Array.isArray(value)) {
+          store.setItem(user?.id ? `${key}_${user.id}` : key, JSON.stringify(value.slice(0,100)));
+        }
+      }
+      window.dispatchEvent(new Event('becoming-activity-journey-updated'));
 
       // Restore Morning Rituals if present
       const morningEntry = parsed.morningRitual || (Array.isArray(parsed.morningRituals) ? parsed.morningRituals[0] : null);

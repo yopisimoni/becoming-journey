@@ -147,3 +147,21 @@ describe('Sanctuary Data Backup & Restoration (BECOMING v0.8)', () => {
     expect(res2.success).toBe(false);
   });
 });
+
+describe('Activity backup round-trip', () => {
+  it('restores activity attempts and seen/tried markers from a valid backup', () => {
+    const {result} = renderHook(()=>useApp(),{wrapper:AppProvider});
+    const payload = {
+      app:'BECOMING',schemaVersion:'0.8.0',exportedAt:new Date().toISOString(),
+      activityHistory:[{id:'calm-senses',title:'A private activity',date:new Date().toISOString()}],
+      activitySeen:['calm-senses'],activityTried:['calm-senses'],
+    };
+    let outcome: {success:boolean}|undefined;
+    act(()=>{outcome=result.current.importDataJson(JSON.stringify(payload));});
+    expect(outcome?.success).toBe(true);
+    const store = result.current.storageMode === 'local' ? localStorage : sessionStorage;
+    expect(JSON.parse(store.getItem('becoming_activity_journey_v1')||'[]')[0].title).toBe('A private activity');
+    expect(JSON.parse(store.getItem('becoming_activity_seen_v1')||'[]')).toEqual(['calm-senses']);
+    expect(JSON.parse(store.getItem('becoming_activity_tried_v1')||'[]')).toEqual(['calm-senses']);
+  });
+});
