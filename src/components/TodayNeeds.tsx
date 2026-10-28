@@ -49,14 +49,14 @@ const SEEN_KEY = 'becoming_activity_seen_v1';
 const TRIED_KEY = 'becoming_activity_tried_v1';
 const JOURNEY_KEY = 'becoming_activity_journey_v1';
 type JourneyRecord = { id:string; title:string; date:string; reflection?:string };
-function storeJourney(activity:Activity, store: Storage, reflection?:string) {
+function storeJourney(activity:Activity, store: Storage, key: string, reflection?:string) {
   try {
-    const raw:unknown = JSON.parse(store.getItem(JOURNEY_KEY)||'[]');
+    const raw:unknown = JSON.parse(store.getItem(key)||'[]');
     const existing:JourneyRecord[] = Array.isArray(raw) ? raw.filter((v):v is JourneyRecord => typeof v==='object'&&v!==null&&typeof v.id==='string'&&typeof v.title==='string') : [];
     const entry:JourneyRecord = {id:activity.id,title:activity.title,date:new Date().toISOString(),...(reflection?.trim()?{reflection:reflection.trim()}:{})};
     const latestIndex = reflection !== undefined ? existing.findIndex(v => v.id === activity.id && !v.reflection) : -1;
     const next = latestIndex >= 0 ? existing.map((v,i) => i === latestIndex ? {...v,reflection:reflection?.trim() || undefined} : v) : [entry,...existing].slice(0,100);
-    store.setItem(JOURNEY_KEY,JSON.stringify(next));
+    store.setItem(key,JSON.stringify(next));
     window.dispatchEvent(new Event('becoming-activity-journey-updated'));
   } catch { /* private browsing may not persist */ }
 }
@@ -64,7 +64,8 @@ function readIds(key:string, store: Storage): string[] {
   try { const value: unknown = JSON.parse(store.getItem(key) || '[]'); return Array.isArray(value) ? value.filter((v):v is string=>typeof v==='string').slice(-100) : []; } catch { return []; }
 }
 export function TodayNeeds() {
-  const {locale, setActiveTab, setActiveMode, addMoment, storageMode} = useApp();
+  const {locale, setActiveTab, setActiveMode, addMoment, storageMode, user} = useApp();
+  const scoped = (key: string) => user?.id ? `${key}_${user.id}` : key;
   const getStore = () => storageMode === 'local' ? localStorage : sessionStorage;
   const [topic,setTopic] = useState<Topic>('calm');
   const [seen,setSeen] = useState<string[]>([]);
@@ -73,7 +74,7 @@ export function TodayNeeds() {
   const [offset,setOffset] = useState(0);
   const [reviewing,setReviewing] = useState<Activity | null>(null);
   const [reflection,setReflection] = useState('');
-  useEffect(()=>{const store = storageMode === 'local' ? localStorage : sessionStorage; setSeen(readIds(SEEN_KEY,store));setTried(readIds(TRIED_KEY,store));},[storageMode]);
+  useEffect(()=>{const store = storageMode === 'local' ? localStorage : sessionStorage; setSeen(readIds(user?.id ? `${SEEN_KEY}_${user.id}` : SEEN_KEY,store));setTried(readIds(user?.id ? `${TRIED_KEY}_${user.id}` : TRIED_KEY,store));},[storageMode,user?.id]);
   const ordered = useMemo(()=> {
     const byTopic = activities.filter(a=>a.topic===topic);
     return [...byTopic.filter(a=>!seen.includes(a.id)),...byTopic.filter(a=>seen.includes(a.id))];
@@ -83,11 +84,11 @@ export function TodayNeeds() {
   const mark = (key:string, current:string[], id:string, update:(v:string[])=>void) => {
     const next = Array.from(new Set([...current,id])).slice(-100);
     update(next);
-    try {getStore().setItem(key,JSON.stringify(next));} catch { /* optional activity history */ }
+    try {getStore().setItem(scoped(key),JSON.stringify(next));} catch { /* optional activity history */ }
   };
   const another = () => { if(suggestion) mark(SEEN_KEY,seen,suggestion.id,setSeen); setSelected(null);setOffset(n=>topicExhausted?n+1:0); };
-  const finishReview = () => { if (reviewing) storeJourney(reviewing,getStore(),reflection); if (reflection.trim()) addMoment(reflection.trim()); setReflection('');setReviewing(null);another(); };
-  const completedActivity = () => {if(!suggestion) return;mark(TRIED_KEY,tried,suggestion.id,setTried);mark(SEEN_KEY,seen,suggestion.id,setSeen);storeJourney(suggestion,getStore());setReviewing(suggestion);setSelected(null);};
+  const finishReview = () => { if (reviewing) storeJourney(reviewing,getStore(),scoped(JOURNEY_KEY),reflection); if (reflection.trim()) addMoment(reflection.trim()); setReflection('');setReviewing(null);another(); };
+  const completedActivity = () => {if(!suggestion) return;mark(TRIED_KEY,tried,suggestion.id,setTried);mark(SEEN_KEY,seen,suggestion.id,setSeen);storeJourney(suggestion,getStore(),scoped(JOURNEY_KEY));setReviewing(suggestion);setSelected(null);};
   return (
     <section aria-labelledby="becoming-today-needs" className="relative z-10 rounded-2xl bg-white dark:bg-slate-900 border border-stone-200 dark:border-slate-700 p-4 sm:p-5 text-start space-y-3">
       <h2 id="becoming-today-needs" className="font-serif font-bold text-xl text-slate-900 dark:text-white">{locale==='ar'?'اكتشف شيئاً مفيداً لك اليوم':'Discover something good for today'}</h2>
