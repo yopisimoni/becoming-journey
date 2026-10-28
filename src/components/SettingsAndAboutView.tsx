@@ -80,7 +80,8 @@ export function SettingsAndAboutView() {
     es: ["Preferencias", "Acerca de BECOMING", "Declaración de privacidad", "Condiciones y límites", "Tema y ambiente", "Apariencia", "Día", "Crepúsculo", "Reducir movimiento", "Preferencia de tratamiento", "Paisajes sonoros", "Sonido activo", "Silencio", "Volumen principal", "Configuración opcional de IA", "Configurar conexión de IA", "Control, exportación y eliminación de datos", "Exportar reflexiones y diario", "Elegir archivo de copia", "Eliminar cuenta", "Borrar todos los datos locales", "Presentación de la aplicación", "Reiniciar presentación", "La filosofía", "Por qué creamos BECOMING", "Privacidad y control local", "Enviado a Firebase"],
     it: ["Preferenze", "Informazioni su BECOMING", "Informativa sulla privacy", "Termini e limiti", "Tema e atmosfera", "Aspetto", "Giorno", "Crepuscolo", "Riduci animazioni", "Preferenza di appellativo", "Paesaggi sonori", "Suono attivo", "Muto (silenzio)", "Volume principale", "Configurazione IA facoltativa", "Configura connessione IA", "Controllo, esportazione e cancellazione dati", "Esporta riflessioni e diario", "Scegli un file di backup", "Elimina account", "Cancella tutti i dati locali", "Introduzione all’app", "Ripeti introduzione", "La filosofia", "Perché abbiamo creato BECOMING", "Privacy e controllo locale", "Inviato a Firebase"]
   };
-  const ui = (key: string) => { const i = sectionUi.en.indexOf(key); return i < 0 ? key : (sectionUi[locale] || sectionUi.en)[i]; };
+  const extraUi: Record<string, string[]> = { en: ['Bring Your Own Key (BYOK) Privacy Notice', 'AI Companion API Mode', 'Confirm password'], ar: ['تنبيه الخصوصية لمفتاح API الشخصي', 'وضع واجهة مساعد الذكاء الاصطناعي', 'تأكيد كلمة المرور'], fr: ['Confidentialité de votre propre clé API', 'Mode API du compagnon IA', 'Confirmer le mot de passe'], es: ['Privacidad de tu propia clave API', 'Modo API del asistente IA', 'Confirmar contraseña'], it: ['Privacy della propria chiave API', 'Modalità API dell’assistente IA', 'Conferma password'] };
+  const ui = (key: string) => { const i = sectionUi.en.indexOf(key); if (i >= 0) return (sectionUi[locale] || sectionUi.en)[i]; const j = extraUi.en.indexOf(key); return j < 0 ? key : (extraUi[locale] || extraUi.en)[j]; };
   const [activeTab, setActiveTab] = useState<'preferences' | 'about' | 'privacy' | 'terms'>('preferences');
   const [showWipeConfirm, setShowWipeConfirm] = useState(false);
   const [importStatus, setImportStatus] = useState<{ success: boolean; message: string } | null>(null);
@@ -497,7 +498,7 @@ export function SettingsAndAboutView() {
             <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-1.5">
               <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200 font-bold text-xs">
                 <Shield className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                <span>Bring Your Own Key (BYOK) Privacy Notice</span>
+                <span>{ui("Bring Your Own Key (BYOK) Privacy Notice")}</span>
               </div>
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
                 Your API key is saved strictly in your browser&apos;s local storage (<code className="text-xs font-mono px-1 py-0.5 rounded bg-slate-200 dark:bg-slate-700">localStorage</code>) on this device and is never transmitted to any central server or database owned by us. When you use the AI assistant, your prompt is sent directly from your browser to your chosen provider (OpenAI, DeepSeek, Google, etc.) under their respective privacy terms.
@@ -506,7 +507,7 @@ export function SettingsAndAboutView() {
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <div className="font-bold text-sm text-slate-900 dark:text-white">AI Companion API Mode</div>
+                <div className="font-bold text-sm text-slate-900 dark:text-white">{ui("AI Companion API Mode")}</div>
                 <div className="text-xs text-slate-500">
                   Default is 100% offline local templates. You can optionally connect a personal API endpoint.
                 </div>
@@ -625,7 +626,7 @@ export function SettingsAndAboutView() {
                       data-testid="delete-account-password"
                       value={deletePassword}
                       onChange={(e) => setDeletePassword(e.target.value)}
-                      placeholder="Confirm password"
+                      placeholder={ui("Confirm password")}
                       className="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-xs w-full"
                     />
                     <div className="flex gap-2">
