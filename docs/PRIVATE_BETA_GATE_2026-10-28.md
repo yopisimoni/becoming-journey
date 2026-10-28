@@ -3,9 +3,9 @@
 **Decision: HOLD public launch. Prepare a controlled private beta, without changing production.**
 
 ## Evidence confirmed
-- GitHub development branch `feat/v1-mobile-ux-fixes` at `993a38f`; working tree clean before this document.
-- Vercel Preview for `993a38f` is READY. Preview is not production approval.
-- Recent automated checks: 126 unit tests; 60 mobile Playwright checks across 320/375px; four mobile theme/menu layout checks; two first-visit journey checks; local-auth A/B/guest/A isolation flow passed.
+- GitHub development branch `feat/v1-mobile-ux-fixes` at `f5089b7` (latest code before this documentation update); working tree clean before this document.
+- Vercel Preview for `f5089b7` is READY. Preview is not production approval.
+- Recent automated checks: 129 unit tests; 60 mobile Playwright checks across 320/375px; four mobile theme/menu layout checks; two first-visit journey checks; local-auth A/B/guest/A isolation flow passed.
 - Discover activity, repeated attempts, optional reflection, and Journey Map history have been implemented.
 
 ## Actual blockers / unknowns
@@ -34,3 +34,10 @@
 
 ## Beta go/no-go
 Proceed only when all P0 gates have direct evidence, no critical privacy or navigation defect remains, and the owner explicitly approves the private-beta audience and release. Public launch is a separate decision.
+
+## 2026-10-28 security review and next handoff
+- **Confirmed risk:** local account passwordHash is a simple client-side hash; it is not robust authentication or encryption. Do not permit local account sign-up for beta testers. Guest-only testing with fictional data is the immediate non-production mitigation.
+- **Confirmed limit:** activity history was added to JSON backup at `f5089b7`, but complete coverage of every stored feature and lossless migration between modes is not proven. Do not advertise complete data portability.
+- **Confirmed fixes:** per-account delete cleanup and password confirmation were implemented at `97d807e`; browser copies and separate downloaded backups remain outside app control.
+- **Tester workflow and tracking:** see `docs/PRIVATE_BETA_TESTER_PACK.md`. Never send invitations or enable public access without explicit owner approval.
+- **Current decision:** No public launch; beta preparation ready as documentation, real tester evidence pending.
