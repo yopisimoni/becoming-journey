@@ -24,3 +24,8 @@
 
 ## Stop-loop rule
 Only close localization after every supported route has a five-language copy review and measured RTL/layout acceptance. Success in the Discover path cannot be extrapolated to every screen.
+
+## 2026-10-28 follow-up: About copy
+- Settings > About main philosophy paragraphs now use five-language copy. Absolute claims such as "100% private" and "free forever" were replaced with bounded browser-storage language rather than translated as promises.
+- This is a **copy improvement**, not legal approval. Longer Terms disclaimer and assistance directory still require review, and other studio content is not marked complete.
+- No new features, no production changes, no public-release authorization.

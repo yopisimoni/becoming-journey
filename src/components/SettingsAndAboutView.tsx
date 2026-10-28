@@ -73,6 +73,15 @@ export function SettingsAndAboutView() {
     it: ['Lingua e impostazioni locali (5 lingue)','Memorizzato su questo dispositivo','Nessuna condivisione esterna','I dati locali non vengono sincronizzati automaticamente tra dispositivi o browser. Sui dispositivi condivisi usa dati di prova e cancellali dopo.','Condizioni d’uso e limiti non clinici','Sicurezza e autonomia'],
   };
   const labels = sectionLabels[locale] || sectionLabels.en;
+  const aboutCopy: Record<string, [string,string,string,string]> = {
+    en: ['BECOMING is a quiet place for reflection in a world full of distractions.','Self-discovery should feel calm and personal, never like a test or a substitute for professional support.','Our choices follow a few simple principles:','Your reflections are stored in this browser. Avoid sensitive information on shared devices.'],
+    ar: ['BECOMING مساحة هادئة للتأمل وسط عالم مليء بالمشتتات.','يجب أن يكون اكتشاف الذات هادئاً وشخصياً، لا اختباراً ولا بديلاً عن الدعم المتخصص.','نعتمد في تصميمنا على مبادئ بسيطة:','تُحفظ تأملاتك في هذا المتصفح. تجنب إدخال معلومات حساسة على الأجهزة المشتركة.'],
+    fr: ['BECOMING est un espace calme pour réfléchir dans un monde plein de distractions.','La découverte de soi doit rester sereine et personnelle, sans devenir un examen ni remplacer un accompagnement professionnel.','Notre conception suit quelques principes simples :','Vos réflexions sont enregistrées dans ce navigateur. Évitez les informations sensibles sur un appareil partagé.'],
+    es: ['BECOMING es un espacio tranquilo para reflexionar en un mundo lleno de distracciones.','El autoconocimiento debe ser tranquilo y personal, nunca un examen ni un sustituto del apoyo profesional.','Nuestro diseño sigue unos principios sencillos:','Tus reflexiones se guardan en este navegador. Evita datos sensibles en dispositivos compartidos.'],
+    it: ['BECOMING è uno spazio tranquillo per riflettere in un mondo pieno di distrazioni.','La conoscenza di sé dovrebbe essere serena e personale, mai un esame o un sostituto del supporto professionale.','Le nostre scelte seguono alcuni semplici principi:','Le tue riflessioni sono salvate in questo browser. Evita dati sensibili sui dispositivi condivisi.'],
+  };
+  const about = aboutCopy[locale] || aboutCopy.en;
+
   const sectionUi: Record<string, string[]> = {
     en: ["Preferences", "About BECOMING", "Privacy Manifesto", "Terms & Boundaries", "Sanctuary Theme & Atmosphere", "Appearance", "Daylight", "Twilight", "Reduced Motion", "Personal Addressing Preference", "Procedural Soundscape Studio", "Active Soundscape", "Mute (Silence)", "Master Volume", "Optional AI Bridge Configuration", "Configure API Bridge", "Data Sovereignty, Export & Deletion", "Export Reflections & Journal", "Choose Backup File", "Delete Account", "Wipe All Local Data", "Sanctuary Onboarding Experience", "Reset Onboarding Experience", "The Philosophy", "Why We Built BECOMING", "Privacy Manifesto & Local Sovereignty", "Sent to Firebase"],
     ar: ["التفضيلات", "عن BECOMING", "بيان الخصوصية", "الشروط والحدود", "مظهر المساحة وأجواؤها", "المظهر", "النهار", "الغسق", "تقليل الحركة", "طريقة المخاطبة المفضلة", "استوديو الأصوات", "الصوت النشط", "كتم الصوت", "مستوى الصوت", "إعداد مساعد الذكاء الاصطناعي الاختياري", "إعداد الاتصال بالذكاء الاصطناعي", "التحكم بالبيانات وتصديرها وحذفها", "تصدير التأملات والمذكرات", "اختيار ملف النسخة الاحتياطية", "حذف الحساب", "مسح كل البيانات المحلية", "تجربة التعريف بالتطبيق", "إعادة تجربة التعريف", "الفلسفة", "لماذا أنشأنا BECOMING", "بيان الخصوصية والتحكم المحلي", "المرسل إلى Firebase"],
@@ -730,21 +739,10 @@ export function SettingsAndAboutView() {
           </div>
 
           <div className="space-y-4 text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-            <p>
-              In a digital world dominated by algorithmic feeds, compulsive notifications, gamified streaks, and clinical surveillance, <strong>BECOMING</strong> is an intentional sanctuary.
-            </p>
-            <p>
-              We believe self-discovery should never feel like a high-pressure corporate checklist or a therapy substitute. It should feel like stepping into a peaceful, quiet cedar room with soft morning light and zero eyes upon you.
-            </p>
-            <p>
-              Every decision in BECOMING reflects our core commitments:
-            </p>
-            <ul className="list-disc ps-5 space-y-2 font-medium">
-              <li><strong>Zero Cloud Databases:</strong> We have no interest in your thoughts. Your journal and moments belong solely to you on your device.</li>
-              <li><strong>Zero Telemetry or Ads:</strong> No trackers, no analytics pixels, no behavioral profiling, no data sales.</li>
-              <li><strong>Zero Cost Forever:</strong> Static web technologies with procedural Web Audio synthesize peaceful soundscapes with no expensive cloud servers.</li>
-              <li><strong>Unhurried Presence:</strong> No streaks, no guilt, no pressure. Move at the unhurried speed of nature.</li>
-            </ul>
+            <p>{about[0]}</p>
+            <p>{about[1]}</p>
+            <p>{about[2]}</p>
+            <p>{about[3]}</p>
 
             <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 space-y-2 mt-4">
               <div className="font-bold text-amber-900 dark:text-amber-200 text-xs flex items-center gap-1.5">
