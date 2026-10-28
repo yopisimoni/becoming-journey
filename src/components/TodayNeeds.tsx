@@ -54,7 +54,7 @@ function storeJourney(activity:Activity, reflection?:string) {
     const raw:unknown = JSON.parse(localStorage.getItem(JOURNEY_KEY)||'[]');
     const existing:JourneyRecord[] = Array.isArray(raw) ? raw.filter((v):v is JourneyRecord => typeof v==='object'&&v!==null&&typeof v.id==='string'&&typeof v.title==='string') : [];
     const entry:JourneyRecord = {id:activity.id,title:activity.title,date:new Date().toISOString(),...(reflection?.trim()?{reflection:reflection.trim()}:{})};
-    const next=[entry,...existing.filter(v=>v.id!==activity.id)].slice(0,100);
+    const next=[entry,...existing].slice(0,100);
     localStorage.setItem(JOURNEY_KEY,JSON.stringify(next));
     window.dispatchEvent(new Event('becoming-activity-journey-updated'));
   } catch { /* private browsing may not persist */ }
