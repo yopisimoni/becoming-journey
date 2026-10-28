@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useApp } from '@/context/AppContext';
 import {
   Sun,
   Sunrise,
@@ -44,6 +45,15 @@ export const TheBecomingHorizon: React.FC<TheBecomingHorizonProps> = ({
   className = '',
   compact = false,
 }) => {
+  const { locale } = useApp();
+  const copy: Record<string, string[]> = {
+    en: ['The Living Horizon','Reset to Live','Live Sync Active','Dawn','Daylight','Twilight','Sanctuary','Reset to Real-Time Clock'],
+    ar: ['الأفق الحي','العودة للوقت الحالي','المزامنة مفعلة','الفجر','النهار','الغسق','الهدوء','العودة إلى الساعة الفعلية'],
+    fr: ['Horizon vivant','Retour en direct','Synchronisation active','Aube','Jour','Crépuscule','Sanctuaire','Revenir à l’heure actuelle'],
+    es: ['Horizonte vivo','Volver al directo','Sincronización activa','Amanecer','Día','Crepúsculo','Refugio','Volver a la hora actual'],
+    it: ['Orizzonte vivente','Torna in diretta','Sincronizzazione attiva','Alba','Giorno','Crepuscolo','Rifugio','Torna all’ora attuale'],
+  };
+  const labels = copy[locale] || copy.en;
   const [internalPhase, setInternalPhase] = useState<CircadianPhase>(
     externalPhase || getCircadianPhase()
   );
@@ -113,7 +123,7 @@ export const TheBecomingHorizon: React.FC<TheBecomingHorizonProps> = ({
             />
           </span>
           <span className="font-medium tracking-wide uppercase text-stone-500 dark:text-slate-400">
-            The Living Horizon
+            {labels[0]}
           </span>
           {currentTime && (
             <span className="inline-flex items-center gap-1 rounded-full bg-stone-100 px-2 py-0.5 text-[11px] text-stone-600 dark:bg-slate-800 dark:text-slate-300">
@@ -127,15 +137,15 @@ export const TheBecomingHorizon: React.FC<TheBecomingHorizonProps> = ({
           <button
             onClick={handleResetToAuto}
             className="group flex items-center gap-1 rounded-full border border-amber-300/40 bg-amber-500/10 px-2.5 py-1 text-[11px] font-medium text-amber-700 transition hover:bg-amber-500/20 dark:border-amber-500/30 dark:text-amber-300"
-            title="Reset to Real-Time Clock"
+            title={labels[7]}
           >
             <RotateCcw className="h-3 w-3 transition-transform group-hover:-rotate-90" />
-            <span>Reset to Live</span>
+            <span>{labels[1]}</span>
           </button>
         ) : (
           <span className="inline-flex items-center gap-1 text-[11px] text-stone-600 dark:text-slate-300">
             <Sparkles className="h-3 w-3 text-amber-500" />
-            <span>Live Sync Active</span>
+            <span>{labels[2]}</span>
           </span>
         )}
       </div>
@@ -183,7 +193,7 @@ export const TheBecomingHorizon: React.FC<TheBecomingHorizonProps> = ({
               </div>
 
               <span className="text-[12px] font-semibold leading-tight">
-                {phase.label}
+                {labels[3 + PHASES.findIndex(p => p.id === phase.id)]}
               </span>
 
               {!compact && (

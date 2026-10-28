@@ -52,6 +52,14 @@ export function Navbar() {
     setSanctuaryStep,
   } = useApp();
 
+  const menuCopy: Record<string, [string,string,string]> = {
+    en:['Sanctuary controls','Close sanctuary controls','Language'],
+    ar:['إعدادات المساحة','إغلاق الإعدادات','اللغة'],
+    fr:['Commandes du sanctuaire','Fermer les commandes','Langue'],
+    es:['Controles del refugio','Cerrar los controles','Idioma'],
+    it:['Controlli del rifugio','Chiudi i controlli','Lingua'],
+  };
+  const menuLabels = menuCopy[locale] || menuCopy.en;
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isWipeOpen, setWipeOpen] = useState(false);
   const [isStorageOpen, setStorageOpen] = useState(false);
@@ -386,15 +394,15 @@ export function Navbar() {
           className="sm:hidden fixed inset-0 z-50 bg-[#FAF7F2] dark:bg-slate-950 overflow-y-auto overscroll-contain px-5 pt-[max(1.5rem,env(safe-area-inset-top))] pb-[max(2rem,env(safe-area-inset-bottom))]"
           role="dialog"
           aria-modal="true"
-          aria-label="Sanctuary controls"
+          aria-label={menuLabels[0]}
         >
-          <div className="flex items-center justify-between mb-4"><span className="text-base font-semibold text-slate-900 dark:text-white">Sanctuary controls</span><button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close sanctuary controls" className="min-w-11 min-h-11 rounded-xl flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white"><X className="w-5 h-5" /></button></div>
+          <div className="flex items-center justify-between mb-4"><span className="text-base font-semibold text-slate-900 dark:text-white">{menuLabels[0]}</span><button type="button" onClick={() => setMobileMenuOpen(false)} aria-label={menuLabels[1]} className="min-w-11 min-h-11 rounded-xl flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white"><X className="w-5 h-5" /></button></div>
           <div className="flex flex-wrap gap-3 items-center mb-4 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-stone-200 dark:border-slate-700"><AtmosphereSwitcher /><SoundscapeControlPill /></div>
           <div className="grid grid-cols-1 gap-3 mb-3 sm:grid-cols-2">
             <button id="mobile-twilight-toggle" type="button" onClick={toggleTheme} className="min-h-12 min-w-0 px-3 text-center rounded-xl border border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-center gap-2 text-slate-800 dark:text-white">{themeMode === 'twilight' ? <Sun className="w-5 h-5"/> : <Moon className="w-5 h-5"/>}<span>{themeMode === 'twilight' ? 'Light' : 'Twilight'}</span></button>
             <button id="mobile-navbar-settings" type="button" onClick={() => {setActiveTab('settings'); setMobileMenuOpen(false);}} className="min-h-12 min-w-0 px-3 text-center rounded-xl border border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-center gap-2 text-slate-800 dark:text-white"><Settings className="w-5 h-5" />{dict.nav.settingsTab || 'Settings'}</button>
           </div>
-          <label className="block text-sm font-medium text-slate-800 dark:text-white" htmlFor="mobile-sanctuary-language">Language</label>
+          <label className="block text-sm font-medium text-slate-800 dark:text-white" htmlFor="mobile-sanctuary-language">{menuLabels[2]}</label>
           <select id="mobile-sanctuary-language" value={locale} onChange={e => setLocale(e.target.value as Locale)} className="w-full min-h-12 mt-2 px-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">{supportedLocales.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}</select>
           <div className="grid grid-cols-1 gap-3 mt-3 sm:grid-cols-2">
             <button type="button" onClick={() => {setSafetyModalOpen(true);setMobileMenuOpen(false);}} className="min-h-12 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white">{dict.nav.safetyButton}</button>
