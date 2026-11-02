@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
+import { screenText } from '@/locales/screenCopy';
 import { HabitItem } from '@/types';
 import { saveMediaItem } from '@/lib/storage/mediaDb';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -30,7 +31,7 @@ import {
 } from 'lucide-react';
 
 export function HabitBalanceView() {
-  const { dict, habits, addHabit, nurtureHabit, deleteHabit, playSingingBowl, addEvolutionXp, isRtl } = useApp();
+  const { locale, dict, habits, addHabit, nurtureHabit, deleteHabit, playSingingBowl, addEvolutionXp, isRtl } = useApp();
 
   const [activeTab, setActiveTab] = useState<'seed' | 'weight' | 'shift'>('seed');
   const [isAdding, setIsAdding] = useState(false);
@@ -416,12 +417,12 @@ export function HabitBalanceView() {
                     {copiedScriptIndex === idx ? (
                       <>
                         <Check className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Copied Script</span>
+                        <span>{screenText(locale, "Copied Script")}</span>
                       </>
                     ) : (
                       <>
                         <Copy className="w-3.5 h-3.5" />
-                        <span>Copy Script</span>
+                        <span>{screenText(locale, "Copy Script")}</span>
                       </>
                     )}
                   </button>
@@ -503,7 +504,7 @@ export function HabitBalanceView() {
                   value={focusPriority}
                   disabled={isFocusLocked}
                   onChange={(e) => setFocusPriority(e.target.value)}
-                  placeholder="e.g. Write Section 1 without opening email"
+                  placeholder={screenText(locale, "e.g. Write Section 1 without opening email" )}
                   className="w-full p-3 rounded-xl bg-teal-50/50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800 text-xs text-slate-900 dark:text-white font-medium"
                 />
               </div>
@@ -516,7 +517,7 @@ export function HabitBalanceView() {
                   type="text"
                   value={parkingLot}
                   onChange={(e) => setParkingLot(e.target.value)}
-                  placeholder="e.g. Check airline tickets, reply to text..."
+                  placeholder={screenText(locale, "e.g. Check airline tickets, reply to text..." )}
                   className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
                 />
               </div>

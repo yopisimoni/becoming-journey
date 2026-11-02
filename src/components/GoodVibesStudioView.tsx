@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { useApp } from '@/context/AppContext';
+import { screenText } from '@/locales/screenCopy';
 import { GoodVibesTemplateId, GoodVibesContentType } from '@/types';
 import {
   Sparkles,
@@ -116,7 +117,7 @@ const TEMPLATES: TemplateConfig[] = [
 ];
 
 export function GoodVibesStudioView() {
-  const { dict, moments, evolution } = useApp();
+  const { locale, dict, moments, evolution } = useApp();
 
   const [activeTemplate, setActiveTemplate] = useState<GoodVibesTemplateId>('sunrise');
   const [contentType, setContentType] = useState<GoodVibesContentType>('quote');
@@ -406,7 +407,7 @@ export function GoodVibesStudioView() {
                 rows={3}
                 value={customText}
                 onChange={(e) => setCustomText(e.target.value)}
-                placeholder="Write custom words or reflections to engrave onto your card..."
+                placeholder={screenText(locale, "Write custom words or reflections to engrave onto your card..." )}
                 className="w-full p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
               />
             </div>

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
+import { screenText } from '@/locales/screenCopy';
 import { VaultSecret } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -21,7 +22,7 @@ import {
 } from 'lucide-react';
 
 export function SecretVaultView() {
-  const { dict, vaultSecrets, addVaultSecret, deleteVaultSecret, playSingingBowl } = useApp();
+  const { locale, dict, vaultSecrets, addVaultSecret, deleteVaultSecret, playSingingBowl } = useApp();
 
   const [pin, setPin] = useState('');
   const [isUnlocked, setIsUnlocked] = useState(false);
@@ -119,7 +120,7 @@ export function SecretVaultView() {
             <Wind className="w-4 h-4" />
             <span>Dissolve & Let Go (Never Saved)</span>
           </div>
-          <span className="text-[10px] text-slate-400">Ephemeral Release</span>
+          <span className="text-[10px] text-slate-400">{screenText(locale, "Ephemeral Release")}</span>
         </div>
 
         <p className="text-xs text-slate-300 leading-relaxed">
@@ -246,7 +247,7 @@ export function SecretVaultView() {
                 className="px-3.5 py-1.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Seal Away a Thought</span>
+                <span>{screenText(locale, "Seal Away a Thought")}</span>
               </button>
             </div>
 
@@ -258,7 +259,7 @@ export function SecretVaultView() {
                   required
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder="Secret title / alias (e.g. The conversation on Friday)"
+                  placeholder={screenText(locale, "Secret title / alias (e.g. The conversation on Friday)" )}
                   className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-xs font-semibold text-slate-900 dark:text-white"
                 />
 

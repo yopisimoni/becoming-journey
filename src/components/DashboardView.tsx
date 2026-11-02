@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
+import { screenText } from '@/locales/screenCopy';
 import { getStageInfo, getNextStageInfo } from '@/lib/evolution/evolutionEngine';
 import {
   getSessionQuote,
@@ -204,7 +205,7 @@ export function DashboardView() {
         {/* Progress Bar */}
         <div className="space-y-1.5">
           <div className="flex justify-between text-xs font-bold text-slate-600 dark:text-slate-300">
-            <span>Progress to Next Stage</span>
+            <span>{screenText(locale, "Progress to Next Stage")}</span>
             <span>{progressPercent}%</span>
           </div>
           <div className="w-full h-2.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
@@ -268,7 +269,7 @@ export function DashboardView() {
                 type="text"
                 value={pillarInputs.beautiful}
                 onChange={(e) => setPillarInputs({ ...pillarInputs, beautiful: e.target.value })}
-                placeholder="e.g., Watch sunset, brew tea slowly, listen to music"
+                placeholder={screenText(locale, "e.g., Watch sunset, brew tea slowly, listen to music" )}
                 className="w-full text-xs p-2 rounded-xl bg-white dark:bg-slate-900 border border-amber-300 dark:border-amber-700 text-slate-800 dark:text-slate-100"
               />
             ) : (
@@ -289,7 +290,7 @@ export function DashboardView() {
                 type="text"
                 value={pillarInputs.healthy}
                 onChange={(e) => setPillarInputs({ ...pillarInputs, healthy: e.target.value })}
-                placeholder="e.g., Fresh greens, clean water, wholesome home meal"
+                placeholder={screenText(locale, "e.g., Fresh greens, clean water, wholesome home meal" )}
                 className="w-full text-xs p-2 rounded-xl bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 text-slate-800 dark:text-slate-100"
               />
             ) : (
@@ -310,7 +311,7 @@ export function DashboardView() {
                 type="text"
                 value={pillarInputs.helping}
                 onChange={(e) => setPillarInputs({ ...pillarInputs, helping: e.target.value })}
-                placeholder="e.g., A kind word, listening to someone, helping quietly"
+                placeholder={screenText(locale, "e.g., A kind word, listening to someone, helping quietly" )}
                 className="w-full text-xs p-2 rounded-xl bg-white dark:bg-slate-900 border border-sky-300 dark:border-sky-700 text-slate-800 dark:text-slate-100"
               />
             ) : (
@@ -408,7 +409,7 @@ export function DashboardView() {
               className="px-3.5 py-1.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs"
             >
               <Feather className="w-3.5 h-3.5" />
-              <span>Reflect in Journal</span>
+              <span>{screenText(locale, "Reflect in Journal")}</span>
             </button>
           </div>
         </div>
@@ -423,7 +424,7 @@ export function DashboardView() {
           <div className="text-2xl sm:text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">
             {cards.length}
           </div>
-          <div className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Confirmed insights</div>
+          <div className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">{screenText(locale, "Confirmed insights")}</div>
         </div>
 
         <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
@@ -433,7 +434,7 @@ export function DashboardView() {
           <div className="text-2xl sm:text-3xl font-extrabold text-teal-600 dark:text-teal-400">
             {journalEntries.length}
           </div>
-          <div className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Local entries saved</div>
+          <div className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">{screenText(locale, "Local entries saved")}</div>
         </div>
 
         <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
@@ -443,7 +444,7 @@ export function DashboardView() {
           <div className="text-2xl sm:text-3xl font-extrabold text-amber-600 dark:text-amber-400">
             {moments.length}
           </div>
-          <div className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Gratitude & memories</div>
+          <div className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">{screenText(locale, "Gratitude & memories")}</div>
         </div>
 
         <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">

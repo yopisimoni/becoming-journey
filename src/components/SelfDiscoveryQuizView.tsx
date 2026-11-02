@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { useApp } from '@/context/AppContext';
+import { screenText } from '@/locales/screenCopy';
 import {
   QuizLength,
   QuizQuestion,
@@ -587,7 +588,7 @@ export const ARCHETYPE_PORTRAITS: Record<
 };
 
 export function SelfDiscoveryQuizView() {
-  const { dict, saveCard, playSingingBowl, setActiveTab, isRtl, addEvolutionXp, activeFramework, setActiveFramework } = useApp();
+  const { locale, dict, saveCard, playSingingBowl, setActiveTab, isRtl, addEvolutionXp, activeFramework, setActiveFramework } = useApp();
 
   const [selectedFramework, setSelectedFramework] = useState<FrameworkId>(activeFramework || 'compass');
   const [step, setStep] = useState<'intro' | 'quiz' | 'result'>('intro');
@@ -880,7 +881,7 @@ BECOMING • Local Sovereignty • Zero External Tracking
           }`}
         >
           <Compass className="w-3.5 h-3.5" />
-          <span>Inner Compass</span>
+          <span>{screenText(locale, "Inner Compass")}</span>
         </button>
 
         {SCIENTIFIC_FRAMEWORKS.map((meta) => (
@@ -1223,7 +1224,7 @@ BECOMING • Local Sovereignty • Zero External Tracking
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
-                    <span>Work Rhythm & Craft</span>
+                    <span>{screenText(locale, "Work Rhythm & Craft")}</span>
                     <span>{result.dimensionScores.work}%</span>
                   </div>
                   <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
@@ -1233,7 +1234,7 @@ BECOMING • Local Sovereignty • Zero External Tracking
 
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
-                    <span>Life & Emotional Resonance</span>
+                    <span>{screenText(locale, "Life & Emotional Resonance")}</span>
                     <span>{result.dimensionScores.life}%</span>
                   </div>
                   <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
@@ -1243,7 +1244,7 @@ BECOMING • Local Sovereignty • Zero External Tracking
 
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
-                    <span>Soul & Meaning Alignment</span>
+                    <span>{screenText(locale, "Soul & Meaning Alignment")}</span>
                     <span>{result.dimensionScores.soul}%</span>
                   </div>
                   <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
@@ -1253,7 +1254,7 @@ BECOMING • Local Sovereignty • Zero External Tracking
 
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
-                    <span>Inner Clarity & Stillness</span>
+                    <span>{screenText(locale, "Inner Clarity & Stillness")}</span>
                     <span>{result.dimensionScores.clarity}%</span>
                   </div>
                   <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
@@ -1268,7 +1269,7 @@ BECOMING • Local Sovereignty • Zero External Tracking
               <div className="p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 space-y-2">
                 <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-bold text-xs">
                   <BatteryCharging className="w-4 h-4" />
-                  <span>What Naturally Fuels You</span>
+                  <span>{screenText(locale, "What Naturally Fuels You")}</span>
                 </div>
                 <ul className="text-xs text-emerald-900 dark:text-emerald-200 space-y-1.5 list-disc ps-4">
                   {result.fuels.map((fuel, idx) => (
@@ -1280,7 +1281,7 @@ BECOMING • Local Sovereignty • Zero External Tracking
               <div className="p-4 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60 space-y-2">
                 <div className="flex items-center gap-2 text-rose-800 dark:text-rose-300 font-bold text-xs">
                   <BatteryWarning className="w-4 h-4" />
-                  <span>What Silently Drains You</span>
+                  <span>{screenText(locale, "What Silently Drains You")}</span>
                 </div>
                 <ul className="text-xs text-rose-900 dark:text-rose-200 space-y-1.5 list-disc ps-4">
                   {result.drains.map((drain, idx) => (
@@ -1314,7 +1315,7 @@ BECOMING • Local Sovereignty • Zero External Tracking
                 {savedToJourneyMap ? (
                   <>
                     <CheckCircle2 className="w-4 h-4" />
-                    <span>Saved to Journey Map</span>
+                    <span>{screenText(locale, "Saved to Journey Map")}</span>
                   </>
                 ) : (
                   <>
@@ -1453,7 +1454,7 @@ BECOMING • Local Sovereignty • Zero External Tracking
                 {savedToJourneyMap ? (
                   <>
                     <CheckCircle2 className="w-4 h-4" />
-                    <span>Saved to Journey Map</span>
+                    <span>{screenText(locale, "Saved to Journey Map")}</span>
                   </>
                 ) : (
                   <>

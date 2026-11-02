@@ -47,3 +47,9 @@ This scan inspected current source on `feat/v1-mobile-ux-fixes`, without running
 **Coverage limitation:** this is a targeted static scan, not a complete runtime accessibility or legal review. No source changes, build checks, or device tests were performed in this audit. The connected Mac was offline; do not claim these issues are resolved.
 
 **Single closure gate:** translate all listed controls and safety content in a batched change, run TypeScript/lint/unit/build, then Playwright five-locale full-route checks; native-language review and real-device RTL inspection remain separate acceptance requirements.
+
+## 2026-11-02 batch localization implementation
+- Introduced shared `src/locales/screenCopy.ts` translations for 24 confirmed labels and placeholders across Dashboard, Habit Balance, Secret Vault, Self Discovery Quiz and Good Vibes.
+- Validation: TypeScript, ESLint, 129 unit tests, Next.js build, 5/5 Playwright core-locale navigation at 320px passed on connected Mac.
+- **Still open:** long Settings Terms / safety content requires approved translations; dynamic quotes and additional prompts remain; real-device RTL and full studios route coverage still unverified. This is not a 100%-localized release gate.
+- Production unchanged. Development branch only.
