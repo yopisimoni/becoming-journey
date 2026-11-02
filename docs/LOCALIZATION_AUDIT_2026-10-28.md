@@ -29,3 +29,21 @@ Only close localization after every supported route has a five-language copy rev
 - Settings > About main philosophy paragraphs now use five-language copy. Absolute claims such as "100% private" and "free forever" were replaced with bounded browser-storage language rather than translated as promises.
 - This is a **copy improvement**, not legal approval. Longer Terms disclaimer and assistance directory still require review, and other studio content is not marked complete.
 - No new features, no production changes, no public-release authorization.
+
+
+## 2026-11-02 GitHub-only audit: confirmed untranslated strings
+This scan inspected current source on `feat/v1-mobile-ux-fixes`, without running the application. Examples are source line numbers at inspection time, not full counts of untranslated content:
+
+| Screen | Examples confirmed in source | Follow-up |
+| --- | --- | --- |
+| Dashboard | `Progress to Next Stage` (207); `Reflect in Journal` (411); `Confirmed insights` (426); English example placeholders (271, 292, 313) | Move remaining UI labels/placeholders to five-language dictionaries |
+| SelfDiscoveryQuiz | `Inner Compass` (883), `Work Rhythm & Craft` (1226), `What Naturally Fuels You` (1271), `Saved to Journey Map` (1317) | Audit results and quiz labels together |
+| HabitBalance | `Copy Script` (424); English reflective prompts and task examples (453, 461, 506, 519) | Translate interactive controls and prompts |
+| HorizonCalendar | English goal/action placeholders (161, 175, 188, 202, 286) | Translate examples used while entering data |
+| SecretVault | `Ephemeral Release` (122), `Seal Away a Thought` (249); sensitive-content placeholders (144, 261, 270) | Review language and privacy wording together |
+| GoodVibes | English custom-card placeholder (409) | Translate card editor instructions |
+| Settings > Terms | Long English non-clinical terms and support information remain in source | Qualified human review of safety/legal translation required |
+
+**Coverage limitation:** this is a targeted static scan, not a complete runtime accessibility or legal review. No source changes, build checks, or device tests were performed in this audit. The connected Mac was offline; do not claim these issues are resolved.
+
+**Single closure gate:** translate all listed controls and safety content in a batched change, run TypeScript/lint/unit/build, then Playwright five-locale full-route checks; native-language review and real-device RTL inspection remain separate acceptance requirements.
