@@ -60,3 +60,9 @@ This scan inspected current source on `feat/v1-mobile-ux-fixes`, without running
 - Latest local verification: TypeScript and ESLint passed; unit tests **134/134**; Next.js static build passed; core five-language Playwright journey **10/10** across mobile 320px and 375px.
 - **Not verified:** all long Terms/safety wording, dynamically generated quotes, complete screen-by-screen translation, browser/device physical RTL testing, third-party consent, production readiness. Beta remains **guest-only with fictional data** pending these gates.
 - Decision: close this particular batch without claiming the full translation project is finished; do not invite external multilingual testers on a blanket completeness claim.
+
+## 2026-11-03 beta safety-copy follow-up
+- Main Settings introduction, non-medical disclaimer and international help-directory labels localized in five languages, including the repeated intro in About/Terms.
+- Playwright Settings-navigation, locale direction and layout checks are recorded in `e2e/beta-settings-locales.spec.ts`; 10 targeted checks passed at 320px and 375px.
+- Long Terms paragraphs and regional contact information still require review and appropriate translations before a claim of complete localization.
+- Release gate: `docs/PRIVATE_BETA_ACCEPTANCE_2026-11-03.md`.

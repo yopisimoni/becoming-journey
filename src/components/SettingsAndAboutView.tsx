@@ -73,6 +73,44 @@ export function SettingsAndAboutView() {
     it: ['Lingua e impostazioni locali (5 lingue)','Memorizzato su questo dispositivo','Nessuna condivisione esterna','I dati locali non vengono sincronizzati automaticamente tra dispositivi o browser. Sui dispositivi condivisi usa dati di prova e cancellali dopo.','Condizioni d’uso e limiti non clinici','Sicurezza e autonomia'],
   };
   const labels = sectionLabels[locale] || sectionLabels.en;
+  const betaSafetyCopy: Record<string, string[]> = {
+  "en": [
+    "Sanctuary Settings & Information",
+    "Manage preferences, local data and privacy settings.",
+    "Not medical advice or professional coaching",
+    "BECOMING offers self-reflection activities, not medical care, therapy or professional coaching. For urgent health or personal concerns, contact a qualified professional or local emergency service.",
+    "Find a helpline (international directory)"
+  ],
+  "ar": [
+    "إعدادات التطبيق ومعلوماته",
+    "إدارة التفضيلات والبيانات المحلية والخصوصية.",
+    "ليس استشارة طبية أو تدريباً مهنياً",
+    "يقدم BECOMING أنشطة للتأمل الذاتي، وليس رعاية طبية أو علاجاً أو تدريباً مهنياً. إذا واجهت مشكلة صحية أو شخصية عاجلة، تواصل مع متخصص مؤهل أو خدمة الطوارئ المحلية.",
+    "البحث عن جهة مساعدة (دليل دولي)"
+  ],
+  "fr": [
+    "Paramètres et informations du sanctuaire",
+    "Gérez vos préférences, vos données locales et votre confidentialité.",
+    "Ni conseil médical ni coaching professionnel",
+    "BECOMING propose des activités de réflexion personnelle, pas des soins médicaux, une thérapie ou du coaching professionnel. Pour toute difficulté urgente de santé ou personnelle, contactez un professionnel qualifié ou les services d’urgence locaux.",
+    "Trouver une aide (annuaire international)"
+  ],
+  "es": [
+    "Ajustes e información del espacio",
+    "Gestiona tus preferencias, datos locales y privacidad.",
+    "No es asesoramiento médico ni coaching profesional",
+    "BECOMING ofrece actividades de reflexión personal, no atención médica, terapia ni coaching profesional. Ante un problema urgente de salud o personal, contacta con un profesional cualificado o con los servicios de emergencia locales.",
+    "Buscar ayuda (directorio internacional)"
+  ],
+  "it": [
+    "Impostazioni e informazioni",
+    "Gestisci preferenze, dati locali e privacy.",
+    "Non è consulenza medica né coaching professionale",
+    "BECOMING propone attività di riflessione personale, non cure mediche, terapia o coaching professionale. Per problemi urgenti di salute o personali, contatta un professionista qualificato o i servizi di emergenza locali.",
+    "Trova assistenza (elenco internazionale)"
+  ]
+};
+  const safety = betaSafetyCopy[locale] || betaSafetyCopy.en;
   const aboutCopy: Record<string, [string,string,string,string]> = {
     en: ['BECOMING is a quiet place for reflection in a world full of distractions.','Self-discovery should feel calm and personal, never like a test or a substitute for professional support.','Our choices follow a few simple principles:','Your reflections are stored in this browser. Avoid sensitive information on shared devices.'],
     ar: ['BECOMING مساحة هادئة للتأمل وسط عالم مليء بالمشتتات.','يجب أن يكون اكتشاف الذات هادئاً وشخصياً، لا اختباراً ولا بديلاً عن الدعم المتخصص.','نعتمد في تصميمنا على مبادئ بسيطة:','تُحفظ تأملاتك في هذا المتصفح. تجنب إدخال معلومات حساسة على الأجهزة المشتركة.'],
@@ -140,10 +178,10 @@ export function SettingsAndAboutView() {
       {/* Header */}
       <div className="space-y-2">
         <h1 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 dark:text-white">
-          Sanctuary Settings & Information
+          {safety[0]}
         </h1>
         <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
-          Control your local preferences, audio defaults, privacy boundaries, and data export.
+          {safety[1]}
         </p>
       </div>
 
@@ -151,10 +189,10 @@ export function SettingsAndAboutView() {
       <div className="p-4 sm:p-5 rounded-2xl bg-amber-50/90 dark:bg-amber-950/40 border border-amber-300/80 dark:border-amber-800/70 space-y-2">
         <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-300">
           <ShieldAlert className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
-          <span>Non-Medical &amp; Non-Coaching Disclaimer</span>
+          <span>{safety[2]}</span>
         </div>
         <p className="text-xs text-amber-950 dark:text-amber-200 leading-relaxed font-serif">
-          BECOMING is a personal self-reflection sanctuary created to help you think, breathe, and find your own clarity. We are not doctors, therapists, or professional coaches. This app is for personal reflection and wellness only. If you are facing a serious medical, psychological, or life crisis, please reach out to a qualified professional, doctor, or local emergency service immediately.
+          {safety[3]}
         </p>
         <div className="pt-1">
           <a
@@ -163,7 +201,7 @@ export function SettingsAndAboutView() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-800 dark:text-amber-300 hover:text-amber-950 dark:hover:text-amber-100 underline underline-offset-2 transition-colors"
           >
-            <span>Find A Helpline (Global Support Directory)</span>
+            <span>{safety[4]}</span>
             <ExternalLink className="w-3.5 h-3.5" />
           </a>
         </div>
@@ -747,10 +785,10 @@ export function SettingsAndAboutView() {
             <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 space-y-2 mt-4">
               <div className="font-bold text-amber-900 dark:text-amber-200 text-xs flex items-center gap-1.5">
                 <ShieldAlert className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                <span>Non-Medical &amp; Non-Coaching Notice</span>
+                <span>{safety[2]}</span>
               </div>
               <p className="text-xs text-amber-950 dark:text-amber-200 leading-relaxed font-serif">
-                BECOMING is a personal self-reflection sanctuary created to help you think, breathe, and find your own clarity. We are not doctors, therapists, or professional coaches. This app is for personal reflection and wellness only. If you are facing a serious medical, psychological, or life crisis, please reach out to a qualified professional, doctor, or local emergency service immediately.
+                {safety[3]}
               </p>
               <div className="pt-1">
                 <a
@@ -759,7 +797,7 @@ export function SettingsAndAboutView() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-900 dark:text-amber-200 underline underline-offset-2 hover:text-amber-700"
                 >
-                  <span>Find A Helpline (Global Support Directory)</span>
+                  <span>{safety[4]}</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               </div>
@@ -894,9 +932,9 @@ export function SettingsAndAboutView() {
 
           <div className="space-y-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
             <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 space-y-2">
-              <div className="font-bold text-amber-900 dark:text-amber-200 text-xs">Non-Medical &amp; Non-Coaching Disclaimer:</div>
+              <div className="font-bold text-amber-900 dark:text-amber-200 text-xs">{safety[2]}</div>
               <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed font-serif">
-                BECOMING is a personal self-reflection sanctuary created to help you think, breathe, and find your own clarity. We are not doctors, therapists, or professional coaches. This app is for personal reflection and wellness only. If you are facing a serious medical, psychological, or life crisis, please reach out to a qualified professional, doctor, or local emergency service immediately.
+                {safety[3]}
               </p>
               <div className="pt-1">
                 <a
@@ -905,7 +943,7 @@ export function SettingsAndAboutView() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-900 dark:text-amber-200 underline underline-offset-2 hover:text-amber-700"
                 >
-                  <span>Find A Helpline (Global Support Directory)</span>
+                  <span>{safety[4]}</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               </div>
