@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
+import { screenText } from '@/locales/screenCopy';
 import { GoalHorizon, GoalCategory, LifeGoal } from '@/types';
 import {
   Calendar as CalendarIcon,
@@ -19,6 +20,7 @@ import {
 
 export function HorizonCalendarView() {
   const {
+    locale,
     dict,
     goals,
     addGoal,
@@ -158,7 +160,7 @@ export function HorizonCalendarView() {
                 type="text"
                 value={dreamInputs.dreamTitle}
                 onChange={(e) => setDreamInputs({ ...dreamInputs, dreamTitle: e.target.value })}
-                placeholder="e.g. Build a self-sustaining eco-retreat & write poetry"
+                placeholder={screenText(locale, "e.g. Build a self-sustaining eco-retreat & write poetry")}
                 className="w-full text-xs p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-indigo-300 dark:border-indigo-700 text-slate-900 dark:text-white"
               />
             </div>
@@ -172,7 +174,7 @@ export function HorizonCalendarView() {
                   type="text"
                   value={dreamInputs.whyItMatters}
                   onChange={(e) => setDreamInputs({ ...dreamInputs, whyItMatters: e.target.value })}
-                  placeholder="e.g. Living in deep harmony with nature and creating beauty"
+                  placeholder={screenText(locale, "e.g. Living in deep harmony with nature and creating beauty")}
                   className="w-full text-xs p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-indigo-300 dark:border-indigo-700 text-slate-900 dark:text-white"
                 />
               </div>
@@ -185,7 +187,7 @@ export function HorizonCalendarView() {
                   type="text"
                   value={dreamInputs.horizonAnchor}
                   onChange={(e) => setDreamInputs({ ...dreamInputs, horizonAnchor: e.target.value })}
-                  placeholder="e.g. Complete land search and save initial seed reserve"
+                  placeholder={screenText(locale, "e.g. Complete land search and save initial seed reserve")}
                   className="w-full text-xs p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-indigo-300 dark:border-indigo-700 text-slate-900 dark:text-white"
                 />
               </div>
@@ -199,7 +201,7 @@ export function HorizonCalendarView() {
                 type="text"
                 value={dreamInputs.dailyActionCommitment}
                 onChange={(e) => setDreamInputs({ ...dreamInputs, dailyActionCommitment: e.target.value })}
-                placeholder="e.g. Spend 20 minutes learning about soil restoration"
+                placeholder={screenText(locale, "e.g. Spend 20 minutes learning about soil restoration")}
                 className="w-full text-xs p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-indigo-300 dark:border-indigo-700 text-slate-900 dark:text-white"
               />
             </div>
@@ -283,7 +285,7 @@ export function HorizonCalendarView() {
               required
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
-              placeholder="e.g. Read 20 pages with quiet tea, or complete chapter outline..."
+              placeholder={screenText(locale, "e.g. Read 20 pages with quiet tea, or complete chapter outline...")}
               className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>

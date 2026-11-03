@@ -6,4 +6,61 @@ export const screenCopy: Record<string, Record<string,string>> = {
   es: {"Progress to Next Stage": "Progreso a la siguiente etapa", "Reflect in Journal": "Reflexionar en el diario", "Confirmed insights": "Reflexiones confirmadas", "Local entries saved": "Entradas guardadas localmente", "Gratitude & memories": "Gratitud y recuerdos", "Copy Script": "Copiar texto", "Copied Script": "Texto copiado", "Ephemeral Release": "Liberación temporal", "Seal Away a Thought": "Guardar un pensamiento", "Inner Compass": "Brújula interior", "Work Rhythm & Craft": "Ritmo laboral y habilidades", "Life & Emotional Resonance": "Vida y resonancia emocional", "Soul & Meaning Alignment": "Conexión con el sentido", "Inner Clarity & Stillness": "Claridad y calma interior", "What Naturally Fuels You": "Lo que te motiva naturalmente", "What Silently Drains You": "Lo que te agota en silencio", "Saved to Journey Map": "Guardado en el mapa del recorrido", "e.g., Watch sunset, brew tea slowly, listen to music": "Ej.: ver el atardecer, preparar té, escuchar música", "e.g., Fresh greens, clean water, wholesome home meal": "Ej.: verduras frescas, agua, comida casera", "e.g., A kind word, listening to someone, helping quietly": "Ej.: una palabra amable, escuchar, ayudar", "e.g. Write Section 1 without opening email": "Ej.: escribir la primera sección sin abrir el correo", "e.g. Check airline tickets, reply to text...": "Ej.: revisar billetes, responder un mensaje", "Secret title / alias (e.g. The conversation on Friday)": "Título privado (ej.: la conversación del viernes)", "Write custom words or reflections to engrave onto your card...": "Escribe palabras o reflexiones para tu tarjeta..."},
   it: {"Progress to Next Stage": "Avanzamento alla fase successiva", "Reflect in Journal": "Rifletti nel diario", "Confirmed insights": "Riflessioni confermate", "Local entries saved": "Voci salvate in locale", "Gratitude & memories": "Gratitudine e ricordi", "Copy Script": "Copia il testo", "Copied Script": "Testo copiato", "Ephemeral Release": "Rilascio temporaneo", "Seal Away a Thought": "Conserva un pensiero", "Inner Compass": "Bussola interiore", "Work Rhythm & Craft": "Ritmo di lavoro e competenze", "Life & Emotional Resonance": "Vita e risonanza emotiva", "Soul & Meaning Alignment": "Allineamento con il significato", "Inner Clarity & Stillness": "Chiarezza e calma interiore", "What Naturally Fuels You": "Cosa ti motiva naturalmente", "What Silently Drains You": "Cosa ti stanca silenziosamente", "Saved to Journey Map": "Salvato nella mappa del percorso", "e.g., Watch sunset, brew tea slowly, listen to music": "Es.: guardare il tramonto, preparare il tè, ascoltare musica", "e.g., Fresh greens, clean water, wholesome home meal": "Es.: verdure fresche, acqua, pasto fatto in casa", "e.g., A kind word, listening to someone, helping quietly": "Es.: una parola gentile, ascoltare, aiutare", "e.g. Write Section 1 without opening email": "Es.: scrivere la prima sezione senza aprire le email", "e.g. Check airline tickets, reply to text...": "Es.: controllare i biglietti, rispondere a un messaggio", "Secret title / alias (e.g. The conversation on Friday)": "Titolo privato (es.: la conversazione di venerdì)", "Write custom words or reflections to engrave onto your card...": "Scrivi parole o riflessioni per la tua carta..."},
 };
-export const screenText = (locale:string, text:string) => screenCopy[locale]?.[text] || text;
+export const additionalScreenCopy: Record<string, Record<string, string>> = {
+  "en": {
+    "Who hurt, irritated, or judged you recently? (e.g., A colleague, family member, stranger)": "Who hurt, irritated, or judged you recently? (e.g., A colleague, family member, stranger)",
+    "What unseen battle, childhood wound, or exhaustion might they be carrying? Reframe with compassion.": "What unseen battle, childhood wound, or exhaustion might they be carrying? Reframe with compassion.",
+    "What heavy burden or worry would you like to release right now?...": "What heavy burden or worry would you like to release right now?...",
+    "Write everything you cannot say anywhere else...": "Write everything you cannot say anywhere else...",
+    "e.g. Build a self-sustaining eco-retreat & write poetry": "e.g. Build a self-sustaining eco-retreat & write poetry",
+    "e.g. Living in deep harmony with nature and creating beauty": "e.g. Living in deep harmony with nature and creating beauty",
+    "e.g. Complete land search and save initial seed reserve": "e.g. Complete land search and save initial seed reserve",
+    "e.g. Spend 20 minutes learning about soil restoration": "e.g. Spend 20 minutes learning about soil restoration",
+    "e.g. Read 20 pages with quiet tea, or complete chapter outline...": "e.g. Read 20 pages with quiet tea, or complete chapter outline..."
+  },
+  "ar": {
+    "Who hurt, irritated, or judged you recently? (e.g., A colleague, family member, stranger)": "هل أزعجك أحد مؤخراً؟ (مثلاً زميل أو شخص من العائلة)",
+    "What unseen battle, childhood wound, or exhaustion might they be carrying? Reframe with compassion.": "ما الظروف أو الضغوط التي قد لا تعرفها عنهم؟ فكر بتعاطف.",
+    "What heavy burden or worry would you like to release right now?...": "ما القلق الذي ترغب في التعبير عنه الآن؟...",
+    "Write everything you cannot say anywhere else...": "اكتب ما ترغب في تدوينه هنا...",
+    "e.g. Build a self-sustaining eco-retreat & write poetry": "مثلاً: إنشاء مساحة طبيعية وكتابة الشعر",
+    "e.g. Living in deep harmony with nature and creating beauty": "مثلاً: العيش بانسجام مع الطبيعة وصنع الجمال",
+    "e.g. Complete land search and save initial seed reserve": "مثلاً: إتمام البحث عن أرض والادخار للبداية",
+    "e.g. Spend 20 minutes learning about soil restoration": "مثلاً: تخصيص 20 دقيقة للتعلم عن العناية بالتربة",
+    "e.g. Read 20 pages with quiet tea, or complete chapter outline...": "مثلاً: اقرأ 20 صفحة بهدوء أو أكمل مخطط الفصل..."
+  },
+  "fr": {
+    "Who hurt, irritated, or judged you recently? (e.g., A colleague, family member, stranger)": "Une personne vous a-t-elle contrarié récemment ? (collègue, proche...)",
+    "What unseen battle, childhood wound, or exhaustion might they be carrying? Reframe with compassion.": "Quelles difficultés inconnues cette personne traverse-t-elle ? Essayez de voir avec compassion.",
+    "What heavy burden or worry would you like to release right now?...": "Quelle préoccupation souhaitez-vous exprimer maintenant ?...",
+    "Write everything you cannot say anywhere else...": "Écrivez ce que vous souhaitez noter ici...",
+    "e.g. Build a self-sustaining eco-retreat & write poetry": "Ex. : créer un lieu proche de la nature et écrire des poèmes",
+    "e.g. Living in deep harmony with nature and creating beauty": "Ex. : vivre en harmonie avec la nature et créer de belles choses",
+    "e.g. Complete land search and save initial seed reserve": "Ex. : terminer la recherche d’un terrain et économiser pour commencer",
+    "e.g. Spend 20 minutes learning about soil restoration": "Ex. : consacrer 20 minutes à découvrir la restauration des sols",
+    "e.g. Read 20 pages with quiet tea, or complete chapter outline...": "Ex. : lire 20 pages tranquillement ou finir le plan d’un chapitre..."
+  },
+  "es": {
+    "Who hurt, irritated, or judged you recently? (e.g., A colleague, family member, stranger)": "¿Alguien te ha molestado últimamente? (colega, familiar...)",
+    "What unseen battle, childhood wound, or exhaustion might they be carrying? Reframe with compassion.": "¿Qué dificultades desconocidas podría estar viviendo? Intenta verlo con compasión.",
+    "What heavy burden or worry would you like to release right now?...": "¿Qué preocupación quieres expresar ahora?...",
+    "Write everything you cannot say anywhere else...": "Escribe lo que quieras anotar aquí...",
+    "e.g. Build a self-sustaining eco-retreat & write poetry": "Ej.: crear un espacio natural y escribir poesía",
+    "e.g. Living in deep harmony with nature and creating beauty": "Ej.: vivir en armonía con la naturaleza y crear belleza",
+    "e.g. Complete land search and save initial seed reserve": "Ej.: terminar la búsqueda de terreno y ahorrar para empezar",
+    "e.g. Spend 20 minutes learning about soil restoration": "Ej.: dedicar 20 minutos a aprender sobre restauración del suelo",
+    "e.g. Read 20 pages with quiet tea, or complete chapter outline...": "Ej.: leer 20 páginas con calma o terminar el esquema de un capítulo..."
+  },
+  "it": {
+    "Who hurt, irritated, or judged you recently? (e.g., A colleague, family member, stranger)": "Qualcuno ti ha infastidito di recente? (collega, familiare...)",
+    "What unseen battle, childhood wound, or exhaustion might they be carrying? Reframe with compassion.": "Quali difficoltà sconosciute potrebbe affrontare? Prova a guardare con empatia.",
+    "What heavy burden or worry would you like to release right now?...": "Quale preoccupazione vuoi esprimere ora?...",
+    "Write everything you cannot say anywhere else...": "Scrivi ciò che desideri annotare qui...",
+    "e.g. Build a self-sustaining eco-retreat & write poetry": "Es.: creare uno spazio nella natura e scrivere poesie",
+    "e.g. Living in deep harmony with nature and creating beauty": "Es.: vivere in armonia con la natura e creare bellezza",
+    "e.g. Complete land search and save initial seed reserve": "Es.: completare la ricerca del terreno e risparmiare per iniziare",
+    "e.g. Spend 20 minutes learning about soil restoration": "Es.: dedicare 20 minuti a conoscere il recupero del suolo",
+    "e.g. Read 20 pages with quiet tea, or complete chapter outline...": "Es.: leggere 20 pagine con calma o finire la scaletta di un capitolo..."
+  }
+};
+export const screenText = (locale:string, text:string) => screenCopy[locale]?.[text] || additionalScreenCopy[locale]?.[text] || text;

@@ -53,3 +53,10 @@ This scan inspected current source on `feat/v1-mobile-ux-fixes`, without running
 - Validation: TypeScript, ESLint, 129 unit tests, Next.js build, 5/5 Playwright core-locale navigation at 320px passed on connected Mac.
 - **Still open:** long Settings Terms / safety content requires approved translations; dynamic quotes and additional prompts remain; real-device RTL and full studios route coverage still unverified. This is not a 100%-localized release gate.
 - Production unchanged. Development branch only.
+
+## 2026-11-03 additional localization closure pass
+- Completed nine more translated placeholders across Horizon Calendar, Habit Balance and Secret Vault, through `additionalScreenCopy` shared dictionary.
+- Five new unit assertions verify all new prompts have distinct Arabic, French, Spanish and Italian translations, while English and unknown keys fall back safely.
+- Latest local verification: TypeScript and ESLint passed; unit tests **134/134**; Next.js static build passed; core five-language Playwright journey **10/10** across mobile 320px and 375px.
+- **Not verified:** all long Terms/safety wording, dynamically generated quotes, complete screen-by-screen translation, browser/device physical RTL testing, third-party consent, production readiness. Beta remains **guest-only with fictional data** pending these gates.
+- Decision: close this particular batch without claiming the full translation project is finished; do not invite external multilingual testers on a blanket completeness claim.

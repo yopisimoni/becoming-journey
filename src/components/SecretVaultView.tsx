@@ -142,7 +142,7 @@ export function SecretVaultView() {
               <textarea
                 value={heavyThought}
                 onChange={(e) => setHeavyThought(e.target.value)}
-                placeholder="What heavy burden or worry would you like to release right now?..."
+                placeholder={screenText(locale, "What heavy burden or worry would you like to release right now?...")}
                 rows={3}
                 className="w-full p-4 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
               />
@@ -268,7 +268,7 @@ export function SecretVaultView() {
                   rows={3}
                   value={newContent}
                   onChange={(e) => setNewContent(e.target.value)}
-                  placeholder="Write everything you cannot say anywhere else..."
+                  placeholder={screenText(locale, "Write everything you cannot say anywhere else...")}
                   className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-xs text-slate-900 dark:text-white"
                 />
 

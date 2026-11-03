@@ -451,7 +451,7 @@ export function HabitBalanceView() {
                 type="text"
                 value={judgmentTarget}
                 onChange={(e) => setJudgmentTarget(e.target.value)}
-                placeholder="Who hurt, irritated, or judged you recently? (e.g., A colleague, family member, stranger)"
+                placeholder={screenText(locale, "Who hurt, irritated, or judged you recently? (e.g., A colleague, family member, stranger)")}
                 className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               />
 
@@ -459,7 +459,7 @@ export function HabitBalanceView() {
                 value={judgmentReframe}
                 onChange={(e) => setJudgmentReframe(e.target.value)}
                 rows={2}
-                placeholder="What unseen battle, childhood wound, or exhaustion might they be carrying? Reframe with compassion."
+                placeholder={screenText(locale, "What unseen battle, childhood wound, or exhaustion might they be carrying? Reframe with compassion.")}
                 className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               />
 
