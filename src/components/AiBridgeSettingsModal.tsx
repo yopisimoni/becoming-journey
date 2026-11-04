@@ -1,141 +1,40 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { Sparkles, ShieldCheck, X } from 'lucide-react';
 
+const copy: Record<string, [string,string,string,string,string,string]> = {
+  en: ['Optional AI preference','BECOMING works without AI. Choosing AI is entirely optional.','I would like to use AI features when they are safely available.','No AI requests will be made yet. A secure server gateway, clear per-request consent, and privacy review are required before activation.','We do not sell personal data. Do not enter sensitive personal information for testing.','Save preference'],
+  ar: ['اختيار الذكاء الاصطناعي','يعمل BECOMING دون ذكاء اصطناعي. استخدام AI اختياري بالكامل.','أرغب في استخدام ميزات AI عند توفرها بشكل آمن.','لن تُرسل أي طلبات AI الآن. يلزم خادم آمن وموافقة واضحة لكل إرسال ومراجعة الخصوصية أولاً.','لا نبيع البيانات الشخصية. لا تُدخل معلومات حساسة أثناء الاختبار.','حفظ الاختيار'],
+  fr: ['Préférence IA facultative','BECOMING fonctionne sans IA. L’utilisation de l’IA est entièrement facultative.','Je souhaite utiliser les fonctionnalités IA lorsqu’elles seront disponibles en toute sécurité.','Aucune requête IA ne sera envoyée pour le moment. Une passerelle sécurisée, un consentement explicite et une vérification de confidentialité sont nécessaires.','Nous ne vendons pas de données personnelles. Évitez les données sensibles pendant les tests.','Enregistrer le choix'],
+  es: ['Preferencia opcional de IA','BECOMING funciona sin IA. Su uso es totalmente opcional.','Quiero usar las funciones de IA cuando estén disponibles de forma segura.','Por ahora no se enviarán solicitudes de IA. Se requiere un servidor seguro, consentimiento explícito y revisión de privacidad.','No vendemos datos personales. No introduzcas datos sensibles durante las pruebas.','Guardar preferencia'],
+  it: ['Preferenza AI facoltativa','BECOMING funziona senza AI. Usarla è del tutto facoltativo.','Vorrei usare le funzioni AI quando saranno disponibili in sicurezza.','Per ora non verranno inviate richieste AI. Servono un gateway sicuro, consenso esplicito e una revisione della privacy.','Non vendiamo dati personali. Evita dati sensibili durante i test.','Salva preferenza'],
+};
+
 export function AiBridgeSettingsModal() {
-  const { isAiModalOpen, setAiModalOpen, aiSettings, setAiSettings, dict } = useApp();
-
-  const [enabled, setEnabled] = useState(aiSettings.enabled);
-  const [endpoint, setEndpoint] = useState(aiSettings.endpoint);
-  const [apiKey, setApiKey] = useState(aiSettings.apiKey);
-  const [model, setModel] = useState(aiSettings.model);
-
+  const { isAiModalOpen, setAiModalOpen, aiSettings, setAiSettings, locale } = useApp();
+  const [preference, setPreference] = useState(false);
+  useEffect(() => { if (isAiModalOpen) setPreference(aiSettings.enabled); }, [isAiModalOpen, aiSettings.enabled]);
   if (!isAiModalOpen) return null;
-
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    setAiSettings({
-      enabled,
-      endpoint: endpoint.trim(),
-      apiKey: apiKey.trim(),
-      model: model.trim() || 'gpt-4o-mini',
-    });
-    setAiModalOpen(false);
-  };
-
+  const t = copy[locale] || copy.en;
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="ai-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-charcoal/60 backdrop-blur-sm"
-    >
-      <div className="bg-ivory-50 dark:bg-stone-900 border border-stone-border dark:border-white/10 rounded-3xl shadow-2xl max-w-lg w-full p-6 text-stone-charcoal dark:text-ivory-100">
-        <div className="flex items-center justify-between pb-3 border-b border-ivory-300 dark:border-white/10">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-violet-soft dark:bg-violet-deep/40 flex items-center justify-center text-violet-deep dark:text-violet-soft">
-              <Sparkles className="w-4 h-4" />
-            </div>
-            <h2 id="ai-modal-title" className="text-base font-semibold">
-              {dict.aiBridge.modalTitle}
-            </h2>
-          </div>
-          <button
-            onClick={() => setAiModalOpen(false)}
-            className="p-1 rounded-lg text-stone-mist hover:text-stone-charcoal dark:hover:text-white"
-          >
-            <X className="w-5 h-5" />
-          </button>
+    <div role="dialog" aria-modal="true" aria-labelledby="ai-modal-title" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-charcoal/60 backdrop-blur-sm">
+      <div className="bg-ivory-50 dark:bg-stone-900 border border-stone-border dark:border-white/10 rounded-3xl shadow-2xl max-w-lg w-full p-6 text-stone-charcoal dark:text-ivory-100 space-y-4">
+        <div className="flex items-center justify-between gap-3">
+          <h2 id="ai-modal-title" className="text-base font-semibold flex items-center gap-2"><Sparkles className="w-4 h-4" />{t[0]}</h2>
+          <button type="button" onClick={() => setAiModalOpen(false)} aria-label="Close"><X className="w-5 h-5"/></button>
         </div>
-
-        <form onSubmit={handleSave} className="space-y-4 py-4 text-xs sm:text-sm">
-          <p className="text-stone-mist dark:text-stone-300 text-xs leading-relaxed">
-            {dict.aiBridge.description}
-          </p>
-
-          <label className="flex items-center gap-3 p-3 rounded-2xl bg-ivory-100 dark:bg-white/5 border border-stone-border dark:border-white/10 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={enabled}
-              onChange={(e) => setEnabled(e.target.checked)}
-              className="rounded text-violet-deep focus:ring-violet-muted w-4 h-4"
-            />
-            <span className="font-medium text-stone-charcoal dark:text-white">
-              {dict.aiBridge.enableToggle}
-            </span>
-          </label>
-
-          {enabled && (
-            <div className="space-y-3 pt-1">
-              <div>
-                <label className="block text-[11px] font-semibold text-stone-mist mb-1">
-                  {dict.aiBridge.endpointLabel}
-                </label>
-                <input
-                  type="url"
-                  placeholder="https://api.openai.com/v1/chat/completions"
-                  value={endpoint}
-                  onChange={(e) => setEndpoint(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-ivory-100 dark:bg-white/5 border border-stone-border dark:border-white/10 text-xs focus:outline-none focus:ring-2 focus:ring-violet-muted"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-semibold text-stone-mist mb-1">
-                  {dict.aiBridge.apiKeyLabel}
-                </label>
-                <input
-                  type="password"
-                  placeholder="sk-..."
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-ivory-100 dark:bg-white/5 border border-stone-border dark:border-white/10 text-xs focus:outline-none focus:ring-2 focus:ring-violet-muted font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-semibold text-stone-mist mb-1">
-                  {dict.aiBridge.modelLabel}
-                </label>
-                <input
-                  type="text"
-                  placeholder="gpt-4o-mini"
-                  value={model}
-                  onChange={(e) => setModel(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-ivory-100 dark:bg-white/5 border border-stone-border dark:border-white/10 text-xs focus:outline-none focus:ring-2 focus:ring-violet-muted"
-                />
-              </div>
-            </div>
-          )}
-
-          <div className="p-3.5 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-[11px] text-slate-700 dark:text-stone-300 space-y-1">
-            <div className="flex items-center gap-1.5 font-semibold text-slate-900 dark:text-white">
-              <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-              <span>Bring Your Own Key (BYOK) Privacy Notice</span>
-            </div>
-            <p className="leading-relaxed">
-              Your API key is saved strictly in your browser&apos;s local storage (<code className="font-mono px-1 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-[10px]">localStorage</code>) on this device and is never transmitted to any central server or database owned by us. When you use the AI assistant, your prompt is sent directly from your browser to your chosen provider (OpenAI, DeepSeek, Google, etc.) under their respective privacy terms.
-            </p>
-          </div>
-
-          <div className="flex justify-end gap-2 pt-2 border-t border-ivory-300 dark:border-white/10">
-            <button
-              type="button"
-              onClick={() => setAiModalOpen(false)}
-              className="px-4 py-2 border border-stone-border rounded-xl text-xs font-medium hover:bg-ivory-200 dark:hover:bg-white/5"
-            >
-              {dict.dataManagement.cancel}
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-violet-deep text-ivory-50 rounded-xl text-xs font-medium hover:bg-violet-deep/90 shadow-sm"
-            >
-              {dict.aiBridge.saveBtn}
-            </button>
-          </div>
-        </form>
+        <p className="text-sm">{t[1]}</p>
+        <label className="flex items-start gap-3 p-3 rounded-xl border border-stone-border dark:border-white/10">
+          <input aria-label={t[2]} type="checkbox" checked={preference} onChange={e=>setPreference(e.target.checked)} className="mt-1"/>
+          <span className="text-sm">{t[2]}</span>
+        </label>
+        <div role="status" className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 space-y-2 text-xs">
+          <p className="flex gap-2 items-start"><ShieldCheck className="w-4 h-4 shrink-0"/>{t[3]}</p>
+          <p>{t[4]}</p>
+        </div>
+        <button type="button" onClick={() => {setAiSettings({...aiSettings,enabled:preference});setAiModalOpen(false);}} className="px-4 py-2 w-full bg-violet-deep text-white rounded-xl font-semibold text-sm">{t[5]}</button>
       </div>
     </div>
   );

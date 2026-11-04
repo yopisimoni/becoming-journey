@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { generateDiscoveryReflection, AISettings, DynamicDiscoveryResult } from '@/lib/engine/aiAdapter';
 import { getDictionary } from '@/locales';
 
@@ -30,6 +30,18 @@ describe('aiAdapter: Offline deterministic default & bridge behavior', () => {
     expect(result.threeInsights.length).toBe(3);
     expect(result.threeSteps.length).toBe(3);
     expect(result.threeInsights[0]).toContain('behind');
+  });
+
+  it('never transmits reflection notes while the secure gateway is disabled', async () => {
+    const request = vi.spyOn(globalThis, 'fetch');
+    const result = await generateDiscoveryReflection({
+      intent: 'reflection', rootFeeling: 'private', userNotes: 'fictional test only',
+      perspective: 'pause', fallbackDefaults,
+      aiSettings: { enabled: true, endpoint: 'https://example.test/api', apiKey: 'legacy-test-key', model: 'test' },
+    });
+    expect(result).toEqual(fallbackDefaults);
+    expect(request).not.toHaveBeenCalled();
+    request.mockRestore();
   });
 
   it('safely falls back to local defaults if fetch fails or endpoint is unreachable', async () => {

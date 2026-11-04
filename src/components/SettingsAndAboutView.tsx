@@ -537,18 +537,18 @@ export function SettingsAndAboutView() {
                 <span>Foundational Principle: &ldquo;Mirror, Never Boss&rdquo;</span>
               </div>
               <p className="text-xs text-indigo-950 dark:text-indigo-200 leading-relaxed font-serif">
-                AI must never dictate what you should do, never judge you, and never act as an authority. It exists solely as a quiet mirror to reflect your own deepest wisdom back to you. You are the ultimate sovereign author of your life.
+                AI is optional. The local experience remains available, and future AI reflections must not diagnose, pressure, or make decisions for the user.
               </p>
             </div>
 
-            {/* Transparent BYOK AI Privacy Notice */}
+            {/* Optional-AI privacy status: no browser API secrets, no external requests yet. */}
             <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-1.5">
               <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200 font-bold text-xs">
                 <Shield className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                <span>{ui("Bring Your Own Key (BYOK) Privacy Notice")}</span>
+                <span>{({en:'Your choice, your data',ar:'قرارك وبياناتك',fr:'Votre choix, vos données',es:'Tu decisión, tus datos',it:'La tua scelta, i tuoi dati'} as Record<string,string>)[locale] || 'Your choice, your data'}</span>
               </div>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-                Your API key is saved strictly in your browser&apos;s local storage (<code className="text-xs font-mono px-1 py-0.5 rounded bg-slate-200 dark:bg-slate-700">localStorage</code>) on this device and is never transmitted to any central server or database owned by us. When you use the AI assistant, your prompt is sent directly from your browser to your chosen provider (OpenAI, DeepSeek, Google, etc.) under their respective privacy terms.
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                {({en:'AI is off by default. Choosing AI does not send any data yet. No API keys are collected in your browser. A secure gateway and explicit permission for each request are required before Groq can be enabled. We do not sell personal data.',ar:'الذكاء الاصطناعي معطل افتراضياً. اختياره لا يرسل أي بيانات الآن. لا نطلب مفاتيح API في المتصفح. يلزم خادم آمن وموافقة صريحة لكل طلب قبل تشغيل Groq. لا نبيع البيانات الشخصية.',fr:'L’IA est désactivée par défaut. La sélectionner n’envoie aucune donnée actuellement. Aucune clé API n’est demandée dans le navigateur. Une passerelle sécurisée et un accord pour chaque envoi sont requis avant Groq. Nous ne vendons pas de données personnelles.',es:'La IA está desactivada por defecto. Elegirla no envía datos por ahora. No se solicitan claves API en el navegador. Antes de activar Groq se requiere un servidor seguro y permiso para cada envío. No vendemos datos personales.',it:'L’AI è disattivata per impostazione predefinita. Selezionarla non invia dati al momento. Non chiediamo chiavi API nel browser. Prima di attivare Groq servono un gateway sicuro e il consenso per ogni invio. Non vendiamo dati personali.'} as Record<string,string>)[locale] || 'AI is off by default.'}
               </p>
             </div>
 
@@ -556,7 +556,7 @@ export function SettingsAndAboutView() {
               <div>
                 <div className="font-bold text-sm text-slate-900 dark:text-white">{ui("AI Companion API Mode")}</div>
                 <div className="text-xs text-slate-500">
-                  Default is 100% offline local templates. You can optionally connect a personal API endpoint.
+                  Local reflection works without AI. Groq remains unavailable until our secure, consent-based gateway is ready.
                 </div>
               </div>
               <button

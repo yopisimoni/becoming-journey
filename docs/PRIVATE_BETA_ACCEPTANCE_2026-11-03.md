@@ -27,3 +27,8 @@
 
 ## Regression policy
 Stop recurring generic QA loops. New tests only for confirmed missing acceptance criteria or new defects. A READY Vercel status means successful build/deployment, not human acceptance.
+
+## 2026-11-04 optional AI gate
+- The legacy BYOK browser form has been removed. Saved legacy browser API keys are cleared on initialization and only a non-sensitive opt-in preference is retained.
+- External AI network paths remain disabled. No Groq API integration is represented as live.
+- See `docs/GROQ_PRIVACY_CONSENT_GATE_2026-11-04.md` before any attempt to enable provider traffic. Explicit approval of the text being sent is required for each future request.

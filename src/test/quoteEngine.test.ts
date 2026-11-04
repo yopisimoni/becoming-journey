@@ -79,7 +79,7 @@ describe('BCM-013 / v0.6: Dynamic Session Wisdom & Quote Engine', () => {
     expect(res).toBeNull();
   });
 
-  it('fetchAiStageGreeting parses valid AI response and marks quote as isAiGenerated', async () => {
+  it('does not send data before a secure gateway is activated', async () => {
     const mockPayload = {
       choices: [
         {
@@ -105,9 +105,7 @@ describe('BCM-013 / v0.6: Dynamic Session Wisdom & Quote Engine', () => {
       'Intentional craft'
     );
 
-    expect(res).not.toBeNull();
-    expect(res?.quote).toBe('May your steps today be as unhurried as the sunrise.');
-    expect(res?.theme).toBe('Patient Dawn');
-    expect(res?.isAiGenerated).toBe(true);
+    expect(res).toBeNull();
+    expect(globalThis.fetch).not.toHaveBeenCalled();
   });
 });

@@ -185,7 +185,8 @@ const STORAGE_KEY_MODE = 'becoming_storage_mode_v1';
 const STORAGE_KEY_LOCALE = 'becoming_locale_v1';
 const STORAGE_KEY_MOTION = 'becoming_reduced_motion_v1';
 const STORAGE_KEY_THEME = 'becoming_theme_mode_v1';
-const STORAGE_KEY_AI = 'becoming_ai_settings_v1';
+const STORAGE_KEY_AI = 'becoming_ai_settings_v2';
+const LEGACY_STORAGE_KEY_AI = 'becoming_ai_settings_v1';
 const STORAGE_KEY_REGISTERED_USERS = 'becoming_registered_users_v1';
 const STORAGE_KEY_ACTIVE_USER = 'becoming_active_user_v1';
 const STORAGE_KEY_ONBOARDED = 'becoming_onboarded';
@@ -411,10 +412,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setAutoAtmosphereState(savedAutoAtmosphere === 'true');
       }
 
-      const savedAi = store.getItem(STORAGE_KEY_AI);
-      if (savedAi) {
-        setAiSettingsState(JSON.parse(savedAi));
+      // Retire legacy browser-stored API keys in BOTH storage modes.
+      // Consent is only a local preference; external AI calls are not enabled.
+      // Retire all legacy BYOK credentials and preferences without inheriting consent.
+      // Any future AI connection requires a new, explicit opt-in.
+      for (const storage of [localStorage, sessionStorage]) {
+        try { storage.removeItem(LEGACY_STORAGE_KEY_AI); } catch { /* storage unavailable */ }
       }
+      const savedConsent = store.getItem(STORAGE_KEY_AI);
+      let explicitConsent = false;
+      try { explicitConsent = savedConsent ? JSON.parse(savedConsent)?.enabled === true : false; } catch { /* invalid preferences stay off */ }
+      setAiSettingsState({ ...DEFAULT_AI_SETTINGS, enabled: explicitConsent });
 
       const savedMotion = store.getItem(STORAGE_KEY_MOTION);
       if (savedMotion !== null) {
@@ -583,10 +591,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const setAiSettings = (newSettings: AISettings) => {
-    setAiSettingsState(newSettings);
+    // Never accept or persist a browser API key or arbitrary endpoint.
+    // UI consent alone cannot trigger any external request.
+    const safeSettings = { ...DEFAULT_AI_SETTINGS, enabled: newSettings.enabled === true };
+    setAiSettingsState(safeSettings);
     try {
+      localStorage.removeItem(STORAGE_KEY_AI);
+      sessionStorage.removeItem(STORAGE_KEY_AI);
+      localStorage.removeItem(LEGACY_STORAGE_KEY_AI);
+      sessionStorage.removeItem(LEGACY_STORAGE_KEY_AI);
       const store = storageMode === 'local' ? localStorage : sessionStorage;
-      store.setItem(STORAGE_KEY_AI, JSON.stringify(newSettings));
+      store.setItem(STORAGE_KEY_AI, JSON.stringify({ enabled: safeSettings.enabled }));
     } catch {
       // ignore
     }

@@ -5,6 +5,9 @@
  * Zero network calls unless explicitly configured and enabled by the user in settings.
  */
 
+// Keep disabled until a privacy-reviewed, rate-limited server-side gateway exists.
+export const SECURE_AI_GATEWAY_READY = false;
+
 export interface AISettings {
   enabled: boolean;
   endpoint: string; // e.g., 'https://api.openai.com/v1/chat/completions'
@@ -45,7 +48,7 @@ export async function generateDiscoveryReflection({
   aiSettings?: AISettings;
 }): Promise<DynamicDiscoveryResult> {
   // If not enabled or no key provided, return pure local fallback instantly
-  if (!aiSettings?.enabled || !aiSettings.apiKey.trim() || !aiSettings.endpoint.trim()) {
+  if (!SECURE_AI_GATEWAY_READY || !aiSettings?.enabled || !aiSettings.apiKey.trim() || !aiSettings.endpoint.trim()) {
     return fallbackDefaults;
   }
 

@@ -1,3 +1,4 @@
+import { SECURE_AI_GATEWAY_READY } from '@/lib/engine/aiAdapter';
 export interface WisdomQuote {
   id: string;
   quote: string;
@@ -420,7 +421,7 @@ export async function fetchAiStageGreeting(
   stageName: string,
   stageTagline: string
 ): Promise<WisdomQuote | null> {
-  if (!aiSettings?.enabled || !aiSettings.apiKey?.trim() || !aiSettings.endpoint?.trim()) {
+  if (!SECURE_AI_GATEWAY_READY || !aiSettings?.enabled || !aiSettings.apiKey?.trim() || !aiSettings.endpoint?.trim()) {
     return null;
   }
 
