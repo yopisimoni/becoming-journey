@@ -1,0 +1,7 @@
+# Never commit real credentials or runtime secrets.
+secrets/
+runtime.env
+.env
+.env.*
+!.env.example
+*.key

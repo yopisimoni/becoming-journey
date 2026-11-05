@@ -1,6 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
+import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { makeGateway, MODEL } from './server.mjs';
 
 async function setup(env, fetcher) {
@@ -27,4 +30,18 @@ test('predefined locale and stage only, response validated, daily cap applied',a
   const response=await request(g.url,permitted);assert.equal(response.status,200);assert.equal((await response.json()).provider,'groq');assert.equal(upstream.model,MODEL);assert.equal(upstream.messages[1].content.includes('private'),false);
   assert.equal((await request(g.url,permitted)).status,429);assert.equal(calls,1)
  }finally{await g.close()}
+});
+
+test('mounted secret files work; missing secret files fail closed',async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'becoming-groq-test-'));
+ try {
+   const key=join(dir,'key'), token=join(dir,'token');
+   writeFileSync(key,'test-file-key\n',{mode:0o600});writeFileSync(token,'test-file-token\n',{mode:0o600});
+   let captured;
+   const env={GROQ_GATEWAY_ENABLED:'true',GROQ_API_KEY_FILE:key,GATEWAY_INTERNAL_TOKEN_FILE:token};
+   const g=await setup(env,async(_url,options)=>{captured=options.headers.Authorization;return {ok:true,json:async()=>({choices:[{message:{content:'A peaceful moment awaits.'}}]})}});
+   try { const res=await request(g.url,{locale:'en',stage:'pause',approvedForExternalProcessing:true},'test-file-token'); assert.equal(res.status,200);assert.equal(captured,'Bearer test-file-key') }finally{await g.close()}
+   const missing=await setup({...env,GROQ_API_KEY_FILE:join(dir,'missing')},async()=>{throw Error('must not call provider')});
+   try {assert.equal((await request(missing.url,permitted,'test-file-token')).status,503)} finally{await missing.close()}
+ }finally{rmSync(dir,{recursive:true,force:true})}
 });

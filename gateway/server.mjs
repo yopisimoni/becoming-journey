@@ -4,6 +4,7 @@
  * This internal endpoint requires server-to-server authorization and explicit test consent.
  */
 import { createServer } from 'node:http';
+import { readFileSync } from 'node:fs';
 import { timingSafeEqual } from 'node:crypto';
 
 export const MODEL = 'openai/gpt-oss-20b';
@@ -28,15 +29,24 @@ function cleanText(value) {
   if (text.length < 2 || text.length > 240 || /[<>\x00-\x08]/.test(text)) return null;
   return text;
 }
+function secret(env, name) {
+  if (env[`${name}_FILE`]) {
+    try { return readFileSync(env[`${name}_FILE`], 'utf8').trim(); }
+    catch { return ''; } // Never fall back to a browser-visible or stale credential.
+  }
+  return env[name] || '';
+}
 export function makeGateway({env=process.env, fetcher=fetch, now=()=>Date.now()}={}) {
+  const groqKey = secret(env, 'GROQ_API_KEY');
+  const internalToken = secret(env, 'GATEWAY_INTERNAL_TOKEN');
   let windowStart = now(), total = 0;
   const cap = Math.max(1, Math.min(100, Number(env.GROQ_DAILY_REQUEST_CAP || DEFAULT_DAILY_CAP) || DEFAULT_DAILY_CAP));
   return createServer(async (req, res) => {
-    if(req.method === 'GET' && req.url === '/health') return send(res, 200, {ok:true, enabled:env.GROQ_GATEWAY_ENABLED === 'true' && !!env.GROQ_API_KEY});
+    if(req.method === 'GET' && req.url === '/health') return send(res, 200, {ok:true, enabled:env.GROQ_GATEWAY_ENABLED === 'true' && !!groqKey});
     if(req.url !== '/internal/greeting' || req.method !== 'POST') return send(res, 404, {error:'not_found'});
     // Protect from sending anything to Groq until every safety gate is explicitly enabled.
-    if(env.GROQ_GATEWAY_ENABLED !== 'true' || !env.GROQ_API_KEY || !env.GATEWAY_INTERNAL_TOKEN) return send(res, 503, {error:'gateway_disabled'});
-    if(!authOk(req.headers.authorization, env.GATEWAY_INTERNAL_TOKEN)) return send(res, 401, {error:'unauthorized'});
+    if(env.GROQ_GATEWAY_ENABLED !== 'true' || !groqKey || !internalToken) return send(res, 503, {error:'gateway_disabled'});
+    if(!authOk(req.headers.authorization, internalToken)) return send(res, 401, {error:'unauthorized'});
     if(req.headers['content-type']?.split(';')[0] !== 'application/json') return send(res, 415, {error:'json_required'});
     let raw='';
     try {
@@ -56,7 +66,7 @@ export function makeGateway({env=process.env, fetcher=fetch, now=()=>Date.now()}
     try {
       const upstream = await fetcher('https://api.groq.com/openai/v1/chat/completions', {
         method:'POST', signal:controller.signal,
-        headers:{'Authorization':`Bearer ${env.GROQ_API_KEY}`,'Content-Type':'application/json'},
+        headers:{'Authorization':`Bearer ${groqKey}`,'Content-Type':'application/json'},
         body: JSON.stringify({model:MODEL, temperature:0.4, max_completion_tokens:160,
           messages:[
             {role:'system',content:`You provide a short, non-clinical, non-directive greeting for a self-reflection app. Reply in ${LANGUAGES[body.locale]} only. Do not claim to know the user. Never diagnose, pressure or form personal attachments. Return just one encouraging, neutral sentence, under 160 characters. No advice about health or major life decisions.`},
@@ -75,5 +85,5 @@ export function makeGateway({env=process.env, fetcher=fetch, now=()=>Date.now()}
 
 if(process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href) {
   // Loopback binding is deliberate. Use a trusted reverse proxy and BFF before any public beta.
-  makeGateway().listen(Number(process.env.GATEWAY_PORT||18771),'127.0.0.1');
+  makeGateway().listen(Number(process.env.GATEWAY_PORT||18771),process.env.GATEWAY_BIND_HOST||'127.0.0.1');
 }

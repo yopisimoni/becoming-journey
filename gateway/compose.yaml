@@ -1,0 +1,27 @@
+# Staging only. Never publish publicly without the BFF, proper user/session limits and consent UI.
+services:
+  becoming-groq-internal:
+    image: node:22-alpine
+    container_name: becoming-groq-internal
+    user: "1001:1001"
+    working_dir: /app
+    command: ["node", "server.mjs"]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    pids_limit: 64
+    mem_limit: 128m
+    cpus: 0.5
+    init: true
+    restart: unless-stopped
+    env_file: ./runtime.env
+    environment:
+      GATEWAY_PORT: "18771"
+      GATEWAY_BIND_HOST: "0.0.0.0"
+      GROQ_API_KEY_FILE: /run/secrets/groq_api_key
+      GATEWAY_INTERNAL_TOKEN_FILE: /run/secrets/gateway_internal_token
+    ports:
+      - "127.0.0.1:18771:18771"
+    volumes:
+      - ./server.mjs:/app/server.mjs:ro
+      - ./secrets:/run/secrets:ro
